@@ -3,11 +3,11 @@
 Date: February 14, 2024
 
 ## Participants:
-Colton Schneider
-Christian Eddie
-Jason Zhai
-Jenny Su
-Shahbaz Qureshi
+- Colton Schneider
+- Christian Eddie
+- Jason Zhai
+- Jenny Su
+- Shahbaz Qureshi
 
 ## Discussion:
 Project Part 2 - Due Friday February 16th
@@ -25,4 +25,5 @@ Project Part 2 - Due Friday February 16th
 
 ## To Dos:
 **Finish Project Part 2!**
+
 Assign issues so we can finish by the half-way checkpoint
