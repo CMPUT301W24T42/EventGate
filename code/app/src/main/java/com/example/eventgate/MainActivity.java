@@ -6,9 +6,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 
-import com.example.eventgate.admin.AdminActivity;
-import com.example.eventgate.attendee.AttendeeActivity;
-import com.example.eventgate.organizer.OrganizerActivity;
+import com.example.eventgate.Admin.AdminActivity;
+import com.example.eventgate.Attendee.AttendeeActivity;
+import com.example.eventgate.Organizer.OrganizerMainMenuActivity;
 
 public class MainActivity extends AppCompatActivity {
     Button attendeeButton;
@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
                 AttendeeActivity.class)));
 
         organizerButton.setOnClickListener(v -> startActivity(new Intent(MainActivity.this,
-                OrganizerActivity.class)));
+                OrganizerMainMenuActivity.class)));
 
         adminButton.setOnClickListener(v -> startActivity(new Intent(MainActivity.this,
                 AdminActivity.class)));

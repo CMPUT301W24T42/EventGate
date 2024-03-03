@@ -1,4 +1,4 @@
-package com.example.eventgate.admin;
+package com.example.eventgate.Admin;
 
 import androidx.appcompat.app.AppCompatActivity;
 
