@@ -61,6 +61,9 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Signs in the user using Firebase anonymous authentication
+     */
     private void signInUser() {
         mAuth.signInAnonymously()
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
