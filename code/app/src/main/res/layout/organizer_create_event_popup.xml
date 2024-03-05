@@ -6,26 +6,25 @@
 
     <LinearLayout
         android:id="@+id/linearLayout"
-        android:layout_width="0dp"
-        android:layout_height="500dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#4CAF50"
         android:orientation="vertical"
         android:padding="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <!-- Buttons to continue and cancel -->
+
         <TextView
-            android:id="@+id/generateQrCodeOption"
+            android:id="@+id/organizerCreateEventHeader"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?android:attr/selectableItemBackground"
-            android:clickable="true"
-            android:focusable="true"
-            android:padding="16dp"
-            android:text="@string/generate_new_qr_code"
-            android:textSize="16sp" />
+            android:background="#FFFFFF"
+            android:text="@string/enter_event_name"
+            android:textAlignment="center" />
 
-        <!-- Buttons to continue and cancel -->
         <EditText
             android:id="@+id/organizerCreateEventName"
             android:layout_width="match_parent"
@@ -47,6 +46,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:backgroundTint="#FFFFFF"
                 android:text="@string/organizerCreateEventContinue" />
 
             <Button
@@ -55,6 +55,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:backgroundTint="#FFFFFF"
                 android:text="@string/organizerCreateEventCancel" />
         </LinearLayout>
     </LinearLayout>

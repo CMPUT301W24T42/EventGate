@@ -7,4 +7,5 @@
     <string name="organizerCreateEventContinue">Continue</string>
     <string name="organizerCreateEventCancel">Cancel</string>
     <string name="event_name">Event Name</string>
+    <string name="enter_event_name">Enter Event Name</string>
 </resources>

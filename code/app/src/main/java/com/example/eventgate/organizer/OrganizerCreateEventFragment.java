@@ -40,8 +40,6 @@ public class OrganizerCreateEventFragment extends DialogFragment {
         // Inflate the layout for the dialog
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.organizer_create_event_popup, null);
 
-        // Initialize views
-        TextView generateQrCodeOption = view.findViewById(R.id.generateQrCodeOption);
         Button continueButton = view.findViewById(R.id.organizerCreateEventContinueButton);
         Button cancelButton = view.findViewById(R.id.organizerCreateEventCancelButton);
         EditText organizerCreateEventName = view.findViewById(R.id.organizerCreateEventName);
