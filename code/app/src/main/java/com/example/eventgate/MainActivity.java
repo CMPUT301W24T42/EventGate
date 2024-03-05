@@ -12,7 +12,6 @@ import android.widget.Toast;
 import com.example.eventgate.admin.AdminActivity;
 import com.example.eventgate.attendee.AttendeeActivity;
 import com.example.eventgate.organizer.OrganizerMainMenuActivity;
-import com.example.eventgate.organizer.OrganizerActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
