@@ -115,7 +115,7 @@
             android:layout_height="wrap_content"
             android:background="@color/green"
             android:padding="16dp"
-            android:text="Your Events"
+            android:text="Attendee Menu: Your Events"
             android:textAlignment="center"
             android:textColor="#000000"
             android:textSize="20sp"
