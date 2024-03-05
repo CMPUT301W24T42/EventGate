@@ -3,4 +3,7 @@
     <string name="your_events">Your Events</string>
     <string name="create_new_event">Create New Event</string>
     <string name="back">Back</string>
+    <string name="generate_new_qr_code">Generate New QR Code</string>
+    <string name="organizerCreateEventContinue">Continue</string>
+    <string name="organizerCreateEventCancel">Cancel</string>
 </resources>
