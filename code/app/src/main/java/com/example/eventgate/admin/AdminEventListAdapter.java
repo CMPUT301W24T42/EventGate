@@ -15,15 +15,34 @@ import com.example.eventgate.R;
 
 import java.util.ArrayList;
 
+/**
+ * This is an adapter for displaying a list of events that includes a delete button that the admin
+ *     can use
+ */
 public class AdminEventListAdapter extends ArrayAdapter<Event> {
     private ArrayList<Event> events;
     private Context context;
+
+    /**
+     * Constructs a new AdminEventListAdapter.
+     *
+     * @param context The context.
+     * @param events  The list of events to be displayed.
+     */
     public AdminEventListAdapter(Context context, ArrayList<Event> events) {
         super(context, 0, events);
         this.events = events;
         this.context = context;
     }
 
+    /**
+     * Returns a view that displays the event at the specified position in the list.
+     *
+     * @param position    The position of the event in the list.
+     * @param convertView The old view to reuse, if possible.
+     * @param parent      The parent view that this view will eventually be attached to.
+     * @return A View corresponding to the event at the specified position.
+     */
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
