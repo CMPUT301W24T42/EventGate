@@ -13,19 +13,13 @@
         android:theme="@style/Theme.EventGate"
         tools:targetApi="31">
         <activity
-            android:name=".Organizer.OrganizerCreateEventActivity"
+            android:name=".organizer.OrganizerMainMenuActivity"
             android:exported="false" />
         <activity
-            android:name=".OrganizerMainMenuActivity"
+            android:name=".admin.AdminActivity"
             android:exported="false" />
         <activity
-            android:name=".Admin.AdminActivity"
-            android:exported="false" />
-        <activity
-            android:name=".Organizer.OrganizerMainMenuActivity"
-            android:exported="false" />
-        <activity
-            android:name=".Attendee.AttendeeActivity"
+            android:name=".attendee.AttendeeActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

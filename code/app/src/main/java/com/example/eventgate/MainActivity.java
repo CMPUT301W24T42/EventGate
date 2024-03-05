@@ -6,9 +6,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 
-import com.example.eventgate.Admin.AdminActivity;
-import com.example.eventgate.Attendee.AttendeeActivity;
-import com.example.eventgate.Organizer.OrganizerMainMenuActivity;
+import com.example.eventgate.admin.AdminActivity;
+import com.example.eventgate.attendee.AttendeeActivity;
+import com.example.eventgate.organizer.OrganizerMainMenuActivity;
 
 public class MainActivity extends AppCompatActivity {
     Button attendeeButton;

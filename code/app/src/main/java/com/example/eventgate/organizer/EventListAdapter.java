@@ -1,4 +1,4 @@
-package com.example.eventgate.Organizer;
+package com.example.eventgate.organizer;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;

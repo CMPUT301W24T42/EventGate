@@ -1,4 +1,4 @@
-package com.example.eventgate.Organizer;
+package com.example.eventgate.organizer;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;

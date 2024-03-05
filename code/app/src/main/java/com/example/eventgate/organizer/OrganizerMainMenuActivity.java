@@ -1,4 +1,4 @@
-package com.example.eventgate.Organizer;
+package com.example.eventgate.organizer;
 
 import android.os.Bundle;
 import android.widget.Button;

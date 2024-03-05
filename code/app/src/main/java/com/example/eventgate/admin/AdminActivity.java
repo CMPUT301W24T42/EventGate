@@ -1,15 +1,16 @@
-package com.example.eventgate.Attendee;
-
-import android.os.Bundle;
+package com.example.eventgate.admin;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.os.Bundle;
+
 import com.example.eventgate.R;
 
-public class AttendeeActivity extends AppCompatActivity {
+public class AdminActivity extends AppCompatActivity {
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_attendee);
+        setContentView(R.layout.activity_admin);
     }
 }
