@@ -12,6 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -62,6 +64,7 @@ public class QRCodeScanActivity extends AppCompatActivity {
             if (result.getContents() == null) {
                 Toast.makeText(this, "Scan Cancelled", Toast.LENGTH_LONG).show();
             } else {
+                db = FirebaseFirestore.getInstance();
                 Toast.makeText(this, "Scanned: " + result.getContents(),
                         Toast.LENGTH_LONG).show();
             }
