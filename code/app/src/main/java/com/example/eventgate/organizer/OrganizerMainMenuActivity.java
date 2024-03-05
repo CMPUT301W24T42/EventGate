@@ -10,12 +10,23 @@ import com.example.eventgate.R;
 
 import java.util.ArrayList;
 
+/**
+ * Activity for the organizer's main menu.
+ * Allows the organizer to view and manage events.
+ */
 public class OrganizerMainMenuActivity extends AppCompatActivity implements OrganizerCreateEventFragment.OnEventAddedListener {
     Button createNewEventButton;
     Button organizerMainMenuBackButton;
     ListView eventListView;
     EventListAdapter eventListAdapter;
     ArrayList<String> events;
+
+    /**
+     * Called when the activity is starting.
+     * Initializes the activity layout and views.
+     *
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down, this Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle).
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +50,11 @@ public class OrganizerMainMenuActivity extends AppCompatActivity implements Orga
         );
     }
 
+    /**
+     * Callback method to handle the addition of a new event.
+     *
+     * @param eventName The name of the event to be added.
+     */
     @Override
     public void onEventAdded(String eventName) {
         events.add(eventName);

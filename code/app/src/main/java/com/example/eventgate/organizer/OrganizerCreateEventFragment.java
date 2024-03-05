@@ -15,7 +15,17 @@ import androidx.annotation.Nullable;
 
 import com.example.eventgate.R;
 
+/**
+ * A fragment for creating a new event.
+ */
 public class OrganizerCreateEventFragment extends DialogFragment {
+
+    /**
+     * Called to create the dialog shown in this fragment.
+     *
+     * @param savedInstanceState If the fragment is being re-created from a previous saved state, this is the state.
+     * @return A new Dialog instance to be displayed by the fragment.
+     */
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -49,6 +59,9 @@ public class OrganizerCreateEventFragment extends DialogFragment {
         return builder.create();
     }
 
+    /**
+     * Interface definition for a callback to be invoked when an event is added.
+     */
     public interface OnEventAddedListener {
         void onEventAdded(String eventName);
     }
