@@ -2,6 +2,7 @@ package com.example.eventgate.event;
 
 import android.util.Log;
 
+import com.example.eventgate.MainActivity;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -21,11 +22,11 @@ public class EventDB {
     /**
      * An instance of the Firebase Firestore database
      */
-    private final FirebaseFirestore db;
+    private FirebaseFirestore db;
     /**
      * The collection for the events collection in the database
      */
-    private final CollectionReference collection;
+    private CollectionReference collection;
     /**
      * The TAG for logging
      */
@@ -35,8 +36,8 @@ public class EventDB {
      * Constructs a new EventDB
      */
     public EventDB() {
-        db = FirebaseFirestore.getInstance();
-        collection = db.collection("events");
+        db = MainActivity.db.getDB();
+        collection = MainActivity.db.getEventsRef();
     }
 
     /**
