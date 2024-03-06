@@ -1,8 +1,19 @@
 package com.example.eventgate.Event;
 
 public class Event {
+    /**
+     * Holds the document id for the event
+     */
+    private String eventId;
+    /**
+     * Holds the name of the event
+     */
     private String eventName;
 
+    /**
+     * Constructs an Event
+     * @param eventName the name of the event
+     */
     public Event(String eventName) {
         this.eventName = eventName;
     }
@@ -13,5 +24,13 @@ public class Event {
 
     public void setEventName(String eventName) {
         this.eventName = eventName;
+    }
+
+    public String getEventId() {
+        return eventId;
+    }
+
+    public void setEventId(String id) {
+        eventId = id;
     }
 }

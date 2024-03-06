@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.ListView;
 
 import com.example.eventgate.Event.Event;
+import com.example.eventgate.Event.EventDB;
 import com.example.eventgate.R;
 
 import java.util.ArrayList;
