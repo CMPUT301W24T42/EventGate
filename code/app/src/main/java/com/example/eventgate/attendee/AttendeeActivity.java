@@ -4,11 +4,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.AbsoluteSizeSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
@@ -23,21 +25,35 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.eventgate.MainActivity;
 import com.example.eventgate.R;
 
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Typeface;
+import java.security.MessageDigest;
+
 //citations
 //https://stackoverflow.com/questions/44131469/android-using-shared-preferences-to-check-on-first-run
 //https://stackoverflow.com/questions/16335178/different-font-size-of-strings-in-the-same-textview
-
+//https://www.baeldung.com/sha-256-hashing-java
 
 public class AttendeeActivity extends AppCompatActivity {
 
     private static final int PICK_IMAGE = 1;
+    private static byte[] hashBytes;
+    private Bitmap profileBitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_attendee);
 
-        //some UI adjustments
+        //some handling for attendees on start
 
         //text sizing for events listview title
         TextView textView = findViewById(R.id.EventListViewTitle);
@@ -48,18 +64,23 @@ public class AttendeeActivity extends AppCompatActivity {
         textView.setText(spannableString);
 
 
+        //generate user profile pic
+        if (hashBytes == null) {
+            generateHash();
+            createBitmap2();
+            ImageButton imageButton = findViewById(R.id.profile_image);
+            imageButton.setImageBitmap(profileBitmap);
+        }
+
+
         //check if first time opening attendee section, save attendee to db if so
         SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
         boolean isFirstTimeOpening = prefs.getBoolean("isFirstTime", true);
-
+        //this is all placeholder for now, im not exactly sure how we're going to handle saved user info w/ firebase auth yet
         if (isFirstTimeOpening) {
             user_settings_dialog();
 
         }
-
-
-
-
 
 
         //buttons for user settings and profile pic settings
@@ -80,6 +101,7 @@ public class AttendeeActivity extends AppCompatActivity {
         });
 
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -149,8 +171,6 @@ public class AttendeeActivity extends AppCompatActivity {
         builder.setTitle("Profile Picture");
 
 
-
-
         builder.setPositiveButton("Upload New Profile Picture", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -216,4 +236,76 @@ public class AttendeeActivity extends AppCompatActivity {
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
     }
+
+
+    //generates hash from firebase auth id
+    private void generateHash() {
+        try {
+            FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+            String userId = currentUser.getUid();
+            String input = userId;
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(input.getBytes());
+            StringBuilder hexString = new StringBuilder();
+
+            for (byte b : hash) {
+                String hex = Integer.toHexString(0xff & b);
+                if (hex.length() == 1) hexString.append('0');
+                hexString.append(hex);
+            }
+
+            String userHash = hexString.toString();
+            hashBytes = userHash.getBytes("UTF-8");
+            return;
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return;
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return;
+        }
+
+
+    }
+    //generates profile picture from hash
+    private void createBitMap() {
+
+        int color = Color.rgb(hashBytes[0] & 0xFF, hashBytes[1] & 0xFF, hashBytes[2] & 0xFF);
+        profileBitmap = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(profileBitmap);
+        canvas.drawColor(color);
+
+        return;
+    }
+    //better version
+    private void createBitmap2() {
+        if (hashBytes == null || hashBytes.length < 3) {
+            return; // Return if hashBytes is null or has insufficient length
+        }
+
+        int color = Color.rgb(hashBytes[0] & 0xFF, hashBytes[1] & 0xFF, hashBytes[2] & 0xFF);
+        profileBitmap = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(profileBitmap);
+        canvas.drawColor(color);
+
+        // Draw the abstract pattern based on hash
+        int blockSize = 10; // Size of each block
+        int currentIndex = 0; // Index to keep track of the hash value being used
+
+        for (int y = 0; y < 100; y += blockSize) {
+            for (int x = 0; x < 100; x += blockSize) {
+                // Loop through the hash bytes and use each byte to set a color
+                int blockColor = Color.rgb(hashBytes[currentIndex] & 0xFF, hashBytes[(currentIndex + 1) % hashBytes.length] & 0xFF, hashBytes[(currentIndex + 2) % hashBytes.length] & 0xFF);
+                Paint paint = new Paint();
+                paint.setColor(blockColor);
+                canvas.drawRect(x, y, x + blockSize, y + blockSize, paint);
+                currentIndex = (currentIndex + 3) % hashBytes.length;
+            }
+        }
+    }
+
+
+
+
+
 }
