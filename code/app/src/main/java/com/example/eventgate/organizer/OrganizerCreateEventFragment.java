@@ -28,6 +28,7 @@ import com.journeyapps.barcodescanner.BarcodeEncoder;
  */
 public class OrganizerCreateEventFragment extends DialogFragment {
     private Bitmap eventQRBitmap;
+    private Boolean qRCOdeGenerated = false;
 
     /**
      * Interface definition for a callback to be invoked when an event is added.
@@ -63,7 +64,7 @@ public class OrganizerCreateEventFragment extends DialogFragment {
             // Check if the eventName is empty or null
             if (eventName.isEmpty()) {
                 // Show a message to the user indicating that they need to enter an event name
-                Toast.makeText(getActivity(), "Please enter an Event name. QR code must be associated to an Event name.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Please enter an Event name. A QR Code must be associated with an Event name.", Toast.LENGTH_SHORT).show();
                 return; // Exit the method
             }
 
@@ -73,6 +74,7 @@ public class OrganizerCreateEventFragment extends DialogFragment {
                 BarcodeEncoder encoder = new BarcodeEncoder();
                 eventQRBitmap = encoder.createBitmap(matrix);
                 qRCode.setImageBitmap(eventQRBitmap);
+                qRCOdeGenerated = true;
 
             } catch (WriterException e) {
                 e.printStackTrace();
@@ -83,6 +85,13 @@ public class OrganizerCreateEventFragment extends DialogFragment {
         continueButton.setOnClickListener(v -> {
             // Handle continue button click
             String eventName = organizerCreateEventName.getText().toString().trim();
+
+            // Check if the QR code has been generated
+            if (!qRCOdeGenerated) {
+                // Show a message to the user indicating that they need to generate a QR code
+                Toast.makeText(getActivity(), "Please generate a QR Code. An Event must be associated with a QR Code.", Toast.LENGTH_SHORT).show();
+                return; // Exit the method
+            }
 
             if (!eventName.isEmpty()) { // Check if the event name is not empty
                 if (getActivity() instanceof OnEventAddedListener) {
