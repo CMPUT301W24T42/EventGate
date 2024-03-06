@@ -42,6 +42,9 @@ public class OrganizerMainMenuActivity extends AppCompatActivity implements Orga
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_organizer_main_menu);
 
+        // Initialize Firebase
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
         createNewEventButton = findViewById(R.id.CreateEventButton);
         organizerMainMenuBackButton = findViewById(R.id.OrganizerMainMenuBackButton);
         eventListView = findViewById(R.id.EventListView);
@@ -72,40 +75,42 @@ public class OrganizerMainMenuActivity extends AppCompatActivity implements Orga
         eventListAdapter.notifyDataSetChanged();
 
         // Save event and check-in QR code data to Firebase
-        // saveEventToFirestore(eventName, eventQRBitmap);
+        saveEventToFirestore(eventName, eventQRBitmap);
 
     }
 
-//    private void saveEventToFirestore(String eventName, Bitmap eventQRBitmap) {
-//        // Convert bitmap to byte array
-//        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//        eventQRBitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-//        byte[] byteArray = baos.toByteArray();
-//
-//        // Get a reference to the Firestore database
-//        FirebaseFirestore db = FirebaseFirestore.getInstance();
-//
-//        // Create a new document with the event name as the document ID
-//        Map<String, Object> eventData = new HashMap<>();
-//        eventData.put("eventName", eventName);
-//        eventData.put("checkInQRCode", byteArray);
-//
-//        db.collection("events")
-//                .document(eventName) // Use event name as document ID
-//                .set(eventData)
-//                .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                    @Override
-//                    public void onSuccess(Void aVoid) {
-//                        // Event and check-in QR code data saved successfully
-//                        Toast.makeText(OrganizerMainMenuActivity.this, "Event added successfully", Toast.LENGTH_SHORT).show();
-//                    }
-//                })
-//                .addOnFailureListener(new OnFailureListener() {
-//                    @Override
-//                    public void onFailure(@NonNull Exception e) {
-//                        // Failed to save event and check-in QR code data
-//                        Toast.makeText(OrganizerMainMenuActivity.this, "Failed to add event", Toast.LENGTH_SHORT).show();
-//                    }
-//                });
-//    }
+    private void saveEventToFirestore(String eventName, Bitmap eventQRBitmap) {
+        // Convert bitmap to byte array
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        eventQRBitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        byte[] byteArray = baos.toByteArray();
+
+        // Get a reference to the Firestore database
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // Create a new document with the event name as the document ID
+        Map<String, Object> eventData = new HashMap<>();
+        eventData.put("eventName", eventName);
+        eventData.put("checkInQRCode", byteArray);
+        eventData.put("organizer", ""); // Set organizer field to blank
+        eventData.put("attendees", ""); // Set attendees field to blank
+
+        db.collection("events")
+                .document(eventName) // Use event name as document ID
+                .set(eventData)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        // Event and check-in QR code data saved successfully
+                        Toast.makeText(OrganizerMainMenuActivity.this, "Event added successfully", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // Failed to save event and check-in QR code data
+                        Toast.makeText(OrganizerMainMenuActivity.this, "Failed to add event", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
 }
