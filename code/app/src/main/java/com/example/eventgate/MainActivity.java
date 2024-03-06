@@ -11,7 +11,7 @@ import android.widget.Toast;
 
 import com.example.eventgate.admin.AdminActivity;
 import com.example.eventgate.attendee.AttendeeActivity;
-import com.example.eventgate.organizer.OrganizerActivity;
+import com.example.eventgate.organizer.OrganizerMainMenuActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
                 AttendeeActivity.class)));
 
         organizerButton.setOnClickListener(v -> startActivity(new Intent(MainActivity.this,
-                OrganizerActivity.class)));
+                OrganizerMainMenuActivity.class)));
 
         adminButton.setOnClickListener(v -> startActivity(new Intent(MainActivity.this,
                 AdminActivity.class)));
