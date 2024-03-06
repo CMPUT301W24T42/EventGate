@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
+import com.example.eventgate.Event.Event;
 import com.example.eventgate.R;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
@@ -34,7 +35,7 @@ public class OrganizerCreateEventFragment extends DialogFragment {
      * Interface definition for a callback to be invoked when an event is added.
      */
     public interface OnEventAddedListener {
-        void onEventAdded(String eventName, Bitmap eventQRBitmap);
+        void onEventAdded(Event event, Bitmap eventQRBitmap);
     }
 
     /**
@@ -94,8 +95,11 @@ public class OrganizerCreateEventFragment extends DialogFragment {
             }
 
             if (!eventName.isEmpty()) { // Check if the event name is not empty
+                // Create an Event object
+                Event event = new Event(eventName);
+
                 if (getActivity() instanceof OnEventAddedListener) {
-                    ((OnEventAddedListener) getActivity()).onEventAdded(eventName, eventQRBitmap); // Pass the event name to the activity
+                    ((OnEventAddedListener) getActivity()).onEventAdded(event, eventQRBitmap); // Pass the event name to the activity
                 }
                 dismiss(); // Close the dialog
             } else {

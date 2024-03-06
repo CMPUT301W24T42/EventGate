@@ -2,13 +2,14 @@ package com.example.eventgate.organizer;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.eventgate.Event.Event;
+import com.example.eventgate.Event.EventDB;
 import com.example.eventgate.R;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -66,16 +67,17 @@ public class OrganizerMainMenuActivity extends AppCompatActivity implements Orga
     /**
      * Callback method to handle the addition of a new event.
      *
-     * @param eventName The name of the event to be added.
+     * @param event The event to be added.
      */
     @Override
-    public void onEventAdded(String eventName, Bitmap eventQRBitmap) {
-        events.add(eventName);
+    public void onEventAdded(Event event, Bitmap eventQRBitmap) {
+        events.add(event.getEventName());
         eventListAdapter.notifyDataSetChanged();
 
         if (eventQRBitmap != null) {
-            // Save event and check-in QR code data to Firebase
-            saveEventToFirestore(eventName, eventQRBitmap);
+            // Save event and check-in QR code data to Firebase using EventDB
+            EventDB eventDB = new EventDB();
+            eventDB.AddEvent(event);
         } else {
             // Handle the case where eventQRBitmap is null
             Toast.makeText(this, "Event QR Bitmap is null", Toast.LENGTH_SHORT).show();
