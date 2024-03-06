@@ -5,12 +5,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.example.eventgate.Event.Event;
+import com.example.eventgate.event.Event;
 import com.example.eventgate.R;
 
 import java.util.ArrayList;
@@ -53,8 +54,14 @@ public class AdminEventListAdapter extends ArrayAdapter<Event> {
         Event event = events.get(position);
 
         TextView eventName = convertView.findViewById(R.id.event_name);
+        Button adminDelEventButton = convertView.findViewById(R.id.del_event_button);
 
         eventName.setText(event.getEventName());
+
+        adminDelEventButton.setOnClickListener(v -> {
+            events.remove(position);
+            notifyDataSetChanged();
+        });
 
         return convertView;
     }

@@ -1,4 +1,4 @@
-package com.example.eventgate.Event;
+package com.example.eventgate.event;
 
 import android.util.Log;
 
@@ -43,7 +43,7 @@ public class EventDB {
      * Adds an event to the firebase database
      * @param event the event to add
      */
-    public void AddEvent(Event event) {
+    public void addEvent(Event event) {
         String eventId = collection.document().getId();
         event.setEventId(eventId);
         HashMap<String, String> data = new HashMap<>();
