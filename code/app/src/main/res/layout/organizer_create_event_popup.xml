@@ -30,7 +30,7 @@
         <EditText
             android:id="@+id/organizerCreateEventName"
             android:layout_width="match_parent"
-            android:layout_height="45dp"
+            android:layout_height="48dp"
             android:autofillHints=""
             android:ems="10"
             android:hint="@string/event_name"
@@ -67,7 +67,7 @@
         <Button
             android:id="@+id/organizerCreateEventCancelButton"
             android:layout_width="105dp"
-            android:layout_height="45dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:backgroundTint="@color/light_gray"
             android:text="@string/organizerCreateEventCancel" />

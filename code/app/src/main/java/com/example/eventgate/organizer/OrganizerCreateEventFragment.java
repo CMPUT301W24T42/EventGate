@@ -54,6 +54,7 @@ public class OrganizerCreateEventFragment extends DialogFragment {
         Button generateQRButton = view.findViewById(R.id.generateQRButton);
 
         generateQRButton.setOnClickListener(v -> {
+            // Create a QR code based on the event name entered
             MultiFormatWriter writer = new MultiFormatWriter();
             String eventName = organizerCreateEventName.getText().toString().trim();
 
