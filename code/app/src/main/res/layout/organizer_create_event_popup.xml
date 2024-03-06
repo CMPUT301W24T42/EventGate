@@ -6,7 +6,7 @@
 
     <LinearLayout
         android:id="@+id/linearLayout"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="#4CAF50"
         android:orientation="vertical"
@@ -14,8 +14,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-
-        <!-- Buttons to continue and cancel -->
 
         <TextView
             android:id="@+id/organizerCreateEventHeader"
@@ -33,6 +31,15 @@
             android:ems="10"
             android:hint="@string/event_name"
             android:inputType="text" />
+
+        <ImageView
+            android:id="@+id/organizerCreateEventQRCode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/qrcode"
+            android:scaleType="fitCenter"
+            app:layout_constraintTop_toBottomOf="@id/organizerCreateEventName" />
+
 
         <LinearLayout
             android:layout_width="match_parent"

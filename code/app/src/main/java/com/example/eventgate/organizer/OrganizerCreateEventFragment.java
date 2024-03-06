@@ -5,17 +5,24 @@ import androidx.fragment.app.DialogFragment;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
 import com.example.eventgate.R;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 /**
  * A fragment for creating a new event.
@@ -43,11 +50,25 @@ public class OrganizerCreateEventFragment extends DialogFragment {
         Button continueButton = view.findViewById(R.id.organizerCreateEventContinueButton);
         Button cancelButton = view.findViewById(R.id.organizerCreateEventCancelButton);
         EditText organizerCreateEventName = view.findViewById(R.id.organizerCreateEventName);
+        ImageView qRCode = view.findViewById(R.id.organizerCreateEventQRCode);
 
         // Set up behavior for continue button
         continueButton.setOnClickListener(v -> {
             // Handle continue button click
             String eventName = organizerCreateEventName.getText().toString().trim(); // Get the entered event name
+            MultiFormatWriter writer = new MultiFormatWriter();
+
+            try {
+                BitMatrix matrix = writer.encode(eventName, BarcodeFormat.QR_CODE, 400, 400);
+
+                BarcodeEncoder encoder = new BarcodeEncoder();
+                Bitmap bitmap = encoder.createBitmap(matrix);
+                qRCode.setImageBitmap(bitmap);
+
+            } catch (WriterException e) {
+                e.printStackTrace();
+            }
+
             if (!eventName.isEmpty()) { // Check if the event name is not empty
                 if (getActivity() instanceof OnEventAddedListener) {
                     ((OnEventAddedListener) getActivity()).onEventAdded(eventName); // Pass the event name to the activity
