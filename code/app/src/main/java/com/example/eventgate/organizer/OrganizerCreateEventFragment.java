@@ -12,7 +12,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -28,11 +27,14 @@ import com.journeyapps.barcodescanner.BarcodeEncoder;
  * A fragment for creating a new event.
  */
 public class OrganizerCreateEventFragment extends DialogFragment {
+    private Bitmap eventQRBitmap;
+    private OnEventAddedListener listener;
+
     /**
      * Interface definition for a callback to be invoked when an event is added.
      */
     public interface OnEventAddedListener {
-        void onEventAdded(String eventName);
+        void onEventAdded(String eventName, Bitmap eventQRBitmap);
     }
 
     /**
@@ -62,8 +64,8 @@ public class OrganizerCreateEventFragment extends DialogFragment {
                 BitMatrix matrix = writer.encode(eventName, BarcodeFormat.QR_CODE, 400, 400);
 
                 BarcodeEncoder encoder = new BarcodeEncoder();
-                Bitmap bitmap = encoder.createBitmap(matrix);
-                qRCode.setImageBitmap(bitmap);
+                eventQRBitmap = encoder.createBitmap(matrix);
+                qRCode.setImageBitmap(eventQRBitmap);
 
             } catch (WriterException e) {
                 e.printStackTrace();
@@ -73,12 +75,11 @@ public class OrganizerCreateEventFragment extends DialogFragment {
         // Set up behavior for continue button
         continueButton.setOnClickListener(v -> {
             // Handle continue button click
-            MultiFormatWriter writer = new MultiFormatWriter();
             String eventName = organizerCreateEventName.getText().toString().trim();
 
             if (!eventName.isEmpty()) { // Check if the event name is not empty
                 if (getActivity() instanceof OnEventAddedListener) {
-                    ((OnEventAddedListener) getActivity()).onEventAdded(eventName); // Pass the event name to the activity
+                    ((OnEventAddedListener) getActivity()).onEventAdded(eventName, eventQRBitmap); // Pass the event name to the activity
                 }
                 dismiss(); // Close the dialog
             } else {
@@ -97,5 +98,10 @@ public class OrganizerCreateEventFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setView(view); // Set the custom layout
         return builder.create();
+    }
+
+    // A method to set the event added listener
+    public void setOnEventAddedListener(OnEventAddedListener listener) {
+        this.listener = listener;
     }
 }

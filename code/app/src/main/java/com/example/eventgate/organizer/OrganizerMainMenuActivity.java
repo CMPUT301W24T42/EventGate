@@ -1,14 +1,24 @@
 package com.example.eventgate.organizer;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.eventgate.R;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.FirebaseFirestore;
 
+
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Activity for the organizer's main menu.
@@ -42,6 +52,7 @@ public class OrganizerMainMenuActivity extends AppCompatActivity implements Orga
 
         createNewEventButton.setOnClickListener(v -> {
             OrganizerCreateEventFragment dialogFragment = new OrganizerCreateEventFragment();
+            dialogFragment.setOnEventAddedListener(this);
             dialogFragment.show(getSupportFragmentManager(), "popup_dialog");
         });
 
@@ -56,8 +67,45 @@ public class OrganizerMainMenuActivity extends AppCompatActivity implements Orga
      * @param eventName The name of the event to be added.
      */
     @Override
-    public void onEventAdded(String eventName) {
+    public void onEventAdded(String eventName, Bitmap eventQRBitmap) {
         events.add(eventName);
         eventListAdapter.notifyDataSetChanged();
+
+        // Save event and check-in QR code data to Firebase
+        // saveEventToFirestore(eventName, eventQRBitmap);
+
     }
+
+//    private void saveEventToFirestore(String eventName, Bitmap eventQRBitmap) {
+//        // Convert bitmap to byte array
+//        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//        eventQRBitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+//        byte[] byteArray = baos.toByteArray();
+//
+//        // Get a reference to the Firestore database
+//        FirebaseFirestore db = FirebaseFirestore.getInstance();
+//
+//        // Create a new document with the event name as the document ID
+//        Map<String, Object> eventData = new HashMap<>();
+//        eventData.put("eventName", eventName);
+//        eventData.put("checkInQRCode", byteArray);
+//
+//        db.collection("events")
+//                .document(eventName) // Use event name as document ID
+//                .set(eventData)
+//                .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                    @Override
+//                    public void onSuccess(Void aVoid) {
+//                        // Event and check-in QR code data saved successfully
+//                        Toast.makeText(OrganizerMainMenuActivity.this, "Event added successfully", Toast.LENGTH_SHORT).show();
+//                    }
+//                })
+//                .addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        // Failed to save event and check-in QR code data
+//                        Toast.makeText(OrganizerMainMenuActivity.this, "Failed to add event", Toast.LENGTH_SHORT).show();
+//                    }
+//                });
+//    }
 }
