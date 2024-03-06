@@ -9,7 +9,7 @@
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="0dp"
-        android:layout_height="500dp"
+        android:layout_height="350dp"
         android:layout_marginBottom="90dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -40,9 +40,21 @@
             android:id="@+id/organizerCreateEventQRCode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:clickable="false"
             android:contentDescription="@string/qrcode"
             android:scaleType="fitCenter" />
+
+        <Button
+            android:id="@+id/generateQRButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/generate_qr_code"
+            android:layout_gravity="center_horizontal"
+            android:backgroundTint="@color/light_gray"
+            app:layout_constraintTop_toBottomOf="@id/organizerCreateEventName"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
         <Button
             android:id="@+id/organizerCreateEventContinueButton"

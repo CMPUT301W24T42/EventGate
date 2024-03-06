@@ -9,4 +9,5 @@
     <string name="event_name">Event Name</string>
     <string name="enter_event_name">Enter Event Name</string>
     <string name="qrcode">QRCode</string>
+    <string name="generate_qr_code">Generate QR Code</string>
 </resources>
