@@ -6,20 +6,44 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.Source;
+import com.google.firebase.installations.FirebaseInstallations;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 public class QRCodeScanActivity extends AppCompatActivity {
 
     private static final int PERMISSION_REQUEST_CAMERA = 1;
+    private static final int RESULT_NOT_FOUND = 2;
+    private static final int RESULT_REDUNDANT = 3;
+
+    private FirebaseFirestore db;
+    private CollectionReference events;
+    private ArrayList<String> attendees;
+    private String deviceId;
+    private String attendeeId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,9 +88,35 @@ public class QRCodeScanActivity extends AppCompatActivity {
             if (result.getContents() == null) {
                 Toast.makeText(this, "Scan Cancelled", Toast.LENGTH_LONG).show();
             } else {
+                String qrResult = result.getContents().trim();
                 db = FirebaseFirestore.getInstance();
-                Toast.makeText(this, "Scanned: " + result.getContents(),
-                        Toast.LENGTH_LONG).show();
+                db.collection("events").document(qrResult).get().addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        attendees = (ArrayList<String>) documentSnapshot.get("attendees");
+                        FirebaseInstallations.getInstance().getId().addOnSuccessListener(id -> {
+                            deviceId = id;
+                            db.collection("attendees").whereEqualTo("deviceId", deviceId).get()
+                                .addOnSuccessListener(queryDocumentSnapshots -> {
+                                    attendeeId = queryDocumentSnapshots.getDocuments().get(0).getId();
+                                    for (String attendee : attendees) {
+                                        if (Objects.equals(attendee, attendeeId)) {
+                                            Intent intent = new Intent();
+                                            setResult(RESULT_REDUNDANT, intent);
+                                            finish();
+                                        }
+                                    }
+                                    Map<String, Object> updates = new HashMap<>();
+                                    attendees.add(attendees.size() - 1, attendeeId);
+                                    updates.put("attendees", attendees);
+                                    db.collection("events").document(qrResult).update(updates);
+                            });
+                        });
+                    } else {
+                        Intent intent = new Intent();
+                        setResult(RESULT_NOT_FOUND, intent);
+                        finish();
+                    }
+                });
             }
         } else {
             super.onActivityResult(resultCode, resultCode, data);
