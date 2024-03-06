@@ -1,4 +1,4 @@
-package com.example.eventgate.Event;
+package com.example.eventgate.event;
 
 public class Event {
     /**
