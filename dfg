@@ -1,0 +1,333 @@
+[33mcommit 0b868417fc8d20f55083ea9f32440188a02ef7e2[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mOrganizerMainMenu[m[33m, [m[1;31morigin/OrganizerMainMenu[m[33m)[m
+Author: Christian Eddie <ceddie1@ualberta.ca>
+Date:   Tue Mar 5 12:04:57 2024 -0700
+
+    Worked on the create event popup.
+
+[33mcommit 932c96a79d4ba86ae31e2cc7019ea9c6af06ffc2[m
+Author: Christian Eddie <ceddie1@ualberta.ca>
+Date:   Tue Mar 5 11:32:30 2024 -0700
+
+    New build file change.
+
+[33mcommit cb8e9068b0e251c14c1f862fe978583a0e9f0494[m
+Author: Christian Eddie <ceddie1@ualberta.ca>
+Date:   Mon Mar 4 21:58:26 2024 -0700
+
+    Added function where a user can change the name of the event.
+
+[33mcommit 36e430f881b0ad2e68915c41c122045558e8cb32[m
+Author: Christian Eddie <ceddie1@ualberta.ca>
+Date:   Mon Mar 4 21:26:16 2024 -0700
+
+    Removed a line causing error due to refactored class name.
+
+[33mcommit c83aa6ab5e27d68adf272595d1e7b1338def294e[m
+Merge: 32f971e 15cafe3
+Author: Christian Eddie <ceddie1@ualberta.ca>
+Date:   Mon Mar 4 21:21:06 2024 -0700
+
+    Merge remote-tracking branch 'origin/OrganizerMainMenu' into OrganizerMainMenu
+
+[33mcommit 32f971e06421b06d29375779a0d74df7c0b1c32b[m
+Author: Christian Eddie <ceddie1@ualberta.ca>
+Date:   Mon Mar 4 21:20:47 2024 -0700
+
+    Added javadocs.
+
+[33mcommit 15cafe3d77c4dac50ed7d893ba0f8e2c53b479dd[m
+Merge: 0f92aeb 91fe098
+Author: Christian Eddie <122130586+Eddie1288@users.noreply.github.com>
+Date:   Mon Mar 4 21:08:58 2024 -0700
+
+    Merge branch 'main' into OrganizerMainMenu
+
+[33mcommit 0f92aeb80c7b1e4fc0e48fccfc76cca78f2b94a8[m
+Author: Christian Eddie <ceddie1@ualberta.ca>
+Date:   Mon Mar 4 21:07:46 2024 -0700
+
+    Refactored java class file directories.
+
+[33mcommit 1b11c491c62dfa2020cc03926035337c8db9e403[m
+Author: Christian Eddie <ceddie1@ualberta.ca>
+Date:   Mon Mar 4 20:59:16 2024 -0700
+
+    Added string resources.
+
+[33mcommit 490fe93966a8786507efc0f11c117bfc977c0cad[m
+Author: Christian Eddie <ceddie1@ualberta.ca>
+Date:   Mon Mar 4 20:57:54 2024 -0700
+
+    Worked on adding blank events to Organizer main menu.
+
+[33mcommit 1dae6b317408fee3cde2fe832231580564226bbd[m
+Author: Christian Eddie <ceddie1@ualberta.ca>
+Date:   Mon Mar 4 20:19:51 2024 -0700
+
+    Worked on adding rounded corners to listview.
+
+[33mcommit 91fe098cb5785fe397fd9d7f819228e92a38e426[m
+Merge: 6fcb46c 4bf8fa1
+Author: Christian Eddie <122130586+Eddie1288@users.noreply.github.com>
+Date:   Mon Mar 4 18:06:33 2024 -0700
+
+    Merge pull request #32 from CMPUT301W24T42/firebase-setup
+    
+    Set up firebase
+
+[33mcommit 4bf8fa1071489547313230238fc06fee0155c7c7[m[33m ([m[1;31morigin/firebase-setup[m[33m, [m[1;32mfirebase-setup[m[33m)[m
+Author: jsu1261 <jennysu12@outlook.com>
+Date:   Mon Mar 4 15:55:10 2024 -0700
+
+    remove line
+
+[33mcommit f262c775155a76511b749076ccb46a486081d0fb[m
+Merge: edb3dd1 72a7871
+Author: jsu1261 <jennysu12@outlook.com>
+Date:   Mon Mar 4 15:49:31 2024 -0700
+
+    resolve merge conflict
+
+[33mcommit edb3dd1036854a06f1655bf948df47fad2e46615[m
+Author: jsu1261 <jennysu12@outlook.com>
+Date:   Mon Mar 4 15:47:10 2024 -0700
+
+    Added documentation
+
+[33mcommit 6e6b31233dbf6e54405d487966d26bccf54fcfa5[m
+Merge: a7334b7 6fcb46c
+Author: jsu1261 <jennysu12@outlook.com>
+Date:   Mon Mar 4 14:38:52 2024 -0700
+
+    resolve merge conflict
+
+[33mcommit da1d7b984fc037b6d93049008a28dbe9ee7ec0c4[m
+Author: Christian Eddie <ceddie1@ualberta.ca>
+Date:   Sat Mar 2 17:41:32 2024 -0700
+
+    Fixed an error.
+
+[33mcommit adf9dcc0f5c23788246f90b8f1f9d375d96e2979[m
+Author: Christian Eddie <ceddie1@ualberta.ca>
+Date:   Sat Mar 2 17:40:26 2024 -0700
+
+    Fixed an error.
+
+[33mcommit 1b2a381080bb1a51f7a50f340e8f7413f217745d[m
+Author: Christian Eddie <ceddie1@ualberta.ca>
+Date:   Sat Mar 2 17:39:09 2024 -0700
+
+    Fixed a text contrast color error.
+
+[33mcommit e341628607ae5eadb45d005b3621552af21a8aec[m
+Author: Christian Eddie <ceddie1@ualberta.ca>
+Date:   Sat Mar 2 17:35:43 2024 -0700
+
+    Worked on the Organizer Main Menu.
+
+[33mcommit 72a78711c47c53ef2f86b92b4cd2c26022d850c6[m
+Merge: a7334b7 6fcb46c
+Author: jsu1261 <121992758+jsu1261@users.noreply.github.com>
+Date:   Sat Mar 2 16:09:09 2024 -0700
+
+    Merge branch 'main' into firebase-setup
+
+[33mcommit a7334b7812dcde7a9618ada2dd5e2faf199bf4df[m
+Author: jsu1261 <jennysu12@outlook.com>
+Date:   Sat Mar 2 16:07:07 2024 -0700
+
+    Added anonymous authentication
+
+[33mcommit 815a7fae5f27d7a88054be3a887bc200deecadd1[m
+Author: jsu1261 <jennysu12@outlook.com>
+Date:   Sat Mar 2 14:57:12 2024 -0700
+
+    Added firebase to project
+
+[33mcommit 6fcb46c151eaf34c7e20b4ea1e1a4dcf2af502df[m
+Merge: fa92c9f 583e80e
+Author: Christian Eddie <ceddie1@ualberta.ca>
+Date:   Sat Mar 2 14:32:17 2024 -0700
+
+    Merge branch 'main' of https://github.com/CMPUT301W24T42/EventGate
+
+[33mcommit fa92c9ff5b2a8a1b8a8e34a59a72a7a73486c15f[m
+Author: Christian Eddie <ceddie1@ualberta.ca>
+Date:   Sat Mar 2 14:31:11 2024 -0700
+
+    1
+
+[33mcommit 583e80eda9a0ea502947fc26de2c53b787bf0072[m
+Merge: f6064f9 ca5fb69
+Author: Christian Eddie <122130586+Eddie1288@users.noreply.github.com>
+Date:   Sat Mar 2 12:18:28 2024 -0700
+
+    Merge pull request #31 from CMPUT301W24T42/main-menu-screen
+    
+    Add navigation to other activities
+
+[33mcommit f6064f948c0ba541cd7c36f8ba0d1196e1fc4038[m
+Author: jsu1261 <121992758+jsu1261@users.noreply.github.com>
+Date:   Thu Feb 29 13:09:23 2024 -0700
+
+    Create .gitignore
+    
+    Create gitignore
+
+[33mcommit ca5fb6937f65fda6473d6f5c2e2198ded63c6df7[m
+Author: jsu1261 <jennysu12@outlook.com>
+Date:   Thu Feb 29 13:02:09 2024 -0700
+
+    Add navigation to other activities
+
+[33mcommit d769c6b5b507730718d47ddd09f1b4efdd7b1953[m
+Author: Christian Eddie <122130586+Eddie1288@users.noreply.github.com>
+Date:   Wed Feb 28 18:32:16 2024 -0700
+
+    Update February28.md
+    
+    Wrote meeting minutes.
+
+[33mcommit eb11c56033430241ffce666c900f1fea6acfa99b[m
+Author: Christian Eddie <122130586+Eddie1288@users.noreply.github.com>
+Date:   Wed Feb 28 17:52:27 2024 -0700
+
+    Create February28.md
+
+[33mcommit 43380856aaf53ef075a843611e803faa2b3f1eff[m
+Author: jsu1261 <jennysu12@outlook.com>
+Date:   Sun Feb 25 20:44:32 2024 -0700
+
+    Initial Commit
+
+[33mcommit 00dbdf070961add0546beb8ad1b8f184fc851f3d[m
+Author: JasonZhai-9936 <65744656+JasonZhai-9936@users.noreply.github.com>
+Date:   Thu Feb 15 17:53:13 2024 -0700
+
+    Delete UI/1
+
+[33mcommit 3f1ed463e21f5d6255a8372d89d25d5d918763ce[m
+Author: JasonZhai-9936 <65744656+JasonZhai-9936@users.noreply.github.com>
+Date:   Thu Feb 15 17:52:17 2024 -0700
+
+    Add files via upload
+
+[33mcommit 0dad58b3d3fcb288340bad82b5432863d8697151[m
+Author: JasonZhai-9936 <65744656+JasonZhai-9936@users.noreply.github.com>
+Date:   Thu Feb 15 17:51:53 2024 -0700
+
+    Create 1
+
+[33mcommit ccf96a22b624fc0d7c01a08a7d81b807d6db024c[m
+Author: colton305 <87103135+colton305@users.noreply.github.com>
+Date:   Wed Feb 14 18:36:12 2024 -0700
+
+    Update February14.md
+
+[33mcommit fe528f2a3391974e50c3134bd51472416a26341c[m
+Author: colton305 <87103135+colton305@users.noreply.github.com>
+Date:   Wed Feb 14 18:35:34 2024 -0700
+
+    Rename February7 to February7.md
+
+[33mcommit 1d0d88b46e72442e2dea4c1c4e66debda0436301[m
+Author: colton305 <87103135+colton305@users.noreply.github.com>
+Date:   Wed Feb 14 18:35:19 2024 -0700
+
+    Rename February14 to February14.md
+
+[33mcommit dc979814d731f82cb2e9c2252039b1c0a07c8c3d[m
+Author: colton305 <87103135+colton305@users.noreply.github.com>
+Date:   Wed Feb 14 18:34:39 2024 -0700
+
+    Update February14
+
+[33mcommit 3e33755a4457c5e5fa574e71f1afe37929af01ba[m
+Author: colton305 <87103135+colton305@users.noreply.github.com>
+Date:   Wed Feb 14 18:16:40 2024 -0700
+
+    Create February14
+
+[33mcommit 6d95f0309306701278aa29a29c06cf1e6ba6bbe7[m
+Author: Christian Eddie <122130586+Eddie1288@users.noreply.github.com>
+Date:   Wed Feb 7 19:16:31 2024 -0700
+
+    Update February7
+
+[33mcommit 11346c296820f351d9fcc56ca4f022010454d19d[m
+Author: Christian Eddie <122130586+Eddie1288@users.noreply.github.com>
+Date:   Wed Feb 7 19:15:56 2024 -0700
+
+    Delete doc/February7
+
+[33mcommit 6d31771fc2ffec94a4d596d22657c33b1d1a9ef5[m
+Author: Christian Eddie <122130586+Eddie1288@users.noreply.github.com>
+Date:   Wed Feb 7 19:15:43 2024 -0700
+
+    Delete doc/MeetingMinutes/a
+
+[33mcommit 4cc5dd11d1556acfee6e4486162c075336cbdd33[m
+Author: Christian Eddie <122130586+Eddie1288@users.noreply.github.com>
+Date:   Wed Feb 7 19:15:32 2024 -0700
+
+    Create February7
+
+[33mcommit d85d1494cc9377a7b3ee201c65c014849a6d3975[m
+Author: Christian Eddie <122130586+Eddie1288@users.noreply.github.com>
+Date:   Wed Feb 7 19:14:31 2024 -0700
+
+    Create a
+
+[33mcommit effe8dfd41672c83e43f3851eba166130f5f544c[m
+Author: Christian Eddie <122130586+Eddie1288@users.noreply.github.com>
+Date:   Wed Feb 7 18:55:07 2024 -0700
+
+    Update February7
+
+[33mcommit 8697ad11d7241f75be87646a8c17c02edddd1086[m
+Author: Christian Eddie <122130586+Eddie1288@users.noreply.github.com>
+Date:   Wed Feb 7 18:43:28 2024 -0700
+
+    Create February7
+
+[33mcommit b471cf9fd85abbeef7849dc31183cc080779a1a6[m
+Author: shahbaz <122247742+Shabz55@users.noreply.github.com>
+Date:   Wed Jan 31 17:17:10 2024 -0700
+
+    Update team.txt
+
+[33mcommit 7dc2ce4b9350f227cb167631accceac2aa3f2ff1[m
+Author: JasonZhai-9936 <65744656+JasonZhai-9936@users.noreply.github.com>
+Date:   Wed Jan 31 17:16:24 2024 -0700
+
+    Update team.txt
+
+[33mcommit 2e9fe0a1a734da585abd29a544f67ea012d7791b[m
+Author: jsu1261 <121992758+jsu1261@users.noreply.github.com>
+Date:   Wed Jan 31 17:16:10 2024 -0700
+
+    Update team.txt
+
+[33mcommit 4cd4a11517a6ac8fce1d21128a6a56d481fd9bc9[m
+Author: GilbertJBulatao <158370446+GilbertJBulatao@users.noreply.github.com>
+Date:   Wed Jan 31 17:15:53 2024 -0700
+
+    team.txt
+
+[33mcommit 3c109744759cb854b27759578979e51ea355d1b5[m
+Author: colton305 <87103135+colton305@users.noreply.github.com>
+Date:   Wed Jan 31 17:15:29 2024 -0700
+
+    Update team.txt
+
+[33mcommit d807f97d4da0d3517f8c32b51180967d411fbc50[m
+Author: Christian Eddie <122130586+Eddie1288@users.noreply.github.com>
+Date:   Wed Jan 31 17:11:30 2024 -0700
+
+    Create team.txt
+
+[33mcommit b89ee2aa5f7f3464d4567c84bbe8be930acd8ef7[m
+Author: Christian Eddie <122130586+Eddie1288@users.noreply.github.com>
+Date:   Wed Jan 31 17:07:09 2024 -0700
+
+    Initial commit
