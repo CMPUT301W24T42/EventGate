@@ -1,7 +1,8 @@
-package com.example.eventgate.Event;
+package com.example.eventgate.event;
 
 import android.util.Log;
 
+import com.example.eventgate.MainActivity;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -14,11 +15,11 @@ public class EventDB {
     /**
      * An instance of the Firebase Firestore database
      */
-    private final FirebaseFirestore db;
+    private FirebaseFirestore db;
     /**
      * The collection for the events collection in the database
      */
-    private final CollectionReference collection;
+    private CollectionReference collection;
     /**
      * The TAG for logging
      */
@@ -28,15 +29,15 @@ public class EventDB {
      * Constructs a new EventDB
      */
     public EventDB() {
-        db = FirebaseFirestore.getInstance();
-        collection = db.collection("events");
+        db = MainActivity.db.getDB();
+        collection = MainActivity.db.getEventsRef();
     }
 
     /**
      * Adds an event to the firebase database
      * @param event the event to add
      */
-    public void AddEvent(Event event) {
+    public void addEvent(Event event) {
         String eventId = collection.document().getId();
         event.setEventId(eventId);
         HashMap<String, String> data = new HashMap<>();
@@ -47,5 +48,17 @@ public class EventDB {
                 .set(data)
                 .addOnSuccessListener(unused -> Log.d(TAG, "Event has been added successfully!"))
                 .addOnFailureListener(e -> Log.d(TAG, "Event could not be added!" + e));
+    }
+
+    /**
+     * Removes an event from the database
+     * @param event the event to remove
+     */
+    public void removeEvent(Event event) {
+        String eventId = event.getEventId();
+        collection.document(eventId)
+                .delete()
+                .addOnSuccessListener(unused -> Log.d(TAG, "Event has been deleted successfully"))
+                .addOnFailureListener(e -> Log.d(TAG, "Error deleting event" + e));
     }
 }
