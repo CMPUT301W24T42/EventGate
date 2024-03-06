@@ -2,6 +2,7 @@ package com.example.eventgate.organizer;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -19,6 +20,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -75,13 +77,13 @@ public class OrganizerMainMenuActivity extends AppCompatActivity implements Orga
         events.add(eventName);
         eventListAdapter.notifyDataSetChanged();
 
-//        if (eventQRBitmap != null) {
-//            // Save event and check-in QR code data to Firebase
-//            saveEventToFirestore(eventName, eventQRBitmap);
-//        } else {
-//            // Handle the case where eventQRBitmap is null
-//            Toast.makeText(this, "Event QR Bitmap is null", Toast.LENGTH_SHORT).show();
-//        }
+        if (eventQRBitmap != null) {
+            // Save event and check-in QR code data to Firebase
+            saveEventToFirestore(eventName, eventQRBitmap);
+        } else {
+            // Handle the case where eventQRBitmap is null
+            Toast.makeText(this, "Event QR Bitmap is null", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void saveEventToFirestore(String eventName, Bitmap eventQRBitmap) {
@@ -90,13 +92,19 @@ public class OrganizerMainMenuActivity extends AppCompatActivity implements Orga
         eventQRBitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
         byte[] byteArray = baos.toByteArray();
 
+        // Convert byte array to list of integers
+        List<Integer> byteArrayAsList = new ArrayList<>();
+        for (byte b : byteArray) {
+            byteArrayAsList.add((int) b);
+        }
+
         // Get a reference to the Firestore database
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         // Create a new document with the event name as the document ID
         Map<String, Object> eventData = new HashMap<>();
         eventData.put("eventName", eventName);
-        eventData.put("checkInQRCode", byteArray);
+        eventData.put("checkInQRCode", byteArrayAsList);
         eventData.put("organizer", ""); // Set organizer field to blank
         eventData.put("attendees", ""); // Set attendees field to blank
 
@@ -114,6 +122,7 @@ public class OrganizerMainMenuActivity extends AppCompatActivity implements Orga
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         // Failed to save event and check-in QR code data
+                        Log.e("Firestore", "Error adding event", e); // Log the exception
                         Toast.makeText(OrganizerMainMenuActivity.this, "Failed to add event", Toast.LENGTH_SHORT).show();
                     }
                 });
