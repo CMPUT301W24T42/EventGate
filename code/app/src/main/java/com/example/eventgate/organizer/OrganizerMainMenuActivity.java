@@ -7,13 +7,9 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.eventgate.R;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 
@@ -86,6 +82,12 @@ public class OrganizerMainMenuActivity extends AppCompatActivity implements Orga
         }
     }
 
+    /**
+     * Saves the event data to the Firestore database.
+     *
+     * @param eventName     The name of the event.
+     * @param eventQRBitmap The QR code bitmap associated with the event.
+     */
     private void saveEventToFirestore(String eventName, Bitmap eventQRBitmap) {
         // Convert bitmap to byte array
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -111,20 +113,13 @@ public class OrganizerMainMenuActivity extends AppCompatActivity implements Orga
         // Create a new collection named "OrganizerEvents" and add the event data to it
         db.collection("OrganizerEvents")
                 .add(eventData)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        // Event and check-in QR code data saved successfully
-                        Toast.makeText(OrganizerMainMenuActivity.this, "Event added successfully", Toast.LENGTH_SHORT).show();
-                    }
+                .addOnSuccessListener(documentReference -> {
+                    // Event and check-in QR code data saved successfully
+                    Toast.makeText(OrganizerMainMenuActivity.this, "Event added successfully", Toast.LENGTH_SHORT).show();
                 })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        // Failed to save event and check-in QR code data
-                        Log.e("Firestore", "Error adding event", e); // Log the exception
-                        Toast.makeText(OrganizerMainMenuActivity.this, "Failed to add event", Toast.LENGTH_SHORT).show();
-                    }
+                .addOnFailureListener(e -> {
+                    // Failed to save event and check-in QR code data
+                    Toast.makeText(OrganizerMainMenuActivity.this, "Failed to add event", Toast.LENGTH_SHORT).show();
                 });
     }
 }

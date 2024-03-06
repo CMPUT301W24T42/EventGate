@@ -28,7 +28,6 @@ import com.journeyapps.barcodescanner.BarcodeEncoder;
  */
 public class OrganizerCreateEventFragment extends DialogFragment {
     private Bitmap eventQRBitmap;
-    private OnEventAddedListener listener;
 
     /**
      * Interface definition for a callback to be invoked when an event is added.
@@ -100,8 +99,11 @@ public class OrganizerCreateEventFragment extends DialogFragment {
         return builder.create();
     }
 
-    // A method to set the event added listener
+    /**
+     * Sets the event added listener for this fragment.
+     *
+     * @param listener The listener to be set.
+     */
     public void setOnEventAddedListener(OnEventAddedListener listener) {
-        this.listener = listener;
     }
 }
