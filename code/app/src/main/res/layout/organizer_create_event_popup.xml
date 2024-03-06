@@ -1,32 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".organizer.OrganizerCreateEventFragment">
 
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="#4CAF50"
+        android:layout_height="500dp"
+        android:layout_marginBottom="90dp"
         android:orientation="vertical"
-        android:padding="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintStart_toStartOf="parent">
 
         <TextView
             android:id="@+id/organizerCreateEventHeader"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#FFFFFF"
+            android:layout_height="45dp"
+            android:background="@color/red"
+            android:gravity="center"
             android:text="@string/enter_event_name"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="22sp" />
 
         <EditText
             android:id="@+id/organizerCreateEventName"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="45dp"
             android:autofillHints=""
             android:ems="10"
             android:hint="@string/event_name"
@@ -34,37 +38,27 @@
 
         <ImageView
             android:id="@+id/organizerCreateEventQRCode"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:clickable="false"
             android:contentDescription="@string/qrcode"
-            android:scaleType="fitCenter"
-            app:layout_constraintTop_toBottomOf="@id/organizerCreateEventName" />
+            android:scaleType="fitCenter" />
 
-
-        <LinearLayout
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/organizerCreateEventContinueButton"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="end"
-            android:orientation="horizontal">
+            android:layout_gravity="center_horizontal"
+            android:backgroundTint="@color/light_gray"
+            android:text="@string/organizerCreateEventContinue" />
 
-            <Button
-                android:id="@+id/organizerCreateEventContinueButton"
-                style="?android:attr/buttonBarButtonStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:backgroundTint="#FFFFFF"
-                android:text="@string/organizerCreateEventContinue" />
-
-            <Button
-                android:id="@+id/organizerCreateEventCancelButton"
-                style="?android:attr/buttonBarButtonStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:backgroundTint="#FFFFFF"
-                android:text="@string/organizerCreateEventCancel" />
-        </LinearLayout>
+        <Button
+            android:id="@+id/organizerCreateEventCancelButton"
+            android:layout_width="105dp"
+            android:layout_height="45dp"
+            android:layout_gravity="center_horizontal"
+            android:backgroundTint="@color/light_gray"
+            android:text="@string/organizerCreateEventCancel" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
