@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.example.eventgate.event.Event;
 import com.example.eventgate.R;
+import com.example.eventgate.event.EventDB;
 
 import java.util.ArrayList;
 

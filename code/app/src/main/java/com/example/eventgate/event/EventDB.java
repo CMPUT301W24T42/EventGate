@@ -48,4 +48,16 @@ public class EventDB {
                 .addOnSuccessListener(unused -> Log.d(TAG, "Event has been added successfully!"))
                 .addOnFailureListener(e -> Log.d(TAG, "Event could not be added!" + e));
     }
+
+    /**
+     * Removes an event from the database
+     * @param event the event to remove
+     */
+    public void removeEvent(Event event) {
+        String eventId = event.getEventId();
+        collection.document(eventId)
+                .delete()
+                .addOnSuccessListener(unused -> Log.d(TAG, "Event has been deleted successfully"))
+                .addOnFailureListener(e -> Log.d(TAG, "Error deleting event" + e));
+    }
 }
