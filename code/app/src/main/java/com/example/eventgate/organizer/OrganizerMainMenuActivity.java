@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.eventgate.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 
@@ -74,9 +75,13 @@ public class OrganizerMainMenuActivity extends AppCompatActivity implements Orga
         events.add(eventName);
         eventListAdapter.notifyDataSetChanged();
 
-        // Save event and check-in QR code data to Firebase
-        saveEventToFirestore(eventName, eventQRBitmap);
-
+//        if (eventQRBitmap != null) {
+//            // Save event and check-in QR code data to Firebase
+//            saveEventToFirestore(eventName, eventQRBitmap);
+//        } else {
+//            // Handle the case where eventQRBitmap is null
+//            Toast.makeText(this, "Event QR Bitmap is null", Toast.LENGTH_SHORT).show();
+//        }
     }
 
     private void saveEventToFirestore(String eventName, Bitmap eventQRBitmap) {
@@ -95,12 +100,12 @@ public class OrganizerMainMenuActivity extends AppCompatActivity implements Orga
         eventData.put("organizer", ""); // Set organizer field to blank
         eventData.put("attendees", ""); // Set attendees field to blank
 
-        db.collection("events")
-                .document(eventName) // Use event name as document ID
-                .set(eventData)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
+        // Create a new collection named "OrganizerEvents" and add the event data to it
+        db.collection("OrganizerEvents")
+                .add(eventData)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
-                    public void onSuccess(Void aVoid) {
+                    public void onSuccess(DocumentReference documentReference) {
                         // Event and check-in QR code data saved successfully
                         Toast.makeText(OrganizerMainMenuActivity.this, "Event added successfully", Toast.LENGTH_SHORT).show();
                     }
