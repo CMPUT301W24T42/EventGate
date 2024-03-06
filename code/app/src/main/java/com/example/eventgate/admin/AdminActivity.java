@@ -59,6 +59,7 @@ public class AdminActivity extends AppCompatActivity {
         eventAdapter = new AdminEventListAdapter(this, eventDataList);
         eventList.setAdapter(eventAdapter);
 
+        // sends admin back to the main menu
         adminActivityBackButton.setOnClickListener(v -> finish());
     }
 }
