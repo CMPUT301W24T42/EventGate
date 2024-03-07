@@ -1,11 +1,14 @@
 package com.example.eventgate.organizer;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.eventgate.event.Event;
+import com.example.eventgate.event.EventDB;
 import com.example.eventgate.R;
 
 import java.util.ArrayList;
@@ -20,6 +23,7 @@ public class OrganizerMainMenuActivity extends AppCompatActivity implements Orga
     ListView eventListView;
     EventListAdapter eventListAdapter;
     ArrayList<String> events;
+    private Bitmap eventQRBitmap;
 
     /**
      * Called when the activity is starting.
@@ -42,6 +46,7 @@ public class OrganizerMainMenuActivity extends AppCompatActivity implements Orga
 
         createNewEventButton.setOnClickListener(v -> {
             OrganizerCreateEventFragment dialogFragment = new OrganizerCreateEventFragment();
+            dialogFragment.setOnEventAddedListener(this);
             dialogFragment.show(getSupportFragmentManager(), "popup_dialog");
         });
 
@@ -53,11 +58,17 @@ public class OrganizerMainMenuActivity extends AppCompatActivity implements Orga
     /**
      * Callback method to handle the addition of a new event.
      *
-     * @param eventName The name of the event to be added.
+     * @param event The event to be added.
      */
     @Override
-    public void onEventAdded(String eventName) {
-        events.add(eventName);
+    public Bitmap onEventAdded(Event event) {
+        events.add(event.getEventName());
         eventListAdapter.notifyDataSetChanged();
+
+        // Save event and check-in QR code data to Firebase using EventDB
+        EventDB eventDB = new EventDB();
+        eventQRBitmap = eventDB.AddOrganizerEvent(event);
+
+        return eventQRBitmap;
     }
 }
