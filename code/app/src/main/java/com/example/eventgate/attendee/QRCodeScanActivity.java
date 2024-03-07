@@ -47,12 +47,6 @@ public class QRCodeScanActivity extends AppCompatActivity {
     private static final int RESULT_NOT_FOUND = 2;
     private static final int RESULT_REDUNDANT = 3;
 
-    private FirebaseFirestore db;
-    private CollectionReference events;
-    private ArrayList<String> attendees;
-    private String deviceId;
-    private String attendeeId;
-
     /**
      * Called when the activity is starting.
      * Checks and requests permissions, then initializes the QR-code scan
