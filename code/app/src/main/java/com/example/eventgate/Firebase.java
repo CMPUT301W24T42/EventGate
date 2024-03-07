@@ -37,7 +37,7 @@ public class Firebase {
         this.mAuth = FirebaseAuth.getInstance();
         this.fcm = FirebaseMessaging.getInstance();
         this.eventsRef = db.collection("events");
-        this.fcmTokensRef = db.collection("fcmTokensRef");
+        this.fcmTokensRef = db.collection("fcmTokens");
     }
 
     public FirebaseFirestore getDB() {
