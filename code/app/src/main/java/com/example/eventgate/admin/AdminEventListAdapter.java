@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 
 import com.example.eventgate.event.Event;
 import com.example.eventgate.R;
+import com.example.eventgate.event.EventDB;
 
 import java.util.ArrayList;
 
@@ -52,6 +53,7 @@ public class AdminEventListAdapter extends ArrayAdapter<Event> {
         }
 
         Event event = events.get(position);
+        EventDB eventDB = new EventDB();
 
         TextView eventName = convertView.findViewById(R.id.event_name);
         Button adminDelEventButton = convertView.findViewById(R.id.del_event_button);
@@ -60,6 +62,7 @@ public class AdminEventListAdapter extends ArrayAdapter<Event> {
 
         adminDelEventButton.setOnClickListener(v -> {
             events.remove(position);
+            eventDB.removeEvent(event);
             notifyDataSetChanged();
         });
 

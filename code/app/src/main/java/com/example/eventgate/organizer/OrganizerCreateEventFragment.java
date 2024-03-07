@@ -51,12 +51,12 @@ public class OrganizerCreateEventFragment extends DialogFragment {
         Button cancelButton = view.findViewById(R.id.organizerCreateEventCancelButton);
         EditText organizerCreateEventName = view.findViewById(R.id.organizerCreateEventName);
         ImageView qRCode = view.findViewById(R.id.organizerCreateEventQRCode);
+        Button generateQRButton = view.findViewById(R.id.generateQRButton);
 
-        // Set up behavior for continue button
-        continueButton.setOnClickListener(v -> {
-            // Handle continue button click
-            String eventName = organizerCreateEventName.getText().toString().trim(); // Get the entered event name
+        generateQRButton.setOnClickListener(v -> {
+            // Create a QR code based on the event name entered
             MultiFormatWriter writer = new MultiFormatWriter();
+            String eventName = organizerCreateEventName.getText().toString().trim();
 
             try {
                 BitMatrix matrix = writer.encode(eventName, BarcodeFormat.QR_CODE, 400, 400);
@@ -68,6 +68,13 @@ public class OrganizerCreateEventFragment extends DialogFragment {
             } catch (WriterException e) {
                 e.printStackTrace();
             }
+        });
+
+        // Set up behavior for continue button
+        continueButton.setOnClickListener(v -> {
+            // Handle continue button click
+            MultiFormatWriter writer = new MultiFormatWriter();
+            String eventName = organizerCreateEventName.getText().toString().trim();
 
             if (!eventName.isEmpty()) { // Check if the event name is not empty
                 if (getActivity() instanceof OnEventAddedListener) {

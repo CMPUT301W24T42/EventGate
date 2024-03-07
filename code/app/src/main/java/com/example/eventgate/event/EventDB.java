@@ -15,6 +15,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+import java.util.HashMap;
+
 /**
  * This is used to add, remove, and retrieve event data from the database
  */
@@ -124,5 +126,17 @@ public class EventDB {
             }
         });
         return futureEvents;
+    }
+      
+    /**
+     * Removes an event from the database
+     * @param event the event to remove
+     */
+    public void removeEvent(Event event) {
+        String eventId = event.getEventId();
+        collection.document(eventId)
+                .delete()
+                .addOnSuccessListener(unused -> Log.d(TAG, "Event has been deleted successfully"))
+                .addOnFailureListener(e -> Log.d(TAG, "Error deleting event" + e));
     }
 }
