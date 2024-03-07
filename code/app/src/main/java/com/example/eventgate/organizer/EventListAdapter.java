@@ -3,16 +3,20 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+
+import com.example.eventgate.event.Event;
+
 import java.util.ArrayList;
 
 /**
  * Adapter for displaying a list of events.
  */
-public class EventListAdapter extends BaseAdapter {
+public class EventListAdapter extends ArrayAdapter<Event> {
     private Context context;
-    private ArrayList<String> events;
+    private ArrayList<Event> events;
 
     /**
      * Constructs a new EventListAdapter.
@@ -20,7 +24,8 @@ public class EventListAdapter extends BaseAdapter {
      * @param context The context.
      * @param events  The list of events to be displayed.
      */
-    public EventListAdapter(Context context, ArrayList<String> events) {
+    public EventListAdapter(Context context, ArrayList<Event> events) {
+        super(context, 0, events);
         this.context = context;
         this.events = events;
     }
@@ -42,7 +47,7 @@ public class EventListAdapter extends BaseAdapter {
      * @return The event at the specified position.
      */
     @Override
-    public Object getItem(int position) {
+    public Event getItem(int position) {
         return events.get(position);
     }
 
@@ -71,7 +76,7 @@ public class EventListAdapter extends BaseAdapter {
             convertView = LayoutInflater.from(context).inflate(android.R.layout.simple_list_item_1, parent, false);
         }
 
-        String eventName = events.get(position);
+        String eventName = events.get(position).getEventName();
 
         TextView textView = convertView.findViewById(android.R.id.text1);
         textView.setText(eventName);

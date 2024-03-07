@@ -22,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
     Button attendeeButton;
     Button organizerButton;
     Button adminButton;
+    public static final Firebase db = new Firebase();
     private FirebaseAuth mAuth;
     public static final String TAG = "Firebase Auth";
 
@@ -30,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mAuth = FirebaseAuth.getInstance();
+        mAuth = db.getmAuth();
 
         attendeeButton = findViewById(R.id.attendee_button);
         organizerButton = findViewById(R.id.organizer_button);
@@ -83,6 +84,4 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
     }
-
-
 }

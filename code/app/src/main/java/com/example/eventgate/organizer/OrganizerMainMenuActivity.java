@@ -1,14 +1,24 @@
 package com.example.eventgate.organizer;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.eventgate.Firebase;
+import com.example.eventgate.event.Event;
+import com.example.eventgate.event.EventDB;
 import com.example.eventgate.R;
+import com.google.firebase.installations.FirebaseInstallations;
 
 import java.util.ArrayList;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Activity for the organizer's main menu.
@@ -17,9 +27,10 @@ import java.util.ArrayList;
 public class OrganizerMainMenuActivity extends AppCompatActivity implements OrganizerCreateEventFragment.OnEventAddedListener {
     Button createNewEventButton;
     Button organizerMainMenuBackButton;
-    ListView eventListView;
-    EventListAdapter eventListAdapter;
-    ArrayList<String> events;
+    ArrayList<Event> eventDataList;
+    ListView eventList;
+    ArrayAdapter<Event> eventAdapter;
+    private Bitmap eventQRBitmap;
 
     /**
      * Called when the activity is starting.
@@ -34,30 +45,63 @@ public class OrganizerMainMenuActivity extends AppCompatActivity implements Orga
 
         createNewEventButton = findViewById(R.id.CreateEventButton);
         organizerMainMenuBackButton = findViewById(R.id.OrganizerMainMenuBackButton);
-        eventListView = findViewById(R.id.EventListView);
+        eventList = findViewById(R.id.EventListView);
 
-        events = new ArrayList<>();
-        eventListAdapter = new EventListAdapter(this, events);
-        eventListView.setAdapter(eventListAdapter);
+        eventDataList = new ArrayList<>();
+        eventAdapter = new EventListAdapter(this, eventDataList);
+        eventList.setAdapter(eventAdapter);
+
+        updateOrganizerEvents();
 
         createNewEventButton.setOnClickListener(v -> {
             OrganizerCreateEventFragment dialogFragment = new OrganizerCreateEventFragment();
+            dialogFragment.setOnEventAddedListener(this);
             dialogFragment.show(getSupportFragmentManager(), "popup_dialog");
         });
 
         organizerMainMenuBackButton.setOnClickListener(v ->
                 finish()
         );
+
+        eventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Event clickedEvent = eventDataList.get(position);
+                Intent intent = new Intent(OrganizerMainMenuActivity.this, OrganizerEventEditorActivity.class);
+                intent.putExtra("eventId", clickedEvent.getEventId());
+                intent.putExtra("eventName", clickedEvent.getEventName());
+                startActivity(intent);
+            }
+        });
     }
 
     /**
      * Callback method to handle the addition of a new event.
      *
-     * @param eventName The name of the event to be added.
+     * @param event The event to be added.
      */
     @Override
-    public void onEventAdded(String eventName) {
-        events.add(eventName);
-        eventListAdapter.notifyDataSetChanged();
+    public Bitmap onEventAdded(Event event) {
+        eventDataList.add(event);
+        eventAdapter.notifyDataSetChanged();
+
+        // Save event and check-in QR code data to Firebase using EventDB
+        EventDB eventDB = new EventDB();
+        FirebaseInstallations.getInstance().getId().addOnSuccessListener(id -> {
+            eventQRBitmap = eventDB.AddOrganizerEvent(event, id);
+        });
+
+        return eventQRBitmap;
+    }
+
+    private void updateOrganizerEvents() {
+        FirebaseInstallations.getInstance().getId().addOnSuccessListener(id -> {
+            CompletableFuture<ArrayList<Event>> attendeeEvents = new EventDB().getOrganizerEvents(id);
+            attendeeEvents.thenAccept(r -> {
+                eventDataList.clear();
+                eventDataList.addAll(r);
+                eventAdapter.notifyDataSetChanged();
+            });
+        });
     }
 }

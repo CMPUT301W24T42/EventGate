@@ -1,11 +1,11 @@
-package com.example.eventgate.admin;
+package com.example.eventgate.attendee;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -13,25 +13,23 @@ import androidx.annotation.Nullable;
 
 import com.example.eventgate.event.Event;
 import com.example.eventgate.R;
-import com.example.eventgate.event.EventDB;
 
 import java.util.ArrayList;
 
 /**
- * This is an adapter for displaying a list of events that includes a delete button that the admin
- *     can use
+ * An adapter for displaying the events an attendee is checked into
  */
-public class AdminEventListAdapter extends ArrayAdapter<Event> {
+public class AttendeeEventListAdapter extends ArrayAdapter<Event> {
     private ArrayList<Event> events;
     private Context context;
 
     /**
-     * Constructs a new AdminEventListAdapter.
+     * Constructs a new AttendeeEventListAdapter.
      *
      * @param context The context.
      * @param events  The list of events to be displayed.
      */
-    public AdminEventListAdapter(Context context, ArrayList<Event> events) {
+    public AttendeeEventListAdapter(Context context, ArrayList<Event> events) {
         super(context, 0, events);
         this.events = events;
         this.context = context;
@@ -49,22 +47,15 @@ public class AdminEventListAdapter extends ArrayAdapter<Event> {
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.admin_events_list, parent, false);
+            convertView = LayoutInflater.from(context).inflate(R.layout.attendee_events_list, parent,
+                    false);
         }
 
         Event event = events.get(position);
-        EventDB eventDB = new EventDB();
 
         TextView eventName = convertView.findViewById(R.id.event_name);
-        Button adminDelEventButton = convertView.findViewById(R.id.del_event_button);
 
         eventName.setText(event.getEventName());
-
-        adminDelEventButton.setOnClickListener(v -> {
-            events.remove(position);
-            eventDB.removeEvent(event);
-            notifyDataSetChanged();
-        });
 
         return convertView;
     }

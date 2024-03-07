@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
 
     <application
         android:allowBackup="true"
@@ -16,10 +21,16 @@
             android:name=".organizer.OrganizerMainMenuActivity"
             android:exported="false" />
         <activity
+            android:name=".organizer.OrganizerEventEditorActivity"
+            android:exported="false" />
+        <activity
             android:name=".admin.AdminActivity"
             android:exported="false" />
         <activity
             android:name=".attendee.AttendeeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".attendee.QRCodeScanActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

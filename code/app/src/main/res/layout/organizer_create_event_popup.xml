@@ -9,7 +9,7 @@
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="0dp"
-        android:layout_height="350dp"
+        android:layout_height="375dp"
         android:layout_marginBottom="90dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"

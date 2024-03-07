@@ -16,7 +16,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/eventContainer">
+        app:layout_constraintBottom_toTopOf="@id/event_layout">
 
         <ImageButton
             android:id="@+id/profile_image"
@@ -97,65 +97,70 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-    <RelativeLayout
-        android:id="@+id/eventContainer"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="32dp"
-        android:layout_marginBottom="20dp"
-        android:background="@drawable/rounded_corner"
-        android:backgroundTint="#FFFFFF"
-        app:layout_constraintBottom_toTopOf="@+id/ScanQRButton"
+
+
+
+
+    <LinearLayout
+        android:id="@+id/event_layout"
+        android:layout_width="350dp"
+        android:layout_height="500dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="64dp"
+        android:background="@drawable/attendee_list_rounded_corners"
+        android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/userInfoContainer">
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/EventListViewTitle"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/green"
-            android:padding="16dp"
-            android:text="Attendee Menu: Your Events"
+            android:layout_height="45dp"
+            android:background="@drawable/attendee_title_rounded_corners"
+            android:gravity="center"
+            android:text="My Events"
             android:textAlignment="center"
-            android:textColor="#000000"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textColor="@color/black"
+            android:textSize="22sp" />
 
         <ListView
-            android:id="@+id/EventListView"
+            android:id="@+id/event_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/EventListViewTitle"
-            android:padding="16dp" />
-    </RelativeLayout>
+            android:backgroundTint="#4CAF50"
+            android:choiceMode="singleChoice" />
+
+    </LinearLayout>
 
     <Button
-        android:id="@+id/ScanQRButton"
+        android:id="@+id/qr_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="15dp"
-        android:backgroundTint="#E3DDDF"
-        android:text="Scan a QR Code"
-        android:background="@color/green"
-        android:textColor="#000000"
-        app:layout_constraintBottom_toTopOf="@+id/OrganizerMainMenuBackButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/eventContainer" />
-
-    <Button
-        android:id="@+id/OrganizerMainMenuBackButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="55dp"
-        android:layout_marginBottom="20dp"
-        android:backgroundTint="#E3DDDF"
-        android:text="back"
-        android:textColor="#000000"
+        android:layout_marginBottom="96dp"
+        android:backgroundTint="@color/green"
+        android:text="Scan QR Code"
+        android:textColor="@color/black"
+        android:textSize="24dp"
+        app:icon="@drawable/qr_code_64"
+        app:iconPadding="8dp"
+        app:iconTint="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ScanQRButton" />
+        app:layout_constraintStart_toStartOf="parent" />
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/attendee_back_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="25dp"
+        android:backgroundTint="@color/light_gray"
+        android:ems="5"
+        android:text="@string/back"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:cornerRadius="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+    </com.google.android.material.button.MaterialButton>
 </androidx.constraintlayout.widget.ConstraintLayout>
