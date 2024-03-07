@@ -17,4 +17,6 @@
     <string name="generate_qr_code">Generate QR Code</string>
     <string name="create_event">Create Event</string>
     <string name="generate_check_in_qr">Generate Check In QR</string>
+    <string name="generate_event_qr">Generate Event QR</string>
+    <string name="eventDescriptionQR">EventDescriptionQR</string>
 </resources>
