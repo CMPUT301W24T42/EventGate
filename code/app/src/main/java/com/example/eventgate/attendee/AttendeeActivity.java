@@ -39,6 +39,7 @@ import com.example.eventgate.event.EventDB;
 import com.example.eventgate.MainActivity;
 import com.example.eventgate.R;
 import com.example.eventgate.admin.AdminEventListAdapter;
+import com.example.eventgate.event.EventDB;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -354,7 +355,7 @@ public class AttendeeActivity extends AppCompatActivity {
     private void createBitMap() {
 
         int color = Color.rgb(hashBytes[0] & 0xFF, hashBytes[1] & 0xFF, hashBytes[2] & 0xFF);
-        profileBitmap = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
+        profileBitmap = Bitmap.createBitmap(500, 500, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(profileBitmap);
         canvas.drawColor(color);
 
@@ -363,25 +364,26 @@ public class AttendeeActivity extends AppCompatActivity {
     //better version
     private void createBitmap2() {
         if (hashBytes == null || hashBytes.length < 3) {
-            return; // Return if hashBytes is null or has insufficient length
+            return;
         }
 
         int color = Color.rgb(hashBytes[0] & 0xFF, hashBytes[1] & 0xFF, hashBytes[2] & 0xFF);
-        profileBitmap = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
+        profileBitmap = Bitmap.createBitmap(200, 200, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(profileBitmap);
         canvas.drawColor(color);
 
-        // Draw the abstract pattern based on hash
-        int blockSize = 10; // Size of each block
-        int currentIndex = 0; // Index to keep track of the hash value being used
 
-        for (int y = 0; y < 100; y += blockSize) {
-            for (int x = 0; x < 100; x += blockSize) {
-                // Loop through the hash bytes and use each byte to set a color
+        int blockSize = 5;
+        int currentIndex = 0;
+
+        for (int y = 0; y < 200; y += blockSize) {
+            for (int x = 0; x < 200; x += blockSize) {
                 int blockColor = Color.rgb(hashBytes[currentIndex] & 0xFF, hashBytes[(currentIndex + 1) % hashBytes.length] & 0xFF, hashBytes[(currentIndex + 2) % hashBytes.length] & 0xFF);
                 Paint paint = new Paint();
                 paint.setColor(blockColor);
-                canvas.drawRect(x, y, x + blockSize, y + blockSize, paint);
+                int endX = Math.min(x + blockSize, 200);
+                int endY = Math.min(y + blockSize, 200);
+                canvas.drawRect(x, y, endX, endY, paint);
                 currentIndex = (currentIndex + 3) % hashBytes.length;
             }
         }
