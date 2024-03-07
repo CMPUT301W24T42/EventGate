@@ -1,5 +1,7 @@
 package com.example.eventgate.event;
 
+import android.graphics.Bitmap;
+
 public class Event {
     /**
      * Holds the document id for the event
@@ -9,6 +11,7 @@ public class Event {
      * Holds the name of the event
      */
     private String eventName;
+    private Bitmap eventQRBitmap;
 
     /**
      * Constructs an Event
@@ -32,5 +35,13 @@ public class Event {
 
     public void setEventId(String id) {
         this.eventId = id;
+    }
+
+    public Bitmap getEventQRBitmap() {
+        return eventQRBitmap;
+    }
+
+    public void setEventQRBitmap(Bitmap eventQRBitmap) {
+        this.eventQRBitmap = eventQRBitmap;
     }
 }

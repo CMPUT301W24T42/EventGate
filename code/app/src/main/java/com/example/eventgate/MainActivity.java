@@ -16,11 +16,8 @@ import android.widget.Toast;
 import com.example.eventgate.admin.AdminActivity;
 import com.example.eventgate.attendee.AttendeeActivity;
 import com.example.eventgate.organizer.OrganizerMainMenuActivity;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
-import org.checkerframework.checker.units.qual.N;
 
 public class MainActivity extends AppCompatActivity {
     Button attendeeButton;
