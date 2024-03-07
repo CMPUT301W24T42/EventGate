@@ -8,17 +8,13 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.eventgate.Event.Event;
-import com.example.eventgate.Event.EventDB;
+import com.example.eventgate.event.Event;
+import com.example.eventgate.event.EventDB;
 import com.example.eventgate.R;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Activity for the organizer's main menu.

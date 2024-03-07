@@ -3,13 +3,17 @@ package com.example.eventgate.admin;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ListView;
+import android.widget.Toast;
 
-import com.example.eventgate.Event.Event;
-import com.example.eventgate.Event.EventDB;
+import com.example.eventgate.event.Event;
 import com.example.eventgate.R;
+import com.example.eventgate.event.EventDB;
 
 import java.util.ArrayList;
 
@@ -34,6 +38,7 @@ public class AdminActivity extends AppCompatActivity {
      * This is the button used to get back to the Main Menu activity
      */
     Button adminActivityBackButton;
+    Button adminDelEventButton;
 
     /**
      * Called when the activity is starting.
@@ -46,14 +51,15 @@ public class AdminActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin);
 
+        eventDataList = new ArrayList<>();
+
         eventList = findViewById(R.id.event_list);
         adminActivityBackButton = findViewById(R.id.admin_back_button);
-
-        eventDataList = new ArrayList<>();
 
         eventAdapter = new AdminEventListAdapter(this, eventDataList);
         eventList.setAdapter(eventAdapter);
 
+        // sends admin back to the main menu
         adminActivityBackButton.setOnClickListener(v -> finish());
     }
 }

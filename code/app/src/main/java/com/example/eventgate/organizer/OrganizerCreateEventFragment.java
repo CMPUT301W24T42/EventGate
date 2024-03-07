@@ -18,6 +18,7 @@ import androidx.annotation.Nullable;
 
 import com.example.eventgate.Event.Event;
 import com.example.eventgate.R;
+import com.example.eventgate.event.Event;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
@@ -35,6 +36,8 @@ public class OrganizerCreateEventFragment extends DialogFragment {
      * Interface definition for a callback to be invoked when an event is added.
      */
     public interface OnEventAddedListener {
+        void onEventAdded(Event event, Bitmap eventQRBitmap);
+
         void onEventAdded(Event event, Bitmap eventQRBitmap);
     }
 
