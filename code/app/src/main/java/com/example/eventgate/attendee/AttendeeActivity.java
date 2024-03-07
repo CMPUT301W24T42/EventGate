@@ -17,8 +17,8 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.eventgate.Event.Event;
-import com.example.eventgate.Event.EventDB;
+import com.example.eventgate.event.Event;
+import com.example.eventgate.event.EventDB;
 import com.example.eventgate.MainActivity;
 import com.example.eventgate.R;
 import com.example.eventgate.admin.AdminEventListAdapter;

@@ -113,8 +113,14 @@ public class EventDB {
         ArrayList<Event> events = new ArrayList<>();
         db.collection("attendees").whereEqualTo("deviceId", deviceId).get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
+            if (queryDocumentSnapshots.isEmpty()) {  // If there is no matching deviceId, simply return
+                return;
+            }
             DocumentSnapshot attendee = queryDocumentSnapshots.getDocuments().get(0);
             ArrayList<String> attendeeEvents = (ArrayList<String>) attendee.get("events");
+            if (attendeeEvents.size() < 2) {  // If it's a singleton or less, simply return
+                return;
+            }
             for (String eventId : attendeeEvents.subList(0, attendeeEvents.size() - 1)) {
                 db.collection("events").document(eventId.trim()).get().addOnSuccessListener(documentSnapshot -> {
                     events.add(0, new Event(documentSnapshot.getString("name")));
