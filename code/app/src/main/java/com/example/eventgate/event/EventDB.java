@@ -112,7 +112,7 @@ public class EventDB {
         data.put("name", event.getEventName());
         data.put("checkInQRCode", byteArrayAsList.toString());
         data.put("organizer", ""); // Set organizer field to blank
-        data.put("attendees", ""); // Set attendees field to blank
+        data.put("attendees", null); // Set attendees field to blank
 
         collection
                 .document(eventId)
