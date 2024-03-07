@@ -53,6 +53,12 @@ public class EventDB {
                 .addOnFailureListener(e -> Log.d(TAG, "Event could not be added!" + e));
     }
 
+    /**
+     * Adds an organizer event to the database.
+     *
+     * @param event         The event object containing details of the event.
+     * @param eventQRBitmap The bitmap image of the event's QR code.
+     */
     public void AddOrganizerEvent(Event event, Bitmap eventQRBitmap) {
         // Convert bitmap to byte array
         ByteArrayOutputStream baos = new ByteArrayOutputStream();

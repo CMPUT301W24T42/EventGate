@@ -77,51 +77,10 @@ public class OrganizerMainMenuActivity extends AppCompatActivity implements Orga
         if (eventQRBitmap != null) {
             // Save event and check-in QR code data to Firebase using EventDB
             EventDB eventDB = new EventDB();
-            eventDB.AddEvent(event);
+            eventDB.AddOrganizerEvent(event, eventQRBitmap);
         } else {
             // Handle the case where eventQRBitmap is null
             Toast.makeText(this, "Event QR Bitmap is null", Toast.LENGTH_SHORT).show();
         }
-    }
-
-    /**
-     * Saves the event data to the Firestore database.
-     *
-     * @param eventName     The name of the event.
-     * @param eventQRBitmap The QR code bitmap associated with the event.
-     */
-    private void saveEventToFirestore(String eventName, Bitmap eventQRBitmap) {
-        // Convert bitmap to byte array
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        eventQRBitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-        byte[] byteArray = baos.toByteArray();
-
-        // Convert byte array to list of integers
-        List<Integer> byteArrayAsList = new ArrayList<>();
-        for (byte b : byteArray) {
-            byteArrayAsList.add((int) b);
-        }
-
-        // Get a reference to the Firestore database
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-        // Create a new document with the event name as the document ID
-        Map<String, Object> eventData = new HashMap<>();
-        eventData.put("eventName", eventName);
-        eventData.put("checkInQRCode", byteArrayAsList);
-        eventData.put("organizer", ""); // Set organizer field to blank
-        eventData.put("attendees", ""); // Set attendees field to blank
-
-        // Create a new collection named "OrganizerEvents" and add the event data to it
-        db.collection("OrganizerEvents")
-                .add(eventData)
-                .addOnSuccessListener(documentReference -> {
-                    // Event and check-in QR code data saved successfully
-                    Toast.makeText(OrganizerMainMenuActivity.this, "Event added successfully", Toast.LENGTH_SHORT).show();
-                })
-                .addOnFailureListener(e -> {
-                    // Failed to save event and check-in QR code data
-                    Toast.makeText(OrganizerMainMenuActivity.this, "Failed to add event", Toast.LENGTH_SHORT).show();
-                });
     }
 }
