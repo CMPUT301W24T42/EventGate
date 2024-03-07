@@ -10,6 +10,13 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import android.util.Log;
+
+import com.example.eventgate.MainActivity;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
 
 /**
  * This is used to add, remove, and retrieve event data from the database
@@ -32,8 +39,8 @@ public class EventDB {
      * Constructs a new EventDB
      */
     public EventDB() {
-        db = FirebaseFirestore.getInstance();
-        collection = db.collection("events");
+        db = MainActivity.db.getDB();
+        collection = MainActivity.db.getEventsRef();
     }
 
     /**
@@ -92,6 +99,7 @@ public class EventDB {
     /**
      * Removes an event from the database
      *
+     * Removes an event from the database
      * @param event the event to remove
      */
     public void removeEvent(Event event) {
