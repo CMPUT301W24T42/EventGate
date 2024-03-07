@@ -186,6 +186,7 @@ public class EventDB {
             }
             DocumentSnapshot attendee = queryDocumentSnapshots.getDocuments().get(0);
             ArrayList<String> attendeeEvents = (ArrayList<String>) attendee.get("events");
+
             if (attendeeEvents.size() < 2) {  // If it's a singleton or less, simply return
                 return;
             }

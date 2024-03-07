@@ -40,6 +40,8 @@ import com.example.eventgate.MainActivity;
 import com.example.eventgate.R;
 import com.example.eventgate.admin.AdminEventListAdapter;
 import com.example.eventgate.event.EventDB;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -192,7 +194,7 @@ public class AttendeeActivity extends AppCompatActivity {
 
         if (requestCode == PICK_IMAGE && resultCode == RESULT_OK) {
             if (data == null) {
-                // Display an error
+
                 return;
             }
             try {
@@ -395,6 +397,7 @@ public class AttendeeActivity extends AppCompatActivity {
                 eventDataList.clear();
                 for (Event e : r) {
                     eventDataList.add(0, e);
+                    Log.w("eventtest", e.toString());
                 }
                 eventAdapter.notifyDataSetChanged();
             });
