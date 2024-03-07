@@ -1,3 +1,5 @@
+// Activity that handles all QR-code scanning
+
 package com.example.eventgate.attendee;
 
 import android.Manifest;
@@ -13,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.example.eventgate.Event.EventDB;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -32,7 +35,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
+/**
+ * The activity for scanning QR-codes
+ * It scans and manages the result of QR-codes
+ */
 public class QRCodeScanActivity extends AppCompatActivity {
 
     private static final int PERMISSION_REQUEST_CAMERA = 1;
@@ -45,6 +53,12 @@ public class QRCodeScanActivity extends AppCompatActivity {
     private String deviceId;
     private String attendeeId;
 
+    /**
+     * Called when the activity is starting.
+     * Checks and requests permissions, then initializes the QR-code scan
+     *
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down, this Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle).
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +71,13 @@ public class QRCodeScanActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Handles the user's camera permissions
+     *
+     * @param requestCode Type of permission request
+     * @param permissions Current permissions
+     * @param grantResults Whether the user wishes to grant permission
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
@@ -81,6 +102,13 @@ public class QRCodeScanActivity extends AppCompatActivity {
         integrator.initiateScan();
     }
 
+    /**
+     * Based on the scan result, finish the activity accordingly
+     *
+     * @param requestCode Type of permission request
+     * @param resultCode Type of result
+     * @param data The resultant QR-code scan
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
@@ -89,33 +117,24 @@ public class QRCodeScanActivity extends AppCompatActivity {
                 Toast.makeText(this, "Scan Cancelled", Toast.LENGTH_LONG).show();
             } else {
                 String qrResult = result.getContents().trim();
-                db = FirebaseFirestore.getInstance();
-                db.collection("events").document(qrResult).get().addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        attendees = (ArrayList<String>) documentSnapshot.get("attendees");
-                        FirebaseInstallations.getInstance().getId().addOnSuccessListener(id -> {
-                            deviceId = id;
-                            db.collection("attendees").whereEqualTo("deviceId", deviceId).get()
-                                .addOnSuccessListener(queryDocumentSnapshots -> {
-                                    attendeeId = queryDocumentSnapshots.getDocuments().get(0).getId();
-                                    for (String attendee : attendees) {
-                                        if (Objects.equals(attendee, attendeeId)) {
-                                            Intent intent = new Intent();
-                                            setResult(RESULT_REDUNDANT, intent);
-                                            finish();
-                                        }
-                                    }
-                                    Map<String, Object> updates = new HashMap<>();
-                                    attendees.add(attendees.size() - 1, attendeeId);
-                                    updates.put("attendees", attendees);
-                                    db.collection("events").document(qrResult).update(updates);
-                            });
-                        });
-                    } else {
+                FirebaseInstallations.getInstance().getId().addOnSuccessListener(id -> {
+                    EventDB eventDb = new EventDB();
+                    CompletableFuture<Integer> checkInResult = eventDb.checkInAttendee(id, qrResult);
+                    checkInResult.thenAccept(r -> {
                         Intent intent = new Intent();
-                        setResult(RESULT_NOT_FOUND, intent);
+                        switch (r) {
+                            case 0:
+                                setResult(RESULT_OK);
+                                break;
+                            case 1:
+                                setResult(RESULT_NOT_FOUND, intent);
+                                break;
+                            case 2:
+                                setResult(RESULT_REDUNDANT, intent);
+                                break;
+                        }
                         finish();
-                    }
+                    });
                 });
             }
         } else {
