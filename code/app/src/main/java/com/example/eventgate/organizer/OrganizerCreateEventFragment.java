@@ -28,14 +28,14 @@ import com.journeyapps.barcodescanner.BarcodeEncoder;
  * A fragment for creating a new event.
  */
 public class OrganizerCreateEventFragment extends DialogFragment {
-    private Bitmap eventQRBitmap;
     private Boolean qRCOdeGenerated = false;
+    private Bitmap eventQRBitmap;
 
     /**
      * Interface definition for a callback to be invoked when an event is added.
      */
     public interface OnEventAddedListener {
-        void onEventAdded(Event event, Bitmap eventQRBitmap);
+        Bitmap onEventAdded(Event event);
     }
 
     /**
@@ -69,17 +69,16 @@ public class OrganizerCreateEventFragment extends DialogFragment {
                 return; // Exit the method
             }
 
-            try {
-                BitMatrix matrix = writer.encode(eventName, BarcodeFormat.QR_CODE, 400, 400);
+            // Create an Event object
+            Event event = new Event(eventName);
 
-                BarcodeEncoder encoder = new BarcodeEncoder();
-                eventQRBitmap = encoder.createBitmap(matrix);
-                qRCode.setImageBitmap(eventQRBitmap);
-                qRCOdeGenerated = true;
-
-            } catch (WriterException e) {
-                e.printStackTrace();
+            if (getActivity() instanceof OnEventAddedListener) {
+                eventQRBitmap = ((OnEventAddedListener) getActivity()).onEventAdded(event); // Pass the event name to the activity
             }
+
+            qRCode.setImageBitmap(eventQRBitmap);
+            qRCOdeGenerated = true;
+
         });
 
         // Set up behavior for continue button
@@ -95,12 +94,6 @@ public class OrganizerCreateEventFragment extends DialogFragment {
             }
 
             if (!eventName.isEmpty()) { // Check if the event name is not empty
-                // Create an Event object
-                Event event = new Event(eventName);
-
-                if (getActivity() instanceof OnEventAddedListener) {
-                    ((OnEventAddedListener) getActivity()).onEventAdded(event, eventQRBitmap); // Pass the event name to the activity
-                }
                 dismiss(); // Close the dialog
             } else {
                 // Show a toast message indicating that the event name cannot be empty

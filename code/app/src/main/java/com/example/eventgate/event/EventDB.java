@@ -15,6 +15,11 @@ import android.util.Log;
 import com.example.eventgate.MainActivity;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 import java.util.HashMap;
 
@@ -34,6 +39,7 @@ public class EventDB {
      * The TAG for logging
      */
     final String TAG = "EventDB";
+    private Bitmap eventQRBitmap;
 
     /**
      * Constructs a new EventDB
@@ -65,9 +71,25 @@ public class EventDB {
      * Adds an organizer event to the database.
      *
      * @param event         The event object containing details of the event.
-     * @param eventQRBitmap The bitmap image of the event's QR code.
      */
-    public void AddOrganizerEvent(Event event, Bitmap eventQRBitmap) {
+    public Bitmap AddOrganizerEvent(Event event) {
+        String eventId = collection.document().getId();
+        event.setEventId(eventId);
+
+        // Create Check in QR Code
+        MultiFormatWriter writer = new MultiFormatWriter();
+
+        try {
+            BitMatrix matrix = writer.encode(eventId, BarcodeFormat.QR_CODE, 400, 400);
+            BarcodeEncoder encoder = new BarcodeEncoder();
+            eventQRBitmap = encoder.createBitmap(matrix);
+
+        } catch (WriterException e) {
+            e.printStackTrace();
+        }
+
+        event.setEventQRBitmap(eventQRBitmap);
+
         // Convert bitmap to byte array
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         eventQRBitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
@@ -78,9 +100,6 @@ public class EventDB {
         for (byte b : byteArray) {
             byteArrayAsList.add((int) b);
         }
-
-        String eventId = collection.document().getId();
-        event.setEventId(eventId);
 
         HashMap<String, String> data = new HashMap<>();
         data.put("eventId", event.getEventId());
@@ -94,6 +113,8 @@ public class EventDB {
                 .set(data)
                 .addOnSuccessListener(unused -> Log.d(TAG, "Event has been added successfully!"))
                 .addOnFailureListener(e -> Log.d(TAG, "Event could not be added!" + e));
+
+        return eventQRBitmap;
     }
 
     /**

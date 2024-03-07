@@ -11,8 +11,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.eventgate.event.Event;
 import com.example.eventgate.event.EventDB;
 import com.example.eventgate.R;
-import com.google.firebase.firestore.FirebaseFirestore;
-
 
 import java.util.ArrayList;
 
@@ -26,6 +24,7 @@ public class OrganizerMainMenuActivity extends AppCompatActivity implements Orga
     ListView eventListView;
     EventListAdapter eventListAdapter;
     ArrayList<String> events;
+    private Bitmap eventQRBitmap;
 
     /**
      * Called when the activity is starting.
@@ -37,9 +36,6 @@ public class OrganizerMainMenuActivity extends AppCompatActivity implements Orga
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_organizer_main_menu);
-
-        // Initialize Firebase
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         createNewEventButton = findViewById(R.id.CreateEventButton);
         organizerMainMenuBackButton = findViewById(R.id.OrganizerMainMenuBackButton);
@@ -66,17 +62,14 @@ public class OrganizerMainMenuActivity extends AppCompatActivity implements Orga
      * @param event The event to be added.
      */
     @Override
-    public void onEventAdded(Event event, Bitmap eventQRBitmap) {
+    public Bitmap onEventAdded(Event event) {
         events.add(event.getEventName());
         eventListAdapter.notifyDataSetChanged();
 
-        if (eventQRBitmap != null) {
-            // Save event and check-in QR code data to Firebase using EventDB
-            EventDB eventDB = new EventDB();
-            eventDB.AddOrganizerEvent(event, eventQRBitmap);
-        } else {
-            // Handle the case where eventQRBitmap is null
-            Toast.makeText(this, "Event QR Bitmap is null", Toast.LENGTH_SHORT).show();
-        }
+        // Save event and check-in QR code data to Firebase using EventDB
+        EventDB eventDB = new EventDB();
+        eventQRBitmap = eventDB.AddOrganizerEvent(event);
+
+        return eventQRBitmap;
     }
 }
