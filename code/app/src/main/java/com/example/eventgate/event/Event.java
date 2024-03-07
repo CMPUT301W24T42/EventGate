@@ -31,6 +31,6 @@ public class Event {
     }
 
     public void setEventId(String id) {
-        eventId = id;
+        this.eventId = id;
     }
 }
