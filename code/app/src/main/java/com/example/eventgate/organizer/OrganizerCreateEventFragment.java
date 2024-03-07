@@ -18,11 +18,7 @@ import androidx.annotation.Nullable;
 
 import com.example.eventgate.event.Event;
 import com.example.eventgate.R;
-import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
-import com.google.zxing.WriterException;
-import com.google.zxing.common.BitMatrix;
-import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 /**
  * A fragment for creating a new event.

@@ -119,8 +119,6 @@ public class EventDB {
 
     /**
      * Removes an event from the database
-     *
-     * Removes an event from the database
      * @param event the event to remove
      */
     public void removeEvent(Event event) {
