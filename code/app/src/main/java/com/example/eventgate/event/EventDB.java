@@ -42,7 +42,7 @@ public class EventDB {
      *
      * @param event the event to add
      */
-    public void addEvent(Event event) {
+    public void addEvent(com.example.eventgate.event.Event event) {
         String eventId = collection.document().getId();
         event.setEventId(eventId);
         HashMap<String, String> data = new HashMap<>();
@@ -61,7 +61,7 @@ public class EventDB {
      * @param event         The event object containing details of the event.
      * @param eventQRBitmap The bitmap image of the event's QR code.
      */
-    public void AddOrganizerEvent(Event event, Bitmap eventQRBitmap) {
+    public void AddOrganizerEvent(com.example.eventgate.event.Event event, Bitmap eventQRBitmap) {
         // Convert bitmap to byte array
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         eventQRBitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
@@ -97,7 +97,7 @@ public class EventDB {
      *
      * @param event the event to remove
      */
-    public void removeEvent(Event event) {
+    public void removeEvent(com.example.eventgate.event.Event event) {
         String eventId = event.getEventId();
         collection.document(eventId)
                 .delete()
