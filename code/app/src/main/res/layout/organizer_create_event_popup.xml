@@ -37,30 +37,6 @@
             android:inputType="text" />
 
         <ImageView
-            android:id="@+id/organizerCreateEventQRCode"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_gravity="center_horizontal"
-            android:clickable="false"
-            android:contentDescription="@string/qrcode"
-            android:scaleType="fitCenter" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/generateQRButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/generate_check_in_qr"
-            android:layout_gravity="center_horizontal"
-            android:backgroundTint="@color/light_gray"
-            android:ems="11"
-            android:textColor="@color/black"
-            android:textSize="18sp"
-            app:cornerRadius="0dp"
-            app:layout_constraintTop_toBottomOf="@id/organizerCreateEventName"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
-
-        <ImageView
             android:id="@+id/organizerEventDescriptionQRCode"
             android:layout_width="70dp"
             android:layout_height="70dp"
@@ -74,6 +50,30 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/generate_event_qr"
+            android:layout_gravity="center_horizontal"
+            android:backgroundTint="@color/light_gray"
+            android:ems="11"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            app:cornerRadius="0dp"
+            app:layout_constraintTop_toBottomOf="@id/organizerCreateEventName"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <ImageView
+            android:id="@+id/organizerCreateEventQRCode"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_gravity="center_horizontal"
+            android:clickable="false"
+            android:contentDescription="@string/qrcode"
+            android:scaleType="fitCenter" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/generateQRButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/generate_check_in_qr"
             android:layout_gravity="center_horizontal"
             android:backgroundTint="@color/light_gray"
             android:ems="11"

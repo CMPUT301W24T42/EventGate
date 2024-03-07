@@ -19,6 +19,7 @@ import androidx.annotation.Nullable;
 
 import com.example.eventgate.event.Event;
 import com.example.eventgate.R;
+import com.example.eventgate.event.EventDB;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
@@ -36,6 +37,7 @@ public class OrganizerCreateEventFragment extends DialogFragment {
     private OnQRCodeGeneratedListener qrCodeListener;
     private OnQRCodeGeneratedListener descriptionQRCodeListener;
     private Event eventAdded;
+    private String eventName;
 
     /**
      * Interface definition for a callback to be invoked when an event is added.
@@ -92,24 +94,28 @@ public class OrganizerCreateEventFragment extends DialogFragment {
         Button generateQRButton = view.findViewById(R.id.generateQRButton);
         Button generateDescriptionQRButton = view.findViewById(R.id.generateDescriptionQRButton);
 
+        // This QR Code is for attendees to check in to the event
         generateQRButton.setOnClickListener(v -> {
             // Only generate one QR Code
             if (!qRCodeGenerated) {
-                String eventName = organizerCreateEventName.getText().toString().trim();
-
-                if (qrCodeListener != null) {
-                    qrCodeListener.onQRCodeGenerated(eventQRBitmap);
-                }
+                eventName = organizerCreateEventName.getText().toString().trim();
 
                 // Check if the eventName is empty or null
                 if (eventName.isEmpty()) {
                     // Show a message to the user indicating that they need to enter an event name
-                    Toast.makeText(getActivity(), "Please enter an Event name. A QR Code must be associated with an Event name.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Please enter an Event name. Every QR Code must be associated with an Event name.", Toast.LENGTH_SHORT).show();
                     return; // Exit the method
                 }
 
-                // Create an Event object
-                eventAdded = new Event(eventName);
+                // If the Description QR code has not been generated, then an event must be created
+                if (!descriptionQRCodeGenerated) {
+                    // Create an Event object
+                    eventAdded = new Event(eventName);
+                }
+
+                if (qrCodeListener != null) {
+                    qrCodeListener.onQRCodeGenerated(eventQRBitmap);
+                }
 
                 if (getActivity() instanceof OnEventAddedListener) {
                     // Pass the event name and listener to handle the QR code bitmap
@@ -121,42 +127,36 @@ public class OrganizerCreateEventFragment extends DialogFragment {
             }
         });
 
+        // This QR Code is for attendees to view the Event details
         generateDescriptionQRButton.setOnClickListener(v -> {
+            // Only create 1 QR Code
             if (!descriptionQRCodeGenerated) {
-                // Check In QR Code must be generated first because it adds the event
-                if (qRCodeGenerated) {
-                    if (eventAdded != null) {
-                        // Create Event Description QR Code
-                        MultiFormatWriter writer = new MultiFormatWriter();
-                        Log.d("DescriptionQRCode", "Made it passed 1.");
+                eventName = organizerCreateEventName.getText().toString().trim();
 
-                        try {
-                            BitMatrix matrix = writer.encode(eventAdded.getEventName(), BarcodeFormat.QR_CODE, 400, 400);
-                            Log.d("DescriptionQRCode", "Made it passed 2.");
-                            BarcodeEncoder encoder = new BarcodeEncoder();
-                            Log.d("DescriptionQRCode", "Made it passed 3.");
-                            descriptionQRBitmap = encoder.createBitmap(matrix);
-                            Log.d("DescriptionQRCode", "Made it passed 4.");
-
-                        } catch (WriterException e) {
-                            Log.d("DescriptionQRCode", "Made it passed 5.");
-                            e.printStackTrace();
-                        }
-
-                        Log.d("DescriptionQRCode", "Made it passed 6.");
-
-                        eventAdded.setEventQRBitmap(eventQRBitmap);
-                        Log.d("DescriptionQRCode", "Made it passed 7.");
-                        descriptionQRCode.setImageBitmap(descriptionQRBitmap);
-                        Log.d("DescriptionQRCode", "Made it passed 8.");
-                        descriptionQRCodeGenerated = true;
-                        Log.d("DescriptionQRCode", "Made it passed 9.");
-                    } else {
-                        Toast.makeText(getActivity(), "Please generate Check In QR Code first.", Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    Toast.makeText(getActivity(), "Please generate Check In QR Code first.", Toast.LENGTH_SHORT).show();
+                if (eventName.isEmpty()) {
+                    // Show a message to the user indicating that they need to enter an event name
+                    Toast.makeText(getActivity(), "Please enter an Event name. Every QR Code must be associated with an Event name.", Toast.LENGTH_SHORT).show();
+                    return; // Exit the method
                 }
+
+                // Create an Event object
+                eventAdded = new Event(eventName);
+
+                // Create Event Description QR Code
+                MultiFormatWriter writer = new MultiFormatWriter();
+
+                try {
+                    BitMatrix matrix = writer.encode(eventAdded.getEventName(), BarcodeFormat.QR_CODE, 400, 400);
+                    BarcodeEncoder encoder = new BarcodeEncoder();
+                    descriptionQRBitmap = encoder.createBitmap(matrix);
+
+                } catch (WriterException e) {
+                    e.printStackTrace();
+                }
+
+                eventAdded.setEventQRBitmap(eventQRBitmap);
+                descriptionQRCode.setImageBitmap(descriptionQRBitmap);
+                descriptionQRCodeGenerated = true;
             }
         });
 
