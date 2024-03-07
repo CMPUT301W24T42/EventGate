@@ -23,7 +23,7 @@ import com.example.eventgate.R;
  * A fragment for creating a new event.
  */
 public class OrganizerCreateEventFragment extends DialogFragment {
-    private Boolean qRCOdeGenerated = false;
+    private Boolean qRCodeGenerated = false;
     private Bitmap eventQRBitmap;
     private OnQRCodeGeneratedListener qrCodeListener;
 
@@ -81,28 +81,31 @@ public class OrganizerCreateEventFragment extends DialogFragment {
         Button generateQRButton = view.findViewById(R.id.generateQRButton);
 
         generateQRButton.setOnClickListener(v -> {
-            String eventName = organizerCreateEventName.getText().toString().trim();
+            // Only generate one QR Code
+            if (!qRCodeGenerated) {
+                String eventName = organizerCreateEventName.getText().toString().trim();
 
-            if (qrCodeListener != null) {
-                qrCodeListener.onQRCodeGenerated(eventQRBitmap);
-            }
+                if (qrCodeListener != null) {
+                    qrCodeListener.onQRCodeGenerated(eventQRBitmap);
+                }
 
-            // Check if the eventName is empty or null
-            if (eventName.isEmpty()) {
-                // Show a message to the user indicating that they need to enter an event name
-                Toast.makeText(getActivity(), "Please enter an Event name. A QR Code must be associated with an Event name.", Toast.LENGTH_SHORT).show();
-                return; // Exit the method
-            }
+                // Check if the eventName is empty or null
+                if (eventName.isEmpty()) {
+                    // Show a message to the user indicating that they need to enter an event name
+                    Toast.makeText(getActivity(), "Please enter an Event name. A QR Code must be associated with an Event name.", Toast.LENGTH_SHORT).show();
+                    return; // Exit the method
+                }
 
-            // Create an Event object
-            Event event = new Event(eventName);
+                // Create an Event object
+                Event event = new Event(eventName);
 
-            if (getActivity() instanceof OnEventAddedListener) {
-                // Pass the event name and listener to handle the QR code bitmap
-                ((OnEventAddedListener) getActivity()).onEventAdded(event, eventQRBitmap -> {
-                    qRCode.setImageBitmap(eventQRBitmap);
-                    qRCOdeGenerated = true;
-                });
+                if (getActivity() instanceof OnEventAddedListener) {
+                    // Pass the event name and listener to handle the QR code bitmap
+                    ((OnEventAddedListener) getActivity()).onEventAdded(event, eventQRBitmap -> {
+                        qRCode.setImageBitmap(eventQRBitmap);
+                        qRCodeGenerated = true;
+                    });
+                }
             }
         });
 
@@ -112,7 +115,7 @@ public class OrganizerCreateEventFragment extends DialogFragment {
             String eventName = organizerCreateEventName.getText().toString().trim();
 
             // Check if the QR code has been generated
-            if (!qRCOdeGenerated) {
+            if (!qRCodeGenerated) {
                 // Show a message to the user indicating that they need to generate a QR code
                 Toast.makeText(getActivity(), "Please generate a QR Code. An Event must be associated with a QR Code.", Toast.LENGTH_SHORT).show();
                 return; // Exit the method
