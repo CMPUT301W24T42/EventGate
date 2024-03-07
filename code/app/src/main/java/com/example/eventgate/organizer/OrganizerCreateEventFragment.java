@@ -18,8 +18,6 @@ import androidx.annotation.Nullable;
 
 import com.example.eventgate.event.Event;
 import com.example.eventgate.R;
-import com.google.firebase.firestore.util.Listener;
-import com.google.zxing.MultiFormatWriter;
 
 /**
  * A fragment for creating a new event.
@@ -31,11 +29,16 @@ public class OrganizerCreateEventFragment extends DialogFragment {
 
     /**
      * Interface definition for a callback to be invoked when an event is added.
+     * Implementing classes must define the behavior to be executed when an event is added.
      */
     public interface OnEventAddedListener {
         Bitmap onEventAdded(Event event, OnQRCodeGeneratedListener listener);
     }
 
+    /**
+     * Interface definition for a callback to be invoked when a QR code bitmap is generated.
+     * Implementing classes must define the behavior to be executed when a QR code bitmap is generated.
+     */
     public interface OnQRCodeGeneratedListener {
         void onQRCodeGenerated(Bitmap qrBitmap);
     }
@@ -43,11 +46,17 @@ public class OrganizerCreateEventFragment extends DialogFragment {
     /**
      * Sets the event added listener for this fragment.
      *
-     * @param listener The listener to be set.
+     * @param listener      The listener to be set.
+     * @param qrCodeListener The listener for QR code generation.
      */
     public void setOnEventAddedListener(OnEventAddedListener listener, OnQRCodeGeneratedListener qrCodeListener) {
     }
 
+    /**
+     * Sets the QR code generated listener for this fragment.
+     *
+     * @param listener The listener to be set.
+     */
     public void setOnQRCodeGeneratedListener(OnQRCodeGeneratedListener listener) {
         this.qrCodeListener = listener;
     }

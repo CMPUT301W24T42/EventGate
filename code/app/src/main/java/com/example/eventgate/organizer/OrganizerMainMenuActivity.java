@@ -12,7 +12,6 @@ import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.eventgate.Firebase;
 import com.example.eventgate.event.Event;
 import com.example.eventgate.event.EventDB;
 import com.example.eventgate.R;
@@ -96,12 +95,20 @@ public class OrganizerMainMenuActivity extends AppCompatActivity implements Orga
         return eventQRBitmap;
     }
 
+    /**
+     * Callback method invoked when a QR code bitmap is generated.
+     *
+     * @param qrBitmap The generated QR code bitmap.
+     */
     @Override
     public void onQRCodeGenerated(Bitmap qrBitmap) {
         ImageView qRCodeImageView = findViewById(R.id.organizerCreateEventQRCode);
         qRCodeImageView.setImageBitmap(qrBitmap);
     }
 
+    /**
+     * Updates the list of organizer events by fetching data from Firebase.
+     */
     private void updateOrganizerEvents() {
         FirebaseInstallations.getInstance().getId().addOnSuccessListener(id -> {
             CompletableFuture<ArrayList<Event>> attendeeEvents = new EventDB().getOrganizerEvents(id);
