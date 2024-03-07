@@ -109,7 +109,7 @@ public class OrganizerMainMenuActivity extends AppCompatActivity implements Orga
     /**
      * Updates the list of organizer events by fetching data from Firebase.
      */
-    private void updateOrganizerEvents() {
+    public void updateOrganizerEvents() {
         FirebaseInstallations.getInstance().getId().addOnSuccessListener(id -> {
             CompletableFuture<ArrayList<Event>> attendeeEvents = new EventDB().getOrganizerEvents(id);
             attendeeEvents.thenAccept(r -> {
