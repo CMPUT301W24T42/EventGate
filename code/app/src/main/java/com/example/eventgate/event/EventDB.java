@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.util.Log;
 
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.ByteArrayOutputStream;
@@ -15,6 +16,8 @@ import com.example.eventgate.MainActivity;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.installations.FirebaseInstallations;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
@@ -77,8 +80,9 @@ public class EventDB {
      * Adds an organizer event to the database.
      *
      * @param event         The event object containing details of the event.
+     * @param deviceId      The organizer's firebase installation id
      */
-    public Bitmap AddOrganizerEvent(Event event) {
+    public Bitmap AddOrganizerEvent(Event event, String deviceId) {
         String eventId = collection.document().getId();
         event.setEventId(eventId);
 
@@ -107,12 +111,12 @@ public class EventDB {
             byteArrayAsList.add((int) b);
         }
 
-        HashMap<String, String> data = new HashMap<>();
+        HashMap<String, Object> data = new HashMap<>();
         data.put("eventId", event.getEventId());
         data.put("name", event.getEventName());
         data.put("checkInQRCode", byteArrayAsList.toString());
-        data.put("organizer", ""); // Set organizer field to blank
-        data.put("attendees", ""); // Set attendees field to blank
+        data.put("organizer", deviceId); // Set organizer field to firebase installation id
+        data.put("attendees", new ArrayList<String>()); // Set attendees field to blank
 
         collection
                 .document(eventId)
@@ -208,5 +212,36 @@ public class EventDB {
                 .delete()
                 .addOnSuccessListener(unused -> Log.d(TAG, "Event has been deleted successfully"))
                 .addOnFailureListener(e -> Log.d(TAG, "Error deleting event" + e));
+    }
+
+    /**
+     * Returns a reference to the Events collection
+     * @return the Events collection
+     */
+    public CollectionReference getCollection() {
+        return collection;
+    }
+
+    /**
+     * Get a list of events that an organizer has created given their firebase installation id
+     * @param deviceId organizer's firebase installation id
+     * @return CompleteableFuture of Arraylist of Events
+     * */
+    public CompletableFuture<ArrayList<Event>> getOrganizerEvents(String deviceId) {
+        CompletableFuture<ArrayList<Event>> futureEvents = new CompletableFuture<>();
+        ArrayList<Event> events = new ArrayList<>();
+        db.collection("events").whereEqualTo("organizer", deviceId).get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (queryDocumentSnapshots.isEmpty()) {  // If there is no matching deviceId, simply return
+                        return;
+                    }
+                    for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                        Event newEvent = new Event(doc.getString("name"));
+                        newEvent.setEventId(doc.getId());
+                        events.add(newEvent);
+                    }
+                    futureEvents.complete(events);
+                });
+        return futureEvents;
     }
 }
