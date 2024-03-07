@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,7 +25,7 @@ import java.util.concurrent.CompletableFuture;
  * Activity for the organizer's main menu.
  * Allows the organizer to view and manage events.
  */
-public class OrganizerMainMenuActivity extends AppCompatActivity implements OrganizerCreateEventFragment.OnEventAddedListener {
+public class OrganizerMainMenuActivity extends AppCompatActivity implements OrganizerCreateEventFragment.OnEventAddedListener, OrganizerCreateEventFragment.OnQRCodeGeneratedListener {
     Button createNewEventButton;
     Button organizerMainMenuBackButton;
     ArrayList<Event> eventDataList;
@@ -55,7 +56,7 @@ public class OrganizerMainMenuActivity extends AppCompatActivity implements Orga
 
         createNewEventButton.setOnClickListener(v -> {
             OrganizerCreateEventFragment dialogFragment = new OrganizerCreateEventFragment();
-            dialogFragment.setOnEventAddedListener(this);
+            dialogFragment.setOnEventAddedListener(this, this);
             dialogFragment.show(getSupportFragmentManager(), "popup_dialog");
         });
 
@@ -81,7 +82,7 @@ public class OrganizerMainMenuActivity extends AppCompatActivity implements Orga
      * @param event The event to be added.
      */
     @Override
-    public Bitmap onEventAdded(Event event) {
+    public Bitmap onEventAdded(Event event, OrganizerCreateEventFragment.OnQRCodeGeneratedListener qrCodeListener) {
         eventDataList.add(event);
         eventAdapter.notifyDataSetChanged();
 
@@ -89,9 +90,16 @@ public class OrganizerMainMenuActivity extends AppCompatActivity implements Orga
         EventDB eventDB = new EventDB();
         FirebaseInstallations.getInstance().getId().addOnSuccessListener(id -> {
             eventQRBitmap = eventDB.AddOrganizerEvent(event, id);
+            qrCodeListener.onQRCodeGenerated(eventQRBitmap);
         });
 
         return eventQRBitmap;
+    }
+
+    @Override
+    public void onQRCodeGenerated(Bitmap qrBitmap) {
+        ImageView qRCodeImageView = findViewById(R.id.organizerCreateEventQRCode);
+        qRCodeImageView.setImageBitmap(qrBitmap);
     }
 
     private void updateOrganizerEvents() {

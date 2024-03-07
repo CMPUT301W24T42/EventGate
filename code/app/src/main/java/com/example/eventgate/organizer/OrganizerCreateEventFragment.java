@@ -18,6 +18,7 @@ import androidx.annotation.Nullable;
 
 import com.example.eventgate.event.Event;
 import com.example.eventgate.R;
+import com.google.firebase.firestore.util.Listener;
 import com.google.zxing.MultiFormatWriter;
 
 /**
@@ -26,13 +27,31 @@ import com.google.zxing.MultiFormatWriter;
 public class OrganizerCreateEventFragment extends DialogFragment {
     private Boolean qRCOdeGenerated = false;
     private Bitmap eventQRBitmap;
+    private OnQRCodeGeneratedListener qrCodeListener;
 
     /**
      * Interface definition for a callback to be invoked when an event is added.
      */
     public interface OnEventAddedListener {
-        Bitmap onEventAdded(Event event);
+        Bitmap onEventAdded(Event event, OnQRCodeGeneratedListener listener);
     }
+
+    public interface OnQRCodeGeneratedListener {
+        void onQRCodeGenerated(Bitmap qrBitmap);
+    }
+
+    /**
+     * Sets the event added listener for this fragment.
+     *
+     * @param listener The listener to be set.
+     */
+    public void setOnEventAddedListener(OnEventAddedListener listener, OnQRCodeGeneratedListener qrCodeListener) {
+    }
+
+    public void setOnQRCodeGeneratedListener(OnQRCodeGeneratedListener listener) {
+        this.qrCodeListener = listener;
+    }
+
 
     /**
      * Called to create the dialog shown in this fragment.
@@ -53,10 +72,11 @@ public class OrganizerCreateEventFragment extends DialogFragment {
         Button generateQRButton = view.findViewById(R.id.generateQRButton);
 
         generateQRButton.setOnClickListener(v -> {
-
-            // Create a QR code based on the event name entered
-            MultiFormatWriter writer = new MultiFormatWriter();
             String eventName = organizerCreateEventName.getText().toString().trim();
+
+            if (qrCodeListener != null) {
+                qrCodeListener.onQRCodeGenerated(eventQRBitmap);
+            }
 
             // Check if the eventName is empty or null
             if (eventName.isEmpty()) {
@@ -69,12 +89,12 @@ public class OrganizerCreateEventFragment extends DialogFragment {
             Event event = new Event(eventName);
 
             if (getActivity() instanceof OnEventAddedListener) {
-                eventQRBitmap = ((OnEventAddedListener) getActivity()).onEventAdded(event); // Pass the event name to the activity
+                // Pass the event name and listener to handle the QR code bitmap
+                ((OnEventAddedListener) getActivity()).onEventAdded(event, eventQRBitmap -> {
+                    qRCode.setImageBitmap(eventQRBitmap);
+                    qRCOdeGenerated = true;
+                });
             }
-
-            qRCode.setImageBitmap(eventQRBitmap);
-            qRCOdeGenerated = true;
-
         });
 
         // Set up behavior for continue button
@@ -107,13 +127,5 @@ public class OrganizerCreateEventFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setView(view); // Set the custom layout
         return builder.create();
-    }
-
-    /**
-     * Sets the event added listener for this fragment.
-     *
-     * @param listener The listener to be set.
-     */
-    public void setOnEventAddedListener(OnEventAddedListener listener) {
     }
 }
