@@ -3,7 +3,6 @@ package com.example.eventgate.event;
 import android.graphics.Bitmap;
 import android.util.Log;
 
-import com.example.eventgate.MainActivity;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
