@@ -27,6 +27,9 @@ import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 /**
  * A fragment for creating a new event.
+ * This fragment provides functionality for organizers to create new events by generating QR codes for check-in and event description.
+ * It communicates with the parent activity to handle event addition and updates the UI accordingly.
+ * Outstanding issues: When a description QR Code is generated, it is not being added to the database.
  */
 public class OrganizerCreateEventFragment extends DialogFragment {
     private Boolean qRCodeGenerated = false;

@@ -22,7 +22,9 @@ import java.util.concurrent.CompletableFuture;
 
 /**
  * Activity for the organizer's main menu.
- * Allows the organizer to view and manage events.
+ * Allows the organizer to view and manage events, including creating new events and editing existing ones.
+ * It utilizes fragments for creating new events and communicates with Firebase for event data management.
+ * Outstanding issues: There are no outstanding issues currently known.
  */
 public class OrganizerMainMenuActivity extends AppCompatActivity implements OrganizerCreateEventFragment.OnEventAddedListener, OrganizerCreateEventFragment.OnQRCodeGeneratedListener {
     Button createNewEventButton;
@@ -79,6 +81,8 @@ public class OrganizerMainMenuActivity extends AppCompatActivity implements Orga
      * Callback method to handle the addition of a new event.
      *
      * @param event The event to be added.
+     * @param qrCodeListener The listener to handle QR code generation.
+     * @return Bitmap containing QR code for the added event.
      */
     @Override
     public Bitmap onEventAdded(Event event, OrganizerCreateEventFragment.OnQRCodeGeneratedListener qrCodeListener) {
