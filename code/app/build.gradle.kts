@@ -52,4 +52,6 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-intents:3.4.0")
     implementation("com.journeyapps:zxing-android-embedded:4.1.0")
     implementation("com.google.zxing:core:3.3.3")
+    implementation("com.google.firebase:firebase-storage:19.2.0")
+    implementation("com.squareup.picasso:picasso:2.71828")
 }
