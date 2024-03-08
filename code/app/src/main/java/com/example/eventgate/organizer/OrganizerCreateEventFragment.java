@@ -165,7 +165,13 @@ public class OrganizerCreateEventFragment extends DialogFragment {
             // Check if the QR code has been generated
             if (!qRCodeGenerated) {
                 // Show a message to the user indicating that they need to generate a QR code
-                Toast.makeText(getActivity(), "Please generate a QR Code. An Event must be associated with a QR Code.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Please generate both QR Codes. An Event must be associated with both QR Codes.", Toast.LENGTH_SHORT).show();
+                return; // Exit the method
+            }
+
+            if (!descriptionQRCodeGenerated) {
+                // Show a message to the user indicating that they need to generate a QR code
+                Toast.makeText(getActivity(), "Please generate both QR Codes. An Event must be associated with both QR Codes.", Toast.LENGTH_SHORT).show();
                 return; // Exit the method
             }
 
