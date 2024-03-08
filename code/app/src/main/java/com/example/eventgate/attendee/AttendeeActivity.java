@@ -390,10 +390,7 @@ public class AttendeeActivity extends AppCompatActivity {
             CompletableFuture<ArrayList<Event>> attendeeEvents = new EventDB().getAttendeeEvents(id);
             attendeeEvents.thenAccept(r -> {
                 eventDataList.clear();
-                for (Event e : r) {
-                    eventDataList.add(0, e);
-                    Log.w("eventtest", e.toString());
-                }
+                eventDataList.addAll(r);
                 eventAdapter.notifyDataSetChanged();
             });
         });

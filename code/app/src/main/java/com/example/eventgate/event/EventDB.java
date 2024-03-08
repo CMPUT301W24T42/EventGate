@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.util.Log;
 
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.ByteArrayOutputStream;
@@ -148,8 +149,8 @@ public class EventDB {
                         updates = new HashMap<>();
                         ArrayList<String> eventAttendees = (ArrayList<String>) documentSnapshot.get("attendees");
                         eventAttendees.add(attendee.getId());
-                        updates.put("attendees", attendeeEvents);
-                        db.collection("events").document(attendee.getId()).update(updates);
+                        updates.put("attendees", eventAttendees);
+                        db.collection("events").document(eventId).update(updates);
                         futureResult.complete(0);
                     }
                 });
@@ -177,30 +178,19 @@ public class EventDB {
             DocumentSnapshot attendee = queryDocumentSnapshots.getDocuments().get(0);
             ArrayList<String> attendeeEvents = (ArrayList<String>) attendee.get("events");
 
-            if (attendeeEvents.size() == 0) {  // If it's a singleton or less, simply return
+            if (attendeeEvents.size() == 0) {  // If it's empty, simply return
                 return;
             }
-            for (String eventId : attendeeEvents) {
-                if (eventId.equals("")) {
-                    if (eventId.equals(attendeeEvents.get(attendeeEvents.size() - 1))) {
-                        futureEvents.complete(events);
-                    }
-                    continue;
-                }
-                db.collection("events").document(eventId.trim()).get().addOnSuccessListener(documentSnapshot -> {
-                    String eventName = documentSnapshot.getString("name");
-
+            attendeeEvents.removeIf(String::isEmpty);
+            db.collection("events").whereIn(FieldPath.documentId(), attendeeEvents).get().addOnSuccessListener(queryResults -> {
+                for (QueryDocumentSnapshot queryResult: queryResults) {
+                    String eventName = queryResult.getString("name");
                     Event event = new Event(eventName);
-                    event.setEventId(eventId);
-                    events.add(0, event);
-
-
-                    // Check if this is the last event, if so, complete
-                    if (eventId.equals(attendeeEvents.get(attendeeEvents.size() - 1))) {
-                        futureEvents.complete(events);
-                    }
-                });
-            }
+                    event.setEventId(queryResult.getId());
+                    events.add(event);
+                }
+                futureEvents.complete(events);
+            });
         });
         return futureEvents;
     }
