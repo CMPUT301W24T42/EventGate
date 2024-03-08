@@ -9,7 +9,7 @@
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="0dp"
-        android:layout_height="425dp"
+        android:layout_height="500dp"
         android:layout_marginBottom="30dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -37,13 +37,13 @@
             android:inputType="text" />
 
         <EditText
-            android:id="@+id/organizerCreateEventDescription"
+            android:id="@+id/eventDetailsEdittext"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="80dp"
+            android:inputType="textMultiLine"
             android:autofillHints=""
-            android:ems="10"
-            android:hint="@string/event_description"
-            android:inputType="text" />
+            android:hint="Event Details"
+            />
 
         <ImageView
             android:id="@+id/organizerEventDescriptionQRCode"
