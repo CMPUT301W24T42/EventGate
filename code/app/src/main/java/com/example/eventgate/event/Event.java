@@ -16,6 +16,10 @@ public class Event {
      */
     private String eventName;
     /**
+     * Holds the event description
+     */
+    private String eventDescription;
+    /**
      * Holds the Bitmap of the check in QR Code.
      */
     private Bitmap eventQRBitmap;
@@ -54,7 +58,8 @@ public class Event {
     public void setEventName(String eventName) {
         this.eventName = eventName;
     }
-
+    public String getEventDescription() { return eventDescription; }
+    public void setEventDescription(String eventDescription) { this.eventDescription = eventDescription; }
     public String getEventId() {
         return eventId;
     }
