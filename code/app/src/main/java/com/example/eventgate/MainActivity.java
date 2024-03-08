@@ -72,10 +72,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        // Check if user is signed in (non-null) and update UI accordingly.
 
         mAuth = db.getmAuth();
 
-        // Check if user is signed in (non-null) and update UI accordingly.
         if (mAuth.getCurrentUser() == null) {
             signInUser();
         }

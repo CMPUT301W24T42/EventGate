@@ -4,8 +4,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 
 import com.example.eventgate.event.Event;
 
@@ -15,8 +16,8 @@ import java.util.ArrayList;
  * Adapter for displaying a list of events.
  */
 public class EventListAdapter extends ArrayAdapter<Event> {
-    private Context context;
-    private ArrayList<Event> events;
+    private final Context context;
+    private final ArrayList<Event> events;
 
     /**
      * Constructs a new EventListAdapter.
@@ -70,8 +71,9 @@ public class EventListAdapter extends ArrayAdapter<Event> {
      * @param parent      The parent view that this view will eventually be attached to.
      * @return A View corresponding to the event at the specified position.
      */
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         if (convertView == null) {
             convertView = LayoutInflater.from(context).inflate(android.R.layout.simple_list_item_1, parent, false);
         }

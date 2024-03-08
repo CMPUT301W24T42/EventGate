@@ -189,7 +189,13 @@ public class EventDB {
             }
             for (String eventId : attendeeEvents.subList(0, attendeeEvents.size() - 1)) {
                 db.collection("events").document(eventId.trim()).get().addOnSuccessListener(documentSnapshot -> {
-                    events.add(0, new Event(documentSnapshot.getString("name")));
+                    String eventName = documentSnapshot.getString("name");
+
+                    Event event = new Event(eventName);
+                    event.setEventId(eventId);
+                    events.add(0, event);
+
+
                     // Check if this is the last event, if so, complete
                     if (eventId.equals(attendeeEvents.get(attendeeEvents.size() - 2))) {
                         futureEvents.complete(events);
@@ -263,5 +269,30 @@ public class EventDB {
                     futureEvents.complete(events);
                 });
         return futureEvents;
+    }
+
+    //finds all attendees of an event
+    public CompletableFuture<List<String>> getAttendeesForEvent(String eventId) {
+        CompletableFuture<List<String>> allAttendees = new CompletableFuture<>();
+
+        collection.document(eventId).get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                List<String> attendees = (List<String>) documentSnapshot.get("attendees");
+                if (attendees != null) {
+                    allAttendees.complete(attendees);
+                } else {
+                    // if empty
+                    allAttendees.complete(new ArrayList<>());
+                }
+            } else {
+                Log.d(TAG, "Missing event with id: " + eventId);
+                allAttendees.completeExceptionally(new Exception("No such document"));
+            }
+        }).addOnFailureListener(e -> {
+            Log.d(TAG, "Error getting document: ", e);
+            allAttendees.completeExceptionally(e);
+        });
+
+        return allAttendees;
     }
 }
