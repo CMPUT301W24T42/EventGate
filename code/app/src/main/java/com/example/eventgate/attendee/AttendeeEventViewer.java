@@ -2,16 +2,28 @@ package com.example.eventgate.attendee;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager.widget.ViewPager;
+
 import com.example.eventgate.R;
 import com.example.eventgate.event.EventDB;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-
+//citations
+//https://www.geeksforgeeks.org/how-to-use-picasso-image-loader-library-in-android/
 public class AttendeeEventViewer extends AppCompatActivity {
 
 
@@ -37,6 +49,8 @@ public class AttendeeEventViewer extends AppCompatActivity {
         }
 
         //eventID = "t4sVMhhFRrZIO7VjulOd";
+
+        displayEventPosters(eventID);
 
         TextView eventNameTitle = findViewById(R.id.eventNameTitle);
         eventNameTitle.setText(eventName);
@@ -69,26 +83,38 @@ public class AttendeeEventViewer extends AppCompatActivity {
             }
         });
 
-        //test getattendees
-        System.out.println(eventID);
-        CompletableFuture<List<String>> attendeesFuture = new EventDB().getAttendeesForEvent(eventID);
-
-        // When the CompletableFuture completes, print the attendees
-        attendeesFuture.thenAccept(attendees -> {
-            attendees.forEach(System.out::println); // This will print each attendee to the console
-        }).exceptionally(e -> {
-            System.out.println("Failed to fetch attendees: " + e.getMessage());
-            e.printStackTrace();
-            return null;
-        });
-
-
-
-
-
-
 
 
 
     }
+    private void displayEventPosters(String eventId) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        List<String> posterImageUrls = new ArrayList<>();
+
+        db.collection("events").document(eventId).collection("posters")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+
+                                String imageUrl = document.getString("url");
+                                posterImageUrls.add(imageUrl);
+                            }
+
+                            setupViewPager(posterImageUrls);
+                        } else {
+                            Log.w("test", "Error getting documents.", task.getException());
+                        }
+                    }
+                });
+    }
+
+    private void setupViewPager(List<String> posterImageUrls) {
+        ViewPager viewPager = findViewById(R.id.viewPager);
+        PosterPagerAdapter adapter = new PosterPagerAdapter(this, posterImageUrls);
+        viewPager.setAdapter(adapter);
+    }
+
 }

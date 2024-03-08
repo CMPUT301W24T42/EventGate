@@ -3,13 +3,16 @@
 package com.example.eventgate.organizer;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,7 +29,17 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import java.util.ArrayList;
-
+import java.util.HashMap;
+import java.util.Map;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import android.net.Uri;
+import android.util.Log;
+import android.widget.Toast;
+import androidx.annotation.NonNull;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.FirebaseFirestore;
 /**
  * Activity for the organizer's event page.
  * Allows the organizer to view and edit a given event.
@@ -34,13 +47,14 @@ import java.util.ArrayList;
 public class OrganizerEventEditorActivity extends AppCompatActivity {
 
     private TextView eventTitle;
-    private Button backButton;
+    private Button backButton, uploadPosterButton;
 
     private String eventId;
     private DocumentReference eventRef;
     ArrayList<String> attendeeDataList;
     ListView attendeeList;
     ArrayAdapter<String> attendeeAdapter;
+    private static final int PICK_IMAGE_REQUEST = 1;
 
     /**
      * Called when the activity is starting.
@@ -92,6 +106,15 @@ public class OrganizerEventEditorActivity extends AppCompatActivity {
                 }
             });
         }
+
+        uploadPosterButton = findViewById(R.id.button_upload_poster);
+        uploadPosterButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                initiateImageUploadProcess();
+            }
+        });
+
         
         backButton = findViewById(R.id.OrganizerEditBackButton);
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -101,4 +124,53 @@ public class OrganizerEventEditorActivity extends AppCompatActivity {
             }
         });
     }
+
+
+    //these 5 functions handle storing uploaded photos
+    private void initiateImageUploadProcess() {
+        //  Open File Chooser
+        openFileChooser();
+    }
+
+    private void openFileChooser() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(intent, PICK_IMAGE_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            Uri imageUri = data.getData();
+            //Upload Image to Firebase
+            uploadImageToFirebase(imageUri);
+        }
+    }
+
+    private void uploadImageToFirebase(Uri imageUri) {
+
+        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+        StorageReference fileReference = storageRef.child("images/" + System.currentTimeMillis() + ".jpg");
+
+        fileReference.putFile(imageUri)
+                .addOnSuccessListener(taskSnapshot -> fileReference.getDownloadUrl().addOnSuccessListener(uri -> {
+                    String downloadUrl = uri.toString();
+
+                    saveImageReferenceInFirestore(downloadUrl);
+                    Toast.makeText(OrganizerEventEditorActivity.this, "Upload successful", Toast.LENGTH_SHORT).show();
+                }))
+                .addOnFailureListener(e -> Toast.makeText(OrganizerEventEditorActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show());
+    }
+
+    private void saveImageReferenceInFirestore(String downloadUrl) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        Map<String, Object> poster = new HashMap<>();
+        poster.put("url", downloadUrl);
+
+
+        db.collection("events").document(eventId).collection("posters").add(poster)
+                .addOnSuccessListener(documentReference -> Log.d("TAG", "DocumentSnapshot added with ID: " + documentReference.getId()))
+                .addOnFailureListener(e -> Log.w("TAG", "Error adding document", e));
+    }
+
 }
