@@ -60,11 +60,13 @@ public class AttendeeEventViewer extends AppCompatActivity {
             alertsDataList = (ArrayList<OrganizerAlert>) extras.getSerializable("alerts");
         }
 
+
         alertsList = findViewById(R.id.alertList);
         alertsAdapter = new AlertListAdapter(this, alertsDataList);
         alertsList.setAdapter(alertsAdapter);
 
         //eventID = "t4sVMhhFRrZIO7VjulOd";
+
 
         displayEventPosters(eventID);
 
