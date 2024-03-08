@@ -7,18 +7,10 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import java.util.ArrayList;
 import android.content.Context;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.TextView;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import com.example.eventgate.event.Event;
 import com.example.eventgate.R;
 
-import java.util.ArrayList;
+
+
 
 /**
  * Adapter for Activity for attendee to view all participants of events they themselves are in

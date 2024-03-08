@@ -18,21 +18,63 @@ import androidx.annotation.Nullable;
 
 import com.example.eventgate.event.Event;
 import com.example.eventgate.R;
+import com.example.eventgate.event.EventDB;
+import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 /**
  * A fragment for creating a new event.
+ * This fragment provides functionality for organizers to create new events by generating QR codes for check-in and event description.
+ * It communicates with the parent activity to handle event addition and updates the UI accordingly.
+ * Outstanding issues: When a description QR Code is generated, it is not being added to the database.
  */
 public class OrganizerCreateEventFragment extends DialogFragment {
-    private Boolean qRCOdeGenerated = false;
+    private Boolean qRCodeGenerated = false;
+    private Boolean descriptionQRCodeGenerated = false;
     private Bitmap eventQRBitmap;
+    private Bitmap descriptionQRBitmap;
+    private OnQRCodeGeneratedListener qrCodeListener;
+    private Event eventAdded;
+    private String eventName;
+    private String eventDescription;
 
     /**
      * Interface definition for a callback to be invoked when an event is added.
+     * Implementing classes must define the behavior to be executed when an event is added.
      */
     public interface OnEventAddedListener {
-        Bitmap onEventAdded(Event event);
+        Bitmap onEventAdded(Event event, OnQRCodeGeneratedListener listener);
     }
+
+    /**
+     * Interface definition for a callback to be invoked when a QR code bitmap is generated.
+     * Implementing classes must define the behavior to be executed when a QR code bitmap is generated.
+     */
+    public interface OnQRCodeGeneratedListener {
+        void onQRCodeGenerated(Bitmap qrBitmap);
+    }
+
+    /**
+     * Sets the event added listener for this fragment.
+     *
+     * @param listener      The listener to be set.
+     * @param qrCodeListener The listener for QR code generation.
+     */
+    public void setOnEventAddedListener(OnEventAddedListener listener, OnQRCodeGeneratedListener qrCodeListener) {
+    }
+
+    /**
+     * Sets the QR code generated listener for this fragment.
+     *
+     * @param listener The listener to be set.
+     */
+    public void setOnQRCodeGeneratedListener(OnQRCodeGeneratedListener listener) {
+        this.qrCodeListener = listener;
+    }
+
 
     /**
      * Called to create the dialog shown in this fragment.
@@ -49,71 +91,137 @@ public class OrganizerCreateEventFragment extends DialogFragment {
         Button continueButton = view.findViewById(R.id.organizerCreateEventContinueButton);
         Button cancelButton = view.findViewById(R.id.organizerCreateEventCancelButton);
         EditText organizerCreateEventName = view.findViewById(R.id.organizerCreateEventName);
-        ImageView qRCode = view.findViewById(R.id.organizerCreateEventQRCode);
+
+        ImageView checkInQRCode = view.findViewById(R.id.organizerCreateEventQRCode);
+        ImageView descriptionQRCode = view.findViewById(R.id.organizerEventDescriptionQRCode);
         Button generateQRButton = view.findViewById(R.id.generateQRButton);
+        Button generateDescriptionQRButton = view.findViewById(R.id.generateDescriptionQRButton);
 
+        EditText eventDetailsEditText = view.findViewById(R.id.eventDetailsEdittext);
+
+
+        // This QR Code is for attendees to check in to the event
         generateQRButton.setOnClickListener(v -> {
+            // Only generate one QR Code
+            if (!qRCodeGenerated) {
+                eventName = organizerCreateEventName.getText().toString().trim();
 
-            // Create a QR code based on the event name entered
-            MultiFormatWriter writer = new MultiFormatWriter();
-            String eventName = organizerCreateEventName.getText().toString().trim();
 
-            // Check if the eventName is empty or null
-            if (eventName.isEmpty()) {
-                // Show a message to the user indicating that they need to enter an event name
-                Toast.makeText(getActivity(), "Please enter an Event name. A QR Code must be associated with an Event name.", Toast.LENGTH_SHORT).show();
-                return; // Exit the method
+                // Check if the eventName is empty or null
+                if (eventName.isEmpty()) {
+                    // Show a message to the user indicating that they need to enter an event name
+                    Toast.makeText(getActivity(), "Please enter an Event name. Every QR Code must be associated with an Event name.", Toast.LENGTH_SHORT).show();
+                    return; // Exit the method
+                }
+
+
+
+
+                // If the Description QR code has not been generated, then an event must be created
+                if (!descriptionQRCodeGenerated) {
+                    // Create an Event object
+                    eventAdded = new Event(eventName);
+
+                }
+
+                if (qrCodeListener != null) {
+                    qrCodeListener.onQRCodeGenerated(eventQRBitmap);
+                }
+
+                if (getActivity() instanceof OnEventAddedListener) {
+                    // Pass the event name and listener to handle the QR code bitmap
+                    ((OnEventAddedListener) getActivity()).onEventAdded(eventAdded, eventQRBitmap -> {
+                        checkInQRCode.setImageBitmap(eventQRBitmap);
+                        qRCodeGenerated = true;
+                    });
+                }
             }
-
-            // Create an Event object
-            Event event = new Event(eventName);
-
-            if (getActivity() instanceof OnEventAddedListener) {
-                eventQRBitmap = ((OnEventAddedListener) getActivity()).onEventAdded(event); // Pass the event name to the activity
-            }
-
-            qRCode.setImageBitmap(eventQRBitmap);
-            qRCOdeGenerated = true;
-
         });
 
-        // Set up behavior for continue button
+        // This QR Code is for attendees to view the Event details
+        generateDescriptionQRButton.setOnClickListener(v -> {
+            // Only create 1 QR Code
+            if (!descriptionQRCodeGenerated) {
+                eventName = organizerCreateEventName.getText().toString().trim();
+
+
+                if (eventName.isEmpty()) {
+                    // Show a message to the user indicating that they need to enter an event name
+                    Toast.makeText(getActivity(), "Please enter an Event name. Every QR Code must be associated with an Event name.", Toast.LENGTH_SHORT).show();
+                    return; // Exit the method
+                }
+
+
+
+                // Create an Event object
+                eventAdded = new Event(eventName);
+                String eventDetails = eventDetailsEditText.getText().toString();
+                eventAdded.setEventDetails(eventDetails);
+
+                // Create Event Description QR Code
+                MultiFormatWriter writer = new MultiFormatWriter();
+
+                try {
+                    BitMatrix matrix = writer.encode(eventAdded.getEventName(), BarcodeFormat.QR_CODE, 400, 400);
+                    BarcodeEncoder encoder = new BarcodeEncoder();
+                    descriptionQRBitmap = encoder.createBitmap(matrix);
+
+                } catch (WriterException e) {
+                    e.printStackTrace();
+                }
+
+                eventAdded.setEventQRBitmap(eventQRBitmap);
+
+                descriptionQRCode.setImageBitmap(descriptionQRBitmap);
+                descriptionQRCodeGenerated = true;
+            }
+        });
+
         continueButton.setOnClickListener(v -> {
-            // Handle continue button click
             String eventName = organizerCreateEventName.getText().toString().trim();
 
+
             // Check if the QR code has been generated
-            if (!qRCOdeGenerated) {
+            if (!qRCodeGenerated) {
                 // Show a message to the user indicating that they need to generate a QR code
-                Toast.makeText(getActivity(), "Please generate a QR Code. An Event must be associated with a QR Code.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Please generate both QR Codes. An Event must be associated with both QR Codes.", Toast.LENGTH_SHORT).show();
                 return; // Exit the method
             }
 
-            if (!eventName.isEmpty()) { // Check if the event name is not empty
-                dismiss(); // Close the dialog
-            } else {
+            if (!descriptionQRCodeGenerated) {
+                // Show a message to the user indicating that they need to generate a QR code
+                Toast.makeText(getActivity(), "Please generate both QR Codes. An Event must be associated with both QR Codes.", Toast.LENGTH_SHORT).show();
+                return; // Exit the method
+            }
+
+            if (eventName.isEmpty()) { // Check if the event name is not empty
                 // Show a toast message indicating that the event name cannot be empty
                 Toast.makeText(getActivity(), "Please enter a valid event name", Toast.LENGTH_SHORT).show();
             }
+
+
+            dismiss();
         });
 
-        // Set up behavior for cancel button
+
         cancelButton.setOnClickListener(v -> {
-            // Handle cancel button click
-            dismiss(); // Close the dialog
+            if (eventAdded != null) {
+                EventDB eventDB = new EventDB();
+
+
+                eventDB.removeEvent(eventAdded);
+
+                // Update the event list in the main activity
+                if (getActivity() instanceof OrganizerMainMenuActivity) {
+                    ((OrganizerMainMenuActivity) getActivity()).updateOrganizerEvents();
+                }
+            }
+            dismiss();
         });
 
         // Build the dialog
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setView(view); // Set the custom layout
         return builder.create();
-    }
-
-    /**
-     * Sets the event added listener for this fragment.
-     *
-     * @param listener The listener to be set.
-     */
-    public void setOnEventAddedListener(OnEventAddedListener listener) {
     }
 }

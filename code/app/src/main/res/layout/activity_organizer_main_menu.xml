@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/light_blue"
-    tools:context=".organizer.OrganizerMainMenuActivity">
+    tools:context=".organizer.OrganizerMainMenuActivity"
+    android:id="@+id/organizer_menu_layout">
 
     <LinearLayout
         android:id="@+id/eventContainer"
@@ -15,7 +16,7 @@
         android:layout_marginStart="30dp"
         android:layout_marginTop="87dp"
         android:layout_marginEnd="30dp"
-        android:layout_marginBottom="39dp"
+        android:layout_marginBottom="33dp"
         android:background="@drawable/list_rounded_corners"
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/CreateEventButton"
@@ -38,31 +39,36 @@
             android:id="@+id/EventListView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/EventListViewTitle"
             android:choiceMode="singleChoice" />
     </LinearLayout>
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/CreateEventButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="57dp"
-        android:backgroundTint="#E3DDDF"
-        android:text="@string/create_new_event"
-        android:textColor="#000000"
+        android:layout_marginBottom="62dp"
+        android:backgroundTint="@color/light_gray"
+        android:ems="8"
+        android:text="@string/create_event"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:cornerRadius="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/OrganizerMainMenuBackButton"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/eventContainer" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/OrganizerMainMenuBackButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="#E3DDDF"
+        android:backgroundTint="@color/light_gray"
+        android:ems="5"
         android:text="@string/back"
-        android:textColor="#000000"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:cornerRadius="0dp"
         app:layout_constraintBottom_toBottomOf="@+id/CreateEventButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"

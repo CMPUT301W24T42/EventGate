@@ -1,4 +1,4 @@
-package com.example.eventgate.organizer;
+package com.example.eventgate.attendee;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,32 +11,31 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.eventgate.R;
+import com.example.eventgate.event.Event;
+import com.example.eventgate.organizer.OrganizerAlert;
 
 import java.util.ArrayList;
 
-/**
- * An adapter for displaying the events an attendee is checked into
- */
-public class AttendeeListAdapter extends ArrayAdapter<String> {
-    private ArrayList<String> attendees;
+public class AlertListAdapter extends ArrayAdapter<OrganizerAlert> {
+    private ArrayList<OrganizerAlert> alerts;
     private Context context;
 
     /**
-     * Constructs a new AttendeeEventListAdapter.
+     * Constructs a new AlertListAdapter.
      *
      * @param context The context.
-     * @param attendees  The list of attendees to display
+     * @param alerts  The list of alerts to be displayed.
      */
-    public AttendeeListAdapter(Context context, ArrayList<String> attendees) {
-        super(context, 0, attendees);
-        this.attendees = attendees;
+    public AlertListAdapter(Context context, ArrayList<OrganizerAlert> alerts) {
+        super(context, 0, alerts);
+        this.alerts = alerts;
         this.context = context;
     }
 
     /**
-     * Returns a view that displays the event at the specified position in the list.
+     * Returns a view that displays the alert at the specified position in the list.
      *
-     * @param position    The position of the event in the list.
+     * @param position    The position of the alert in the list.
      * @param convertView The old view to reuse, if possible.
      * @param parent      The parent view that this view will eventually be attached to.
      * @return A View corresponding to the event at the specified position.
@@ -45,15 +44,15 @@ public class AttendeeListAdapter extends ArrayAdapter<String> {
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.attendee_events_list, parent,
+            convertView = LayoutInflater.from(context).inflate(R.layout.attendee_alerts_list, parent,
                     false);
         }
 
-        String attendee = attendees.get(position);
+        OrganizerAlert alert = alerts.get(position);
 
-        TextView eventName = convertView.findViewById(R.id.event_name);
+        TextView alertTitle = convertView.findViewById(R.id.alert_title);
 
-        eventName.setText(attendee);
+        alertTitle.setText(alert.getTitle());
 
         return convertView;
     }

@@ -2,6 +2,10 @@ package com.example.eventgate.event;
 
 import android.graphics.Bitmap;
 
+import com.example.eventgate.organizer.OrganizerAlert;
+
+import java.util.ArrayList;
+
 public class Event {
     /**
      * Holds the document id for the event
@@ -11,7 +15,25 @@ public class Event {
      * Holds the name of the event
      */
     private String eventName;
+    /**
+     * Holds the event description
+     */
+    private String eventDescription;
+    /**
+     * Holds the Bitmap of the check in QR Code.
+     */
     private Bitmap eventQRBitmap;
+    /**
+     * Holds the Bitmap of the event description QR Code.
+     */
+    private Bitmap descriptionQRBitmap;
+    private ArrayList<OrganizerAlert> alerts;
+
+
+    /**
+     * Holds the details of the event
+     */
+    private String eventDetails;
 
     /**
      * Constructs an Event
@@ -19,8 +41,16 @@ public class Event {
      */
     public Event(String eventName) {
         this.eventName = eventName;
+        this.alerts = new ArrayList<>();
     }
 
+    public String getEventDetails() {
+        return eventDetails;
+    }
+
+    public void setEventDetails(String eventDetails) {
+        this.eventDetails = eventDetails;
+    }
     public String getEventName() {
         return eventName;
     }
@@ -28,13 +58,14 @@ public class Event {
     public void setEventName(String eventName) {
         this.eventName = eventName;
     }
-
+    public String getEventDescription() { return eventDescription; }
+    public void setEventDescription(String eventDescription) { this.eventDescription = eventDescription; }
     public String getEventId() {
         return eventId;
     }
 
     public void setEventId(String id) {
-        eventId = id;
+        this.eventId = id;
     }
 
     public Bitmap getEventQRBitmap() {
@@ -43,5 +74,17 @@ public class Event {
 
     public void setEventQRBitmap(Bitmap eventQRBitmap) {
         this.eventQRBitmap = eventQRBitmap;
+    }
+
+    public Bitmap getDescriptionQRBitmap() {
+        return descriptionQRBitmap;
+    }
+
+    public void setDescriptionQRBitmap(Bitmap descriptionQRBitmap) {
+        this.descriptionQRBitmap = descriptionQRBitmap;
+    }
+
+    public ArrayList<OrganizerAlert> getAlerts() {
+        return alerts;
     }
 }
