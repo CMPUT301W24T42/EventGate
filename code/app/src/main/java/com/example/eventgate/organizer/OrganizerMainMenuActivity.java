@@ -3,15 +3,13 @@ package com.example.eventgate.organizer;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.eventgate.Firebase;
 import com.example.eventgate.event.Event;
 import com.example.eventgate.event.EventDB;
 import com.example.eventgate.R;
@@ -22,9 +20,11 @@ import java.util.concurrent.CompletableFuture;
 
 /**
  * Activity for the organizer's main menu.
- * Allows the organizer to view and manage events.
+ * Allows the organizer to view and manage events, including creating new events and editing existing ones.
+ * It utilizes fragments for creating new events and communicates with Firebase for event data management.
+ * Outstanding issues: There are no outstanding issues currently known.
  */
-public class OrganizerMainMenuActivity extends AppCompatActivity implements OrganizerCreateEventFragment.OnEventAddedListener {
+public class OrganizerMainMenuActivity extends AppCompatActivity implements OrganizerCreateEventFragment.OnEventAddedListener, OrganizerCreateEventFragment.OnQRCodeGeneratedListener {
     Button createNewEventButton;
     Button organizerMainMenuBackButton;
     ArrayList<Event> eventDataList;
@@ -56,7 +56,7 @@ public class OrganizerMainMenuActivity extends AppCompatActivity implements Orga
 
         createNewEventButton.setOnClickListener(v -> {
             OrganizerCreateEventFragment dialogFragment = new OrganizerCreateEventFragment();
-            dialogFragment.setOnEventAddedListener(this);
+            dialogFragment.setOnEventAddedListener(this, this);
             dialogFragment.show(getSupportFragmentManager(), "popup_dialog");
         });
 
@@ -64,15 +64,12 @@ public class OrganizerMainMenuActivity extends AppCompatActivity implements Orga
                 finish()
         );
 
-        eventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Event clickedEvent = eventDataList.get(position);
-                Intent intent = new Intent(OrganizerMainMenuActivity.this, OrganizerEventEditorActivity.class);
-                intent.putExtra("eventId", clickedEvent.getEventId());
-                intent.putExtra("eventName", clickedEvent.getEventName());
-                startActivity(intent);
-            }
+        eventList.setOnItemClickListener((parent, view, position, id) -> {
+            Event clickedEvent = eventDataList.get(position);
+            Intent intent = new Intent(OrganizerMainMenuActivity.this, OrganizerEventEditorActivity.class);
+            intent.putExtra("eventId", clickedEvent.getEventId());
+            intent.putExtra("eventName", clickedEvent.getEventName());
+            startActivity(intent);
         });
     }
 
@@ -80,9 +77,11 @@ public class OrganizerMainMenuActivity extends AppCompatActivity implements Orga
      * Callback method to handle the addition of a new event.
      *
      * @param event The event to be added.
+     * @param qrCodeListener The listener to handle QR code generation.
+     * @return Bitmap containing QR code for the added event.
      */
     @Override
-    public Bitmap onEventAdded(Event event) {
+    public Bitmap onEventAdded(Event event, OrganizerCreateEventFragment.OnQRCodeGeneratedListener qrCodeListener) {
         eventDataList.add(event);
         eventAdapter.notifyDataSetChanged();
 
@@ -90,12 +89,27 @@ public class OrganizerMainMenuActivity extends AppCompatActivity implements Orga
         EventDB eventDB = new EventDB();
         FirebaseInstallations.getInstance().getId().addOnSuccessListener(id -> {
             eventQRBitmap = eventDB.AddOrganizerEvent(event, id);
+            qrCodeListener.onQRCodeGenerated(eventQRBitmap);
         });
 
         return eventQRBitmap;
     }
 
-    private void updateOrganizerEvents() {
+    /**
+     * Callback method invoked when a QR code bitmap is generated.
+     *
+     * @param qrBitmap The generated QR code bitmap.
+     */
+    @Override
+    public void onQRCodeGenerated(Bitmap qrBitmap) {
+        ImageView qRCodeImageView = findViewById(R.id.organizerCreateEventQRCode);
+        qRCodeImageView.setImageBitmap(qrBitmap);
+    }
+
+    /**
+     * Updates the list of organizer events by fetching data from Firebase.
+     */
+    public void updateOrganizerEvents() {
         FirebaseInstallations.getInstance().getId().addOnSuccessListener(id -> {
             CompletableFuture<ArrayList<Event>> attendeeEvents = new EventDB().getOrganizerEvents(id);
             attendeeEvents.thenAccept(r -> {
