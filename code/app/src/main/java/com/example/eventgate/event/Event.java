@@ -2,6 +2,10 @@ package com.example.eventgate.event;
 
 import android.graphics.Bitmap;
 
+import com.example.eventgate.organizer.OrganizerAlert;
+
+import java.util.ArrayList;
+
 public class Event {
     /**
      * Holds the document id for the event
@@ -19,6 +23,7 @@ public class Event {
      * Holds the Bitmap of the event description QR Code.
      */
     private Bitmap descriptionQRBitmap;
+    private ArrayList<OrganizerAlert> alerts;
 
     /**
      * Constructs an Event
@@ -26,6 +31,7 @@ public class Event {
      */
     public Event(String eventName) {
         this.eventName = eventName;
+        this.alerts = new ArrayList<>();
     }
 
     /**
@@ -57,7 +63,7 @@ public class Event {
      * @param id the id to be set
      */
     public void setEventId(String id) {
-        eventId = id;
+        this.eventId = id;
     }
 
     /**
@@ -82,5 +88,9 @@ public class Event {
 
     public void setDescriptionQRBitmap(Bitmap descriptionQRBitmap) {
         this.descriptionQRBitmap = descriptionQRBitmap;
+    }
+
+    public ArrayList<OrganizerAlert> getAlerts() {
+        return alerts;
     }
 }

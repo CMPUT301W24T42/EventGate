@@ -7,7 +7,7 @@ import com.example.eventgate.attendee.AttendeeDB;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.ByteArrayOutputStream;
@@ -27,7 +27,6 @@ import com.google.zxing.common.BitMatrix;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-
 
 /**
  * This is used to add, remove, and retrieve event data from the database
@@ -149,15 +148,15 @@ public class EventDB {
                     if (!alreadyExists) {
                         // Add event to attendee collection
                         Map<String, Object> updates = new HashMap<>();
-                        attendeeEvents.add(attendeeEvents.size() - 1, eventId);
+                        attendeeEvents.add(eventId);
                         updates.put("events", attendeeEvents);
                         db.collection("attendees").document(attendee.getId()).update(updates);
                         // Add attendee to event collection
                         updates = new HashMap<>();
                         ArrayList<String> eventAttendees = (ArrayList<String>) documentSnapshot.get("attendees");
-                        eventAttendees.add(eventAttendees.size() - 1, attendee.getId());
-                        updates.put("attendees", attendeeEvents);
-                        db.collection("events").document(attendee.getId()).update(updates);
+                        eventAttendees.add(attendee.getId());
+                        updates.put("attendees", eventAttendees);
+                        db.collection("events").document(eventId).update(updates);
                         futureResult.complete(0);
                     }
                 });
@@ -174,6 +173,7 @@ public class EventDB {
      * @return CompleteableFuture of Arraylist of Events
      * */
     public CompletableFuture<ArrayList<Event>> getAttendeeEvents(String deviceId) {
+        Log.d("ID", deviceId);
         CompletableFuture<ArrayList<Event>> futureEvents = new CompletableFuture<>();
         ArrayList<Event> events = new ArrayList<>();
         db.collection("attendees").whereEqualTo("deviceId", deviceId).get()
@@ -184,24 +184,19 @@ public class EventDB {
             DocumentSnapshot attendee = queryDocumentSnapshots.getDocuments().get(0);
             ArrayList<String> attendeeEvents = (ArrayList<String>) attendee.get("events");
 
-            if (attendeeEvents.size() < 2) {  // If it's a singleton or less, simply return
+            if (attendeeEvents.size() == 0) {  // If it's empty, simply return
                 return;
             }
-            for (String eventId : attendeeEvents.subList(0, attendeeEvents.size() - 1)) {
-                db.collection("events").document(eventId.trim()).get().addOnSuccessListener(documentSnapshot -> {
-                    String eventName = documentSnapshot.getString("name");
-
+            attendeeEvents.removeIf(String::isEmpty);
+            db.collection("events").whereIn(FieldPath.documentId(), attendeeEvents).get().addOnSuccessListener(queryResults -> {
+                for (QueryDocumentSnapshot queryResult: queryResults) {
+                    String eventName = queryResult.getString("name");
                     Event event = new Event(eventName);
-                    event.setEventId(eventId);
-                    events.add(0, event);
-
-
-                    // Check if this is the last event, if so, complete
-                    if (eventId.equals(attendeeEvents.get(attendeeEvents.size() - 2))) {
-                        futureEvents.complete(events);
-                    }
-                });
-            }
+                    event.setEventId(queryResult.getId());
+                    events.add(event);
+                }
+                futureEvents.complete(events);
+            });
         });
         return futureEvents;
     }
