@@ -264,6 +264,11 @@ public class EventDB {
         return futureEvents;
     }
 
+    /**
+     * Queries for all attendees of an event
+     * @param eventId event's unique ID
+     * @return CompleteableFuture of Arraylist of Attendees
+     */
     //finds all attendees of an event
     public CompletableFuture<List<String>> getAttendeesForEvent(String eventId) {
         CompletableFuture<List<String>> allAttendees = new CompletableFuture<>();

@@ -133,6 +133,12 @@ public class AttendeeEventViewer extends AppCompatActivity {
         });
 
     }
+
+    /**
+     * queries current event in firestore for all its poster paths, then use paths to find
+     * stored posters in firebase db, then display for attendee
+     * @param eventId event's unique id
+     */
     private void displayEventPosters(String eventId) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         List<String> posterImageUrls = new ArrayList<>();
@@ -157,6 +163,10 @@ public class AttendeeEventViewer extends AppCompatActivity {
                 });
     }
 
+    /**
+     * connects viewpager in ui with posterpageradapter and array of posterURLs
+     * @param posterImageUrls array of poster locations in firebase db
+     */
     private void setupViewPager(List<String> posterImageUrls) {
         ViewPager viewPager = findViewById(R.id.viewPager);
         PosterPagerAdapter adapter = new PosterPagerAdapter(this, posterImageUrls);

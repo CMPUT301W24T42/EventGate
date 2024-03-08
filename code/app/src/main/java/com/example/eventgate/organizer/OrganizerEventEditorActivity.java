@@ -132,17 +132,32 @@ public class OrganizerEventEditorActivity extends AppCompatActivity implements C
     }
 
 
+    /**
+     * begins process of uploading posters
+     */
     //these 5 functions handle storing uploaded photos
     private void initiateImageUploadProcess() {
-        //  Open File Chooser
         openFileChooser();
     }
 
+    /**
+     * starts intent for file browser for image
+     */
     private void openFileChooser() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(intent, PICK_IMAGE_REQUEST);
     }
 
+    /**
+     * handles file browser for image intent
+     * @param requestCode The integer request code originally supplied to
+     *                    startActivityForResult(), allowing you to identify who this
+     *                    result came from.
+     * @param resultCode  The integer result code returned by the child activity
+     *                    through its setResult().
+     * @param data        An Intent, which can return result data to the caller
+     *                    (various data can be attached to Intent "extras").
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -153,6 +168,10 @@ public class OrganizerEventEditorActivity extends AppCompatActivity implements C
         }
     }
 
+    /**
+     * calculates unique hash/storage path in firebase db for poster and saves
+     * @param imageUri uploaded image
+     */
     private void uploadImageToFirebase(Uri imageUri) {
 
         StorageReference storageRef = FirebaseStorage.getInstance().getReference();
@@ -168,6 +187,10 @@ public class OrganizerEventEditorActivity extends AppCompatActivity implements C
                 .addOnFailureListener(e -> Toast.makeText(OrganizerEventEditorActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
+    /**
+     * Saves a reference to poster location in firebase db in event collection in firestore
+     * @param downloadUrl
+     */
     private void saveImageReferenceInFirestore(String downloadUrl) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         Map<String, Object> poster = new HashMap<>();

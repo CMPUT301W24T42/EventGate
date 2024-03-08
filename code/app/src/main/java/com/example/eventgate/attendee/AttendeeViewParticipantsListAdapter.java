@@ -9,6 +9,13 @@ import java.util.ArrayList;
 import android.content.Context;
 import com.example.eventgate.R;
 
+
+
+
+/**
+ * Adapter for Activity for attendee to view all participants of events they themselves are in
+ */
+
 public class AttendeeViewParticipantsListAdapter extends ArrayAdapter<String> {
     public AttendeeViewParticipantsListAdapter(Context context, ArrayList<String> attendees) {
         super(context, 0, attendees);

@@ -18,7 +18,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-
+/**
+ * Activity for attendee to view all participants of events they themselves are in
+ */
 public class AttendeeViewParticipants extends AppCompatActivity {
 
     Button back_button;
@@ -58,6 +60,11 @@ public class AttendeeViewParticipants extends AppCompatActivity {
         updateAttendeesList(eventID);
     }
 
+    /**
+     * queries firestore for all attendees of an event
+     * @param eventId unique eventID
+     *
+     */
     private void updateAttendeesList(String eventId) {
         CompletableFuture<List<String>> attendeesFuture = new EventDB().getAttendeesForEvent(eventId);
 
