@@ -22,6 +22,9 @@ public class Firebase {
      * this is the reference to the events collection in the database
      */
     private final CollectionReference eventsRef;
+    /**
+     * this is the reference to the attendees collection in the database
+     */
     private final CollectionReference attendeesRef;
 
     /**
@@ -34,18 +37,34 @@ public class Firebase {
         this.attendeesRef = db.collection("attendees");
     }
 
+    /**
+     * this gets an instance of the firestore database
+     * @return an instance of the database
+     */
     public FirebaseFirestore getDB() {
         return this.db;
     }
 
+    /**
+     * this gets an instance of firebase authentication
+     * @return an of FirebaseAuth
+     */
     public FirebaseAuth getmAuth() {
         return this.mAuth;
     }
 
+    /**
+     * this gets a reference to the events collection in the database
+     * @return a collection reference to the events collection
+     */
     public CollectionReference getEventsRef() {
         return this.eventsRef;
     }
 
+    /**
+     * this gets a reference to the attendees collection in the database
+     * @return a collection reference to the attendees collection
+     */
     public CollectionReference getAttendeesRef() {
         return this.attendeesRef;
     }
