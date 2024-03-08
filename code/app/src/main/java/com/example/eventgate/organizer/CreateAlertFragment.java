@@ -2,6 +2,7 @@ package com.example.eventgate.organizer;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,9 +15,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.eventgate.R;
+import com.example.eventgate.event.Event;
 
 public class CreateAlertFragment extends DialogFragment {
-
+    public interface OnAlertCreatedListener {
+        void onAlertCreated(OrganizerAlert alert);
+    }
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {

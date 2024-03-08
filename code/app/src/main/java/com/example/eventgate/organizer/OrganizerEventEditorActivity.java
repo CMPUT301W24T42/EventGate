@@ -44,12 +44,13 @@ import com.google.firebase.firestore.FirebaseFirestore;
  * Activity for the organizer's event page.
  * Allows the organizer to view and edit a given event.
  */
-public class OrganizerEventEditorActivity extends AppCompatActivity {
+public class OrganizerEventEditorActivity extends AppCompatActivity implements CreateAlertFragment.OnAlertCreatedListener {
 
     private TextView eventTitle;
     private Button backButton, uploadPosterButton;
     private Button createAlert;
     private String eventId;
+    private ArrayList<OrganizerAlert> alerts;
     private DocumentReference eventRef;
     ArrayList<String> attendeeDataList;
     ListView attendeeList;
@@ -72,6 +73,7 @@ public class OrganizerEventEditorActivity extends AppCompatActivity {
         Intent intent = getIntent();
         eventTitle.setText(intent.getStringExtra("eventName"));
         eventId = intent.getStringExtra("eventId");
+        alerts = (ArrayList<OrganizerAlert>) intent.getSerializableExtra("alerts");
 
         attendeeDataList = new ArrayList<>();
         attendeeList = findViewById(R.id.attendeeListView);
@@ -181,4 +183,8 @@ public class OrganizerEventEditorActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> Log.w("TAG", "Error adding document", e));
     }
 
+    @Override
+    public void onAlertCreated(OrganizerAlert alert) {
+        alerts.add(alert);
+    }
 }

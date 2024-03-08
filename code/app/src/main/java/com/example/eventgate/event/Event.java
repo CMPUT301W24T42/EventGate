@@ -1,6 +1,14 @@
 package com.example.eventgate.event;
 
 import android.graphics.Bitmap;
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
+import com.example.eventgate.organizer.OrganizerAlert;
+
+import java.util.ArrayList;
 
 public class Event {
     /**
@@ -19,6 +27,7 @@ public class Event {
      * Holds the Bitmap of the event description QR Code.
      */
     private Bitmap descriptionQRBitmap;
+    private ArrayList<OrganizerAlert> alerts;
 
     /**
      * Constructs an Event
@@ -58,5 +67,13 @@ public class Event {
 
     public void setDescriptionQRBitmap(Bitmap descriptionQRBitmap) {
         this.descriptionQRBitmap = descriptionQRBitmap;
+    }
+
+    public void addAlert(OrganizerAlert alert) {
+        alerts.add(alert);
+    }
+
+    public ArrayList<OrganizerAlert> getAlerts() {
+        return alerts;
     }
 }

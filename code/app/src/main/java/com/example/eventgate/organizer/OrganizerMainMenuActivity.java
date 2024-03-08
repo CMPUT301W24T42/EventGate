@@ -69,6 +69,7 @@ public class OrganizerMainMenuActivity extends AppCompatActivity implements Orga
             Intent intent = new Intent(OrganizerMainMenuActivity.this, OrganizerEventEditorActivity.class);
             intent.putExtra("eventId", clickedEvent.getEventId());
             intent.putExtra("eventName", clickedEvent.getEventName());
+            intent.putExtra("alerts", clickedEvent.getAlerts());
             startActivity(intent);
         });
     }
