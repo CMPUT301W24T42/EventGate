@@ -14,6 +14,7 @@ import android.text.style.AbsoluteSizeSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -167,6 +168,23 @@ public class AttendeeActivity extends AppCompatActivity {
 
         updateMyEvents();
 
+
+
+
+        //listener for event selection in listview
+        eventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Event clickedEvent = eventDataList.get(position);
+                Intent intent = new Intent(AttendeeActivity.this, AttendeeEventViewer.class);
+                intent.putExtra("EventID", clickedEvent.getEventId());
+                System.out.println("eventid is:" + clickedEvent.getEventId());
+                intent.putExtra("EventName", clickedEvent.getEventName());
+                startActivity(intent);
+            }
+        });
+
+
         qr_button = findViewById(R.id.qr_button);
 
         back_button = findViewById(R.id.attendee_back_button);
@@ -185,6 +203,7 @@ public class AttendeeActivity extends AppCompatActivity {
                 finish();
             }
         });
+
 
     }
 
