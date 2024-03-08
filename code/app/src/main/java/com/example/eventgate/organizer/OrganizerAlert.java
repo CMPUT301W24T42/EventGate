@@ -16,8 +16,4 @@ public class OrganizerAlert {
     public OrganizerAlert(String message) {
         this.message = message;
     }
-
-    public String getMessage() {
-        return message;
-    }
 }

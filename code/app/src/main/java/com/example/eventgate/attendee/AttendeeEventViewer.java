@@ -12,7 +12,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.eventgate.R;
-import com.example.eventgate.event.EventDB;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -21,7 +20,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
+
 //citations
 //https://www.geeksforgeeks.org/how-to-use-picasso-image-loader-library-in-android/
 public class AttendeeEventViewer extends AppCompatActivity {
@@ -64,7 +63,7 @@ public class AttendeeEventViewer extends AppCompatActivity {
 
 
         //no announcement or detail functionality yet, add placeholders
-        TextView eventDetailsTextview = findViewById(R.id.eventDetailsTextview);;
+        TextView eventDetailsTextview = findViewById(R.id.eventDetailsTextview);
         eventDetailsTextview.setText("Event Starts at 9:00am");
 
 

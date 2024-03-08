@@ -1,10 +1,6 @@
 package com.example.eventgate.event;
 
 import android.graphics.Bitmap;
-import android.os.Parcel;
-import android.os.Parcelable;
-
-import androidx.annotation.NonNull;
 
 import com.example.eventgate.organizer.OrganizerAlert;
 
@@ -68,10 +64,6 @@ public class Event {
 
     public void setDescriptionQRBitmap(Bitmap descriptionQRBitmap) {
         this.descriptionQRBitmap = descriptionQRBitmap;
-    }
-
-    public void addAlert(OrganizerAlert alert) {
-        alerts.add(alert);
     }
 
     public ArrayList<OrganizerAlert> getAlerts() {

@@ -6,11 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.content.Intent;
 import android.os.Bundle;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.style.AbsoluteSizeSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,9 +14,6 @@ import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.TextView;
-import android.util.Log;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -29,26 +22,12 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.eventgate.MainActivity;
 import com.example.eventgate.event.Event;
 import com.example.eventgate.event.EventDB;
-import com.example.eventgate.MainActivity;
 import com.example.eventgate.R;
-import com.example.eventgate.admin.AdminEventListAdapter;
-import com.example.eventgate.event.EventDB;
-import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.Tasks;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.installations.FirebaseInstallations;
 
 import java.io.UnsupportedEncodingException;
@@ -56,12 +35,9 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Typeface;
-import java.security.MessageDigest;
 
 //citations
 //https://stackoverflow.com/questions/44131469/android-using-shared-preferences-to-check-on-first-run
@@ -70,7 +46,6 @@ import java.security.MessageDigest;
 
 import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 /**
  * This is the activity for the attendee main menu.
@@ -98,17 +73,18 @@ public class AttendeeActivity extends AppCompatActivity {
                     }
                 });
 
+
+
+    private static final int PICK_IMAGE = 1;
+    private static byte[] hashBytes;
+    private Bitmap profileBitmap;
+
     /**
      * Called when the activity is starting.
      * Initializes the activity layout and views.
      *
      * @param savedInstanceState If the activity is being re-initialized after previously being shut down, this Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle).
      */
-
-    private static final int PICK_IMAGE = 1;
-    private static byte[] hashBytes;
-    private Bitmap profileBitmap;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

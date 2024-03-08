@@ -1,5 +1,3 @@
-// This class manages the edit event organizer activity
-
 package com.example.eventgate.organizer;
 
 import android.content.Intent;
@@ -17,11 +15,8 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.eventgate.Firebase;
 import com.example.eventgate.MainActivity;
 import com.example.eventgate.R;
-import com.example.eventgate.attendee.AttendeeEventListAdapter;
-import com.example.eventgate.event.Event;
 import com.example.eventgate.event.EventDB;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -36,13 +31,7 @@ import java.util.HashMap;
 import java.util.Map;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import android.net.Uri;
-import android.util.Log;
-import android.widget.Toast;
-import androidx.annotation.NonNull;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.FirebaseFirestore;
+
 /**
  * Activity for the organizer's event page.
  * Allows the organizer to view and edit a given event.
