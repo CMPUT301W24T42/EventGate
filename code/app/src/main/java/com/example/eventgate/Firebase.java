@@ -22,6 +22,7 @@ public class Firebase {
      * this is the reference to the events collection in the database
      */
     private final CollectionReference eventsRef;
+    private final CollectionReference attendeesRef;
 
     /**
      * this constructs a new Firebase object
@@ -30,6 +31,7 @@ public class Firebase {
         this.db = FirebaseFirestore.getInstance();
         this.mAuth = FirebaseAuth.getInstance();
         this.eventsRef = db.collection("events");
+        this.attendeesRef = db.collection("attendees");
     }
 
     public FirebaseFirestore getDB() {
@@ -42,5 +44,9 @@ public class Firebase {
 
     public CollectionReference getEventsRef() {
         return this.eventsRef;
+    }
+
+    public CollectionReference getAttendeesRef() {
+        return this.attendeesRef;
     }
 }

@@ -59,6 +59,12 @@ public class AdminActivity extends AppCompatActivity {
         eventAdapter = new AdminEventListAdapter(this, eventDataList);
         eventList.setAdapter(eventAdapter);
 
+        //test
+        EventDB eventDB = new EventDB();
+        Event e = new Event("Sample Test");
+        eventDataList.add(e);
+        eventDB.addEvent(e);
+
         // sends admin back to the main menu
         adminActivityBackButton.setOnClickListener(v -> finish());
     }
