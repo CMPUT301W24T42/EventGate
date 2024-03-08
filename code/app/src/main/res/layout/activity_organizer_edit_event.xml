@@ -13,12 +13,12 @@
         android:layout_height="0dp"
         android:layout_centerHorizontal="true"
         android:layout_marginStart="30dp"
-        android:layout_marginTop="87dp"
+        android:layout_marginTop="30dp"
         android:layout_marginEnd="30dp"
         android:layout_marginBottom="39dp"
         android:background="@drawable/list_rounded_corners"
         android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/OrganizerEditBackButton"
+        app:layout_constraintBottom_toTopOf="@+id/buttonContainer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -34,12 +34,51 @@
             android:textColor="@color/black"
             android:textSize="22sp" />
 
+        <TextView
+            android:id="@+id/EventDetails"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:gravity="center"
+            android:text="Event Details"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="22sp" />
+
         <ListView
             android:id="@+id/attendeeListView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/EventListViewTitle"
             android:choiceMode="singleChoice" />
+
+
+
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/buttonContainer"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/OrganizerEditBackButton">
+
+        <Button
+            android:id="@+id/button_create_alert"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Create Alert"
+            android:layout_marginEnd="8dp" />
+
+        <Button
+            android:id="@+id/button_upload_poster"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Upload Poster"
+            android:layout_marginStart="8dp" />
+
     </LinearLayout>
 
     <com.google.android.material.button.MaterialButton

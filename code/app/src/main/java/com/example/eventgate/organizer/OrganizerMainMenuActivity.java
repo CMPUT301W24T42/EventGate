@@ -32,6 +32,7 @@ public class OrganizerMainMenuActivity extends AppCompatActivity implements Orga
     ArrayAdapter<Event> eventAdapter;
     private Bitmap eventQRBitmap;
 
+
     /**
      * Called when the activity is starting.
      * Initializes the activity layout and views.

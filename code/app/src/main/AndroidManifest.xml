@@ -30,6 +30,12 @@
             android:name=".attendee.AttendeeActivity"
             android:exported="false" />
         <activity
+            android:name=".attendee.AttendeeEventViewer"
+            android:exported="false" />
+        <activity
+            android:name=".attendee.AttendeeViewParticipants"
+            android:exported="false" />
+        <activity
             android:name=".attendee.QRCodeScanActivity"
             android:exported="false" />
         <activity
