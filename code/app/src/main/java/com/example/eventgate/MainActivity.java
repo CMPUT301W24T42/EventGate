@@ -19,6 +19,10 @@ import com.example.eventgate.organizer.OrganizerMainMenuActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+/**
+ * This is the activity for the app's main menu.
+ * It allows the user to select their role and  navigate to other activities
+ */
 public class MainActivity extends AppCompatActivity {
     Button attendeeButton;
     Button organizerButton;
@@ -37,6 +41,12 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
+    /**
+     * Called when the activity is starting.
+     * Initializes the activity layout and views.
+     *
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down, this Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle).
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

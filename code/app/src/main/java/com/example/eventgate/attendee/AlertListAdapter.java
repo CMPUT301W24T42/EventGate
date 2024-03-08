@@ -16,6 +16,9 @@ import com.example.eventgate.organizer.OrganizerAlert;
 
 import java.util.ArrayList;
 
+/**
+ * An adapter for displaying the alerts of an event
+ */
 public class AlertListAdapter extends ArrayAdapter<OrganizerAlert> {
     private ArrayList<OrganizerAlert> alerts;
     private Context context;

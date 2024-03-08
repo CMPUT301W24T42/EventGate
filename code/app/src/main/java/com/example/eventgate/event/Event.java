@@ -6,6 +6,10 @@ import com.example.eventgate.organizer.OrganizerAlert;
 
 import java.util.ArrayList;
 
+/**
+ * this class represents an event
+ * it allows users to get and set info regarding the event
+ */
 public class Event {
     /**
      * Holds the document id for the event

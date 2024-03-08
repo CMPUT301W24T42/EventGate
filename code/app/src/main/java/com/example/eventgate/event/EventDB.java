@@ -49,24 +49,6 @@ public class EventDB {
     }
 
     /**
-     * Adds an event to the firebase database
-     *
-     * @param event the event to add
-     */
-    public void addEvent(Event event) {
-        String eventId = collection.document().getId();
-        event.setEventId(eventId);
-        HashMap<String, String> data = new HashMap<>();
-        data.put("eventId", event.getEventId());
-        data.put("name", event.getEventName());
-        collection
-                .document(eventId)
-                .set(data)
-                .addOnSuccessListener(unused -> Log.d(TAG, "Event has been added successfully!"))
-                .addOnFailureListener(e -> Log.d(TAG, "Event could not be added!" + e));
-    }
-
-    /**
      * Adds an organizer event to the database.
      *
      * @param event         The event object containing details of the event.
