@@ -42,6 +42,7 @@ public class OrganizerEventEditorActivity extends AppCompatActivity implements C
     private Button backButton, uploadPosterButton;
     private Button createAlert;
     private String eventId;
+    private String eventDescription;
     private ArrayList<OrganizerAlert> alerts;
     private DocumentReference eventRef;
     ArrayList<String> attendeeDataList;
@@ -65,6 +66,9 @@ public class OrganizerEventEditorActivity extends AppCompatActivity implements C
         Intent intent = getIntent();
         eventTitle.setText(intent.getStringExtra("eventName"));
         eventId = intent.getStringExtra("eventId");
+        eventDescription = intent.getStringExtra("eventDescription");
+        TextView eventDetailsText =  findViewById(R.id.EventDetails);
+        eventDetailsText.setText(eventDescription);
         alerts = (ArrayList<OrganizerAlert>) intent.getSerializableExtra("alerts");
 
         attendeeDataList = new ArrayList<>();

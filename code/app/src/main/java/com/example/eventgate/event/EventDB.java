@@ -110,6 +110,7 @@ public class EventDB {
         HashMap<String, Object> data = new HashMap<>();
         data.put("eventId", event.getEventId());
         data.put("name", event.getEventName());
+        data.put("description", event.getEventDescription());
         data.put("checkInQRCode", byteArrayAsList.toString());
         data.put("organizer", deviceId); // Set organizer field to firebase installation id
         data.put("attendees", new ArrayList<String>()); // Set attendees field to blank
@@ -259,6 +260,7 @@ public class EventDB {
                     for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                         Event newEvent = new Event(doc.getString("name"));
                         newEvent.setEventId(doc.getId());
+                        newEvent.setEventDescription(doc.getString("description"));
                         events.add(newEvent);
                     }
                     futureEvents.complete(events);
