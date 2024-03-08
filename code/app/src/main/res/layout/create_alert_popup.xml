@@ -25,17 +25,30 @@
             android:textSize="22sp" />
 
         <EditText
-            android:id="@+id/message_edit_text"
+            android:id="@+id/title_edit_text"
             android:layout_width="375dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/create_alert_title"
             android:layout_centerHorizontal="true"
-            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="30dp"
+            android:autofillHints="name"
+            android:hint="@string/enter_title"
+            android:inputType="text"
+            android:maxLines="2"
+            android:textSize="22sp">
+        </EditText>
+
+        <EditText
+            android:id="@+id/message_edit_text"
+            android:layout_width="375dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/title_edit_text"
+            android:layout_centerHorizontal="true"
             android:layout_marginTop="30dp"
             android:autofillHints="name"
             android:hint="@string/enter_message"
             android:inputType="textMultiLine"
-            android:maxLines="9"
+            android:maxLines="6"
             android:textSize="22sp">
         </EditText>
 

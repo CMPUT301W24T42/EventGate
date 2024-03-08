@@ -184,9 +184,12 @@ public class OrganizerEventEditorActivity extends AppCompatActivity implements C
     public void onAlertCreated(OrganizerAlert alert) {
         alerts.add(alert);
         CollectionReference collection = MainActivity.db.getEventsRef();
+        HashMap<String, Object> newAlert = new HashMap<>();
+        newAlert.put("title", alert.getTitle());
+        newAlert.put("message", alert.getMessage());
         collection
                 .document(eventId)
-                .update("alerts", FieldValue.arrayUnion(alert))
+                .update("alerts", FieldValue.arrayUnion(newAlert))
                 .addOnSuccessListener(unused -> Log.d("EventDB", "Alert has been sent to firebase"));
 
     }

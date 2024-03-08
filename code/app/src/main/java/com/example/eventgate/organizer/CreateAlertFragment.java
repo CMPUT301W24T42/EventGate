@@ -39,17 +39,21 @@ public class CreateAlertFragment extends DialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.create_alert_popup, null);
 
+        EditText titleEditText = view.findViewById(R.id.title_edit_text);
         EditText messageEditText = view.findViewById(R.id.message_edit_text);
         Button sendButton = view.findViewById(R.id.create_alert_send_button);
         Button cancelButton = view.findViewById(R.id.create_alert_cancel_button);
 
         // takes the inputted message and creates an OrganizerAlert object with it
         sendButton.setOnClickListener(v -> {
+            String title = titleEditText.getText().toString().trim();
             String message = messageEditText.getText().toString().trim();
-            if (message.isEmpty()) {
+            if (title.isEmpty()) {
+                Toast.makeText(getActivity(), "Please enter a title", Toast.LENGTH_SHORT).show();
+            } else if (message.isEmpty()) {
                 Toast.makeText(getActivity(), "Please enter a message", Toast.LENGTH_SHORT).show();
             } else {
-                OrganizerAlert alert = new OrganizerAlert(message);
+                OrganizerAlert alert = new OrganizerAlert(title, message);
                 ((CreateAlertFragment.OnAlertCreatedListener) getActivity()).onAlertCreated(alert);
                 dismiss();
             }
