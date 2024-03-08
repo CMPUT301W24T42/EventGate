@@ -1,5 +1,3 @@
-// This class manages the edit event organizer activity
-
 package com.example.eventgate.organizer;
 
 import android.content.Intent;
@@ -17,14 +15,14 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.eventgate.Firebase;
+import com.example.eventgate.MainActivity;
 import com.example.eventgate.R;
-import com.example.eventgate.attendee.AttendeeEventListAdapter;
-import com.example.eventgate.event.Event;
 import com.example.eventgate.event.EventDB;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 
@@ -33,23 +31,19 @@ import java.util.HashMap;
 import java.util.Map;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import android.net.Uri;
-import android.util.Log;
-import android.widget.Toast;
-import androidx.annotation.NonNull;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.FirebaseFirestore;
+
 /**
  * Activity for the organizer's event page.
  * Allows the organizer to view and edit a given event.
  */
-public class OrganizerEventEditorActivity extends AppCompatActivity {
+public class OrganizerEventEditorActivity extends AppCompatActivity implements CreateAlertFragment.OnAlertCreatedListener {
 
     private TextView eventTitle;
     private Button backButton, uploadPosterButton;
-
+    private Button createAlert;
     private String eventId;
+    private String eventDescription;
+    private ArrayList<OrganizerAlert> alerts;
     private DocumentReference eventRef;
     ArrayList<String> attendeeDataList;
     ListView attendeeList;
@@ -72,6 +66,10 @@ public class OrganizerEventEditorActivity extends AppCompatActivity {
         Intent intent = getIntent();
         eventTitle.setText(intent.getStringExtra("eventName"));
         eventId = intent.getStringExtra("eventId");
+        eventDescription = intent.getStringExtra("eventDescription");
+        TextView eventDetailsText =  findViewById(R.id.EventDetails);
+        eventDetailsText.setText(eventDescription);
+        alerts = (ArrayList<OrganizerAlert>) intent.getSerializableExtra("alerts");
 
         attendeeDataList = new ArrayList<>();
         attendeeList = findViewById(R.id.attendeeListView);
@@ -115,12 +113,20 @@ public class OrganizerEventEditorActivity extends AppCompatActivity {
             }
         });
 
-        
         backButton = findViewById(R.id.OrganizerEditBackButton);
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
+            }
+        });
+
+        // show the dialog for creating a new alert
+        createAlert = findViewById(R.id.button_create_alert);
+        createAlert.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new CreateAlertFragment().show(getSupportFragmentManager(), "CREATE ALERT");
             }
         });
     }
@@ -173,4 +179,21 @@ public class OrganizerEventEditorActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> Log.w("TAG", "Error adding document", e));
     }
 
+    /**
+     * Callback method to handle the addition of a new alert.
+     * @param alert The alert to be added.
+     */
+    @Override
+    public void onAlertCreated(OrganizerAlert alert) {
+        alerts.add(alert);
+        CollectionReference collection = MainActivity.db.getEventsRef();
+        HashMap<String, Object> newAlert = new HashMap<>();
+        newAlert.put("title", alert.getTitle());
+        newAlert.put("message", alert.getMessage());
+        collection
+                .document(eventId)
+                .update("alerts", FieldValue.arrayUnion(newAlert))
+                .addOnSuccessListener(unused -> Log.d("EventDB", "Alert has been sent to firebase"));
+
+    }
 }

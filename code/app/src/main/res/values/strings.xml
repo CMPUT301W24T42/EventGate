@@ -12,6 +12,7 @@
     <string name="organizerCreateEventContinue">Continue</string>
     <string name="organizerCreateEventCancel">Cancel</string>
     <string name="event_name">Event Name</string>
+    <string name="event_description">Event Description</string>
     <string name="enter_event_name">Enter Event Name</string>
     <string name="qrcode">QRCode</string>
     <string name="generate_qr_code">Generate QR Code</string>
@@ -19,4 +20,9 @@
     <string name="generate_check_in_qr">Generate Check In QR</string>
     <string name="generate_event_qr">Generate Event QR</string>
     <string name="eventDescriptionQR">EventDescriptionQR</string>
+    <string name="create_alert_title">Create Alert</string>
+    <string name="send_button">Send</string>
+    <string name="enter_message">Enter Message</string>
+    <string name="enter_title">Enter Title</string>
+    <string name="alert_title">Alert Title</string>
 </resources>
