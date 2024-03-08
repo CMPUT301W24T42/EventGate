@@ -114,10 +114,9 @@ public class AttendeeActivity extends AppCompatActivity {
         SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
         boolean isFirstTimeOpening = prefs.getBoolean("isFirstTime", true);
         //this is all placeholder for now, im not exactly sure how we're going to handle saved user info w/ firebase auth yet
-        if (isFirstTimeOpening) {
+        /*if (isFirstTimeOpening) {
             user_settings_dialog();
-
-        }
+        }*/
 
 
         //buttons for user settings and profile pic settings
