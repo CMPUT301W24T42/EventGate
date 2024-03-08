@@ -13,9 +13,21 @@ import java.util.HashMap;
 import java.util.Objects;
 
 public class MessagingService extends FirebaseMessagingService {
+    /**
+     * this holds an instance of FirebaseMessaging
+     */
     private FirebaseMessaging fcm;
+    /**
+     * this is a reference to the fcmTokens collection in the database
+     */
     private CollectionReference fcmTokensRef;
+    /**
+     * this holds an instance of FirebaseAuth
+     */
     private FirebaseAuth mAuth;
+    /**
+     * a tag for logging
+     */
     final String TAG = "Firebase Cloud Messaging";
 
     public MessagingService() {
@@ -39,6 +51,10 @@ public class MessagingService extends FirebaseMessagingService {
                 });
     }
 
+    /**
+     * this is used to send registration tokens to the Firestore database for storage
+     * @param token the token to be stored in the database
+     */
     public void sendTokenToFirebase(String token) {
         HashMap<String, String> data = new HashMap<>();
         data.put("deviceToken", token);
@@ -50,6 +66,12 @@ public class MessagingService extends FirebaseMessagingService {
                 .addOnFailureListener(e -> Log.d(TAG, "Token could not be sent!" + e));
     }
 
+    /**
+     * This updates a user's registration token on initial app startup and when an existing token
+     *     is changed
+     * @param token The token used for sending messages to this application instance. This token is
+     *     the same as the one retrieved by {@link FirebaseMessaging#getToken()}.
+     */
     @Override
     public void onNewToken(@NonNull String token) {
         Log.d(TAG, "Refreshed token: " + token);
