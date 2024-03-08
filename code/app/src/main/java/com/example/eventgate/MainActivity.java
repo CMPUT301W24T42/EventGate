@@ -51,8 +51,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mAuth = db.getmAuth();
-
         attendeeButton = findViewById(R.id.attendee_button);
         organizerButton = findViewById(R.id.organizer_button);
         adminButton = findViewById(R.id.admin_button);
@@ -74,10 +72,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
 
-        if (currentUser == null) {
+        mAuth = db.getmAuth();
+
+        // Check if user is signed in (non-null) and update UI accordingly.
+        if (mAuth.getCurrentUser() == null) {
             signInUser();
         }
         else {
