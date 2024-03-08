@@ -129,6 +129,7 @@ public class OrganizerEventEditorActivity extends AppCompatActivity implements C
             }
         });
 
+        // show the dialog for creating a new alert
         createAlert = findViewById(R.id.button_create_alert);
         createAlert.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -186,6 +187,10 @@ public class OrganizerEventEditorActivity extends AppCompatActivity implements C
                 .addOnFailureListener(e -> Log.w("TAG", "Error adding document", e));
     }
 
+    /**
+     * Callback method to handle the addition of a new alert.
+     * @param alert The alert to be added.
+     */
     @Override
     public void onAlertCreated(OrganizerAlert alert) {
         alerts.add(alert);

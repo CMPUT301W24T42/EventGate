@@ -2,7 +2,6 @@ package com.example.eventgate.organizer;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,12 +14,26 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.eventgate.R;
-import com.example.eventgate.event.Event;
 
+/**
+ * A fragment for creating a new alert.
+ * This fragment provides functionality for organizers to create new alerts by entering a message
+ */
 public class CreateAlertFragment extends DialogFragment {
+    /**
+     * Interface definition for a callback to be invoked when an alert is added.
+     * Implementing classes must define the behavior to be executed when an alert is added.
+     */
     public interface OnAlertCreatedListener {
         void onAlertCreated(OrganizerAlert alert);
     }
+
+    /**
+     * Called to create the dialog shown in this fragment.
+     *
+     * @param savedInstanceState If the fragment is being re-created from a previous saved state, this is the state.
+     * @return A new Dialog instance to be displayed by the fragment.
+     */
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -30,6 +43,7 @@ public class CreateAlertFragment extends DialogFragment {
         Button sendButton = view.findViewById(R.id.create_alert_send_button);
         Button cancelButton = view.findViewById(R.id.create_alert_cancel_button);
 
+        // takes the inputted message and creates an OrganizerAlert object with it
         sendButton.setOnClickListener(v -> {
             String message = messageEditText.getText().toString().trim();
             if (message.isEmpty()) {
@@ -41,6 +55,7 @@ public class CreateAlertFragment extends DialogFragment {
             }
         });
 
+        // dismisses dialog if user does not want to create an alert
         cancelButton.setOnClickListener(v -> dismiss());
 
         // build the dialog
