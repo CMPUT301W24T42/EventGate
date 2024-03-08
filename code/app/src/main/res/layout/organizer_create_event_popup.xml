@@ -36,6 +36,15 @@
             android:hint="@string/event_name"
             android:inputType="text" />
 
+        <EditText
+            android:id="@+id/organizerCreateEventDescription"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:autofillHints=""
+            android:ems="10"
+            android:hint="@string/event_description"
+            android:inputType="text" />
+
         <ImageView
             android:id="@+id/organizerEventDescriptionQRCode"
             android:layout_width="70dp"

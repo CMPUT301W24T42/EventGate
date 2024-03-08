@@ -3,6 +3,7 @@ package com.example.eventgate.organizer;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -69,6 +70,7 @@ public class OrganizerMainMenuActivity extends AppCompatActivity implements Orga
             Intent intent = new Intent(OrganizerMainMenuActivity.this, OrganizerEventEditorActivity.class);
             intent.putExtra("eventId", clickedEvent.getEventId());
             intent.putExtra("eventName", clickedEvent.getEventName());
+            intent.putExtra("eventDescription", clickedEvent.getEventDescription());
             intent.putExtra("alerts", clickedEvent.getAlerts());
             startActivity(intent);
         });
