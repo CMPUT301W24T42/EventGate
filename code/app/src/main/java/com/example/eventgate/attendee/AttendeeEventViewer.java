@@ -48,7 +48,6 @@ public class AttendeeEventViewer extends AppCompatActivity {
 
         }
 
-        //eventID = "t4sVMhhFRrZIO7VjulOd";
 
         displayEventPosters(eventID);
 
