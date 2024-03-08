@@ -109,7 +109,6 @@ public class OrganizerEventEditorActivity extends AppCompatActivity implements C
             }
         });
 
-        
         backButton = findViewById(R.id.OrganizerEditBackButton);
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override

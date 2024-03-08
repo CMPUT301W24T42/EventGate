@@ -141,13 +141,13 @@ public class EventDB {
                     if (!alreadyExists) {
                         // Add event to attendee collection
                         Map<String, Object> updates = new HashMap<>();
-                        attendeeEvents.add(attendeeEvents.size() - 1, eventId);
+                        attendeeEvents.add(eventId);
                         updates.put("events", attendeeEvents);
                         db.collection("attendees").document(attendee.getId()).update(updates);
                         // Add attendee to event collection
                         updates = new HashMap<>();
                         ArrayList<String> eventAttendees = (ArrayList<String>) documentSnapshot.get("attendees");
-                        eventAttendees.add(eventAttendees.size() - 1, attendee.getId());
+                        eventAttendees.add(attendee.getId());
                         updates.put("attendees", attendeeEvents);
                         db.collection("events").document(attendee.getId()).update(updates);
                         futureResult.complete(0);
@@ -166,6 +166,7 @@ public class EventDB {
      * @return CompleteableFuture of Arraylist of Events
      * */
     public CompletableFuture<ArrayList<Event>> getAttendeeEvents(String deviceId) {
+        Log.d("ID", deviceId);
         CompletableFuture<ArrayList<Event>> futureEvents = new CompletableFuture<>();
         ArrayList<Event> events = new ArrayList<>();
         db.collection("attendees").whereEqualTo("deviceId", deviceId).get()
@@ -176,10 +177,16 @@ public class EventDB {
             DocumentSnapshot attendee = queryDocumentSnapshots.getDocuments().get(0);
             ArrayList<String> attendeeEvents = (ArrayList<String>) attendee.get("events");
 
-            if (attendeeEvents.size() < 2) {  // If it's a singleton or less, simply return
+            if (attendeeEvents.size() == 0) {  // If it's a singleton or less, simply return
                 return;
             }
-            for (String eventId : attendeeEvents.subList(0, attendeeEvents.size() - 1)) {
+            for (String eventId : attendeeEvents) {
+                if (eventId.equals("")) {
+                    if (eventId.equals(attendeeEvents.get(attendeeEvents.size() - 1))) {
+                        futureEvents.complete(events);
+                    }
+                    continue;
+                }
                 db.collection("events").document(eventId.trim()).get().addOnSuccessListener(documentSnapshot -> {
                     String eventName = documentSnapshot.getString("name");
 
@@ -189,7 +196,7 @@ public class EventDB {
 
 
                     // Check if this is the last event, if so, complete
-                    if (eventId.equals(attendeeEvents.get(attendeeEvents.size() - 2))) {
+                    if (eventId.equals(attendeeEvents.get(attendeeEvents.size() - 1))) {
                         futureEvents.complete(events);
                     }
                 });
