@@ -80,7 +80,7 @@ public class MessagingService extends FirebaseMessagingService {
 
     /**
      * this subscribes a user to a topic that allows them to receive notifications from the
-     * associated event
+     *     associated event
      * @param eventId the id of the event that the user will be subscribed to
      */
     public void addUserToTopic(String eventId) {
@@ -93,5 +93,23 @@ public class MessagingService extends FirebaseMessagingService {
                     Log.d(TAG, msg);
                 });
     }
+
+    /**
+     * this unsubscribes a user from a topic so they stop receiving notifications from the
+     *     associated event
+     * @param eventId the id of the event that theu user will be unsubscribed from
+     */
+    public void removeUserFromTopic(String eventId) {
+        fcm.unsubscribeFromTopic(eventId)
+                .addOnCompleteListener(task -> {
+                    String msg = "Unsubscribed";
+                    if (!task.isSuccessful()) {
+                        msg = "Unsubscribe failed";
+                    }
+                    Log.d(TAG, msg);
+                });
+    }
+
+
 
 }
