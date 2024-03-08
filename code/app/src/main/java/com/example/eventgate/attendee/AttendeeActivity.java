@@ -207,6 +207,16 @@ public class AttendeeActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * handles result of opening file browser and choosing profile picture image
+     * @param requestCode The integer request code originally supplied to
+     *                    startActivityForResult(), allowing you to identify who this
+     *                    result came from.
+     * @param resultCode  The integer result code returned by the child activity
+     *                    through its setResult().
+     * @param data        An Intent, which can return result data to the caller
+     *                    (various data can be attached to Intent "extras").
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -226,7 +236,11 @@ public class AttendeeActivity extends AppCompatActivity {
         }
     }
 
-    //Popup for user settings when gear icon clicked
+
+
+    /**
+     * Popup dialog for editing user settings when gear icon clicked
+     */
     private void user_settings_dialog() {
 
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -269,7 +283,9 @@ public class AttendeeActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
-    //Popup for editing/removing profile picture, called when profile image clicked
+    /**
+     * Popup for editing/removing profile picture, called when profile image clicked
+     */
     private void editProfilePictureDialog() {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -299,7 +315,7 @@ public class AttendeeActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    //different user info popup for first time attendee
+    //different user info popup for first time attendee, not implemented yet
     private void user_settings_dialog_first() {
 
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -343,7 +359,11 @@ public class AttendeeActivity extends AppCompatActivity {
     }
 
 
-    //generates hash from firebase auth id
+    /**
+     * generates hash from firebase auth id for deterministic profile picture
+     * @param userId Firebase Install ID
+     */
+    //
     private void generateHash() {
         try {
             FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -372,16 +392,11 @@ public class AttendeeActivity extends AppCompatActivity {
 
 
     }
-    //generates profile picture from hash
-    private void createBitMap() {
 
-        int color = Color.rgb(hashBytes[0] & 0xFF, hashBytes[1] & 0xFF, hashBytes[2] & 0xFF);
-        profileBitmap = Bitmap.createBitmap(500, 500, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(profileBitmap);
-        canvas.drawColor(color);
-
-        return;
-    }
+    /**
+     * Generates deterministic profile picture for attendee
+     * @param hashBytes hash from firebase auth id
+     */
     //better version
     private void createBitmap2() {
         if (hashBytes == null || hashBytes.length < 3) {
@@ -409,6 +424,11 @@ public class AttendeeActivity extends AppCompatActivity {
             }
         }
     }
+
+    /**
+     * Queries firestore db for all events attendee is signed into
+     * @param id users Firebase Install ID
+     */
     private void updateMyEvents() {
         FirebaseInstallations.getInstance().getId().addOnSuccessListener(id -> {
             CompletableFuture<ArrayList<Event>> attendeeEvents = new EventDB().getAttendeeEvents(id);
