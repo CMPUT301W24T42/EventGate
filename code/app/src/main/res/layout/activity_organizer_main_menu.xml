@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/light_blue"
-    tools:context=".organizer.OrganizerMainMenuActivity">
+    tools:context=".organizer.OrganizerMainMenuActivity"
+    android:id="@+id/organizer_menu_layout">
 
     <LinearLayout
         android:id="@+id/eventContainer"
