@@ -2,10 +2,13 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="AdminActivityTest">
+      <entry key="MainActivityTest">
         <State />
       </entry>
-      <entry key="MainActivityTest">
+      <entry key="OrganizerCreateEventFragmentTest">
+        <State />
+      </entry>
+      <entry key="OrganizerMainMenuActivityTest">
         <State />
       </entry>
       <entry key="app">
@@ -16,12 +19,12 @@
               <deviceKey>
                 <Key>
                   <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="C:\Users\Chris\.android\avd\Pixel_5_API_30.avd" />
+                  <value value="$USER_HOME$/.android/avd/Pixel_7_Pro_API_34.avd" />
                 </Key>
               </deviceKey>
             </Target>
           </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-03-07T22:03:43.364093200Z" />
+          <timeTargetWasSelectedWithDropDown value="2024-03-07T15:47:14.060089Z" />
         </State>
       </entry>
     </value>

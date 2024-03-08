@@ -19,4 +19,9 @@
     <string name="generate_check_in_qr">Generate Check In QR</string>
     <string name="generate_event_qr">Generate Event QR</string>
     <string name="eventDescriptionQR">EventDescriptionQR</string>
+    <string name="create_alert_title">Create Alert</string>
+    <string name="send_button">Send</string>
+    <string name="enter_message">Enter Message</string>
+    <string name="enter_title">Enter Title</string>
+    <string name="alert_title">Alert Title</string>
 </resources>
