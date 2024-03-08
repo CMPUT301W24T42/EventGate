@@ -95,6 +95,9 @@ public class OrganizerCreateEventFragment extends DialogFragment {
         Button generateQRButton = view.findViewById(R.id.generateQRButton);
         Button generateDescriptionQRButton = view.findViewById(R.id.generateDescriptionQRButton);
 
+        EditText eventDetailsEditText = view.findViewById(R.id.eventDetailsEdittext);
+
+
         // This QR Code is for attendees to check in to the event
         generateQRButton.setOnClickListener(v -> {
             // Only generate one QR Code
@@ -142,6 +145,8 @@ public class OrganizerCreateEventFragment extends DialogFragment {
 
                 // Create an Event object
                 eventAdded = new Event(eventName);
+                String eventDetails = eventDetailsEditText.getText().toString();
+                eventAdded.setEventDetails(eventDetails);
 
                 // Create Event Description QR Code
                 MultiFormatWriter writer = new MultiFormatWriter();
@@ -189,6 +194,8 @@ public class OrganizerCreateEventFragment extends DialogFragment {
         cancelButton.setOnClickListener(v -> {
             if (eventAdded != null) {
                 EventDB eventDB = new EventDB();
+
+
                 eventDB.removeEvent(eventAdded);
 
                 // Update the event list in the main activity

@@ -107,6 +107,9 @@ public class EventDB {
         data.put("checkInQRCode", byteArrayAsList.toString());
         data.put("organizer", deviceId); // Set organizer field to firebase installation id
         data.put("attendees", new ArrayList<String>()); // Set attendees field to blank
+        data.put("eventDetails", event.getEventDetails());
+        System.out.println(event.getEventDetails());
+        System.out.println(event.getEventId());
 
         collection
                 .document(eventId)
@@ -194,6 +197,27 @@ public class EventDB {
         });
         return futureEvents;
     }
+
+    /**
+     * retrieves event details
+     * @param eventID
+     * @return event details
+     */
+    public CompletableFuture<String> getEventDetailsDB(String eventID) {
+        CompletableFuture<String> futureEventDetails = new CompletableFuture<>();
+        db.collection("events").document(eventID).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (!documentSnapshot.exists()) {
+                        futureEventDetails.complete(null);
+                    } else {
+                        String eventDetails = documentSnapshot.getString("eventDetails");
+                        futureEventDetails.complete(eventDetails);
+                    }
+                })
+                .addOnFailureListener(e -> futureEventDetails.completeExceptionally(e));
+
+        return futureEventDetails;
+    }
       
     /**
      * Removes an event from the database
@@ -262,4 +286,6 @@ public class EventDB {
 
         return allAttendees;
     }
+
+
 }

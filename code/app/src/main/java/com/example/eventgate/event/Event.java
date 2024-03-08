@@ -25,6 +25,12 @@ public class Event {
     private Bitmap descriptionQRBitmap;
     private ArrayList<OrganizerAlert> alerts;
 
+
+    /**
+     * Holds the details of the event
+     */
+    private String eventDetails;
+
     /**
      * Constructs an Event
      * @param eventName the name of the event
@@ -34,6 +40,13 @@ public class Event {
         this.alerts = new ArrayList<>();
     }
 
+    public String getEventDetails() {
+        return eventDetails;
+    }
+
+    public void setEventDetails(String eventDetails) {
+        this.eventDetails = eventDetails;
+    }
     public String getEventName() {
         return eventName;
     }
