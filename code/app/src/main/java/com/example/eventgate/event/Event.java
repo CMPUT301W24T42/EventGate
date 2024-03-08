@@ -35,6 +35,7 @@ public class Event {
      */
     public Event(String eventName) {
         this.eventName = eventName;
+        this.alerts = new ArrayList<>();
     }
 
     public String getEventName() {

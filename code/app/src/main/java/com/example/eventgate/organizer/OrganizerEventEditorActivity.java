@@ -18,13 +18,16 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.eventgate.Firebase;
+import com.example.eventgate.MainActivity;
 import com.example.eventgate.R;
 import com.example.eventgate.attendee.AttendeeEventListAdapter;
 import com.example.eventgate.event.Event;
 import com.example.eventgate.event.EventDB;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 
@@ -186,5 +189,11 @@ public class OrganizerEventEditorActivity extends AppCompatActivity implements C
     @Override
     public void onAlertCreated(OrganizerAlert alert) {
         alerts.add(alert);
+        CollectionReference collection = MainActivity.db.getEventsRef();
+        collection
+                .document(eventId)
+                .update("alerts", FieldValue.arrayUnion(alert))
+                .addOnSuccessListener(unused -> Log.d("EventDB", "Alert has been sent to firebase"));
+
     }
 }
