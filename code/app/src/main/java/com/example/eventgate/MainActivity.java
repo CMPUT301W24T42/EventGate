@@ -50,8 +50,6 @@ public class MainActivity extends AppCompatActivity {
         // ask the user to permission to receive notifications from the app
         askNotificationPermission();
 
-        mAuth = db.getmAuth();
-
         attendeeButton = findViewById(R.id.attendee_button);
         organizerButton = findViewById(R.id.organizer_button);
         adminButton = findViewById(R.id.admin_button);
@@ -71,8 +69,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser == null) {
+
+        mAuth = db.getmAuth();
+
+        if (mAuth.getCurrentUser() == null) {
             signInUser();
         }
         else {
