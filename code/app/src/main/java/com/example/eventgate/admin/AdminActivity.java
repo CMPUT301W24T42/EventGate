@@ -37,6 +37,7 @@ public class AdminActivity extends AppCompatActivity {
      * This is the button used to get back to the Main Menu activity
      */
     Button adminActivityBackButton;
+  
     EventDB eventDB;
 
     /**

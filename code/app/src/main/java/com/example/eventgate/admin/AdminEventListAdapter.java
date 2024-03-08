@@ -22,7 +22,13 @@ import java.util.ArrayList;
  *     can use
  */
 public class AdminEventListAdapter extends ArrayAdapter<Event> {
+    /**
+     * this is the list of events that will be displayed by the adapter
+     */
     private ArrayList<Event> events;
+    /**
+     * this holds the context
+     */
     private Context context;
 
     /**
@@ -60,6 +66,7 @@ public class AdminEventListAdapter extends ArrayAdapter<Event> {
 
         eventName.setText(event.getEventName());
 
+        // this removes events from the app and database once the admin clicks on the delete button
         adminDelEventButton.setOnClickListener(v -> {
             events.remove(position);
             eventDB.removeEvent(event);

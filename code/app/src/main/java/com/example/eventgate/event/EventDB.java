@@ -3,6 +3,9 @@ package com.example.eventgate.event;
 import android.graphics.Bitmap;
 import android.util.Log;
 
+import com.example.eventgate.attendee.AttendeeDB;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -11,6 +14,9 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import androidx.annotation.NonNull;
+
 import com.example.eventgate.MainActivity;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -208,10 +214,32 @@ public class EventDB {
      */
     public void removeEvent(Event event) {
         String eventId = event.getEventId();
-        collection.document(eventId)
-                .delete()
-                .addOnSuccessListener(unused -> Log.d(TAG, "Event has been deleted successfully"))
-                .addOnFailureListener(e -> Log.d(TAG, "Error deleting event" + e));
+        // this gets the list of attendees attending the event and then removes the event from each
+        //     of their event lists
+        collection.document(eventId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            AttendeeDB attendeeDB = new AttendeeDB();  // allows us to access attendee info so event can be removed
+            ArrayList<String> attendees = new ArrayList<>();
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        attendees = (ArrayList<String>) document.get("attendees");
+                        attendeeDB.removeEvent(attendees, event.getEventId());
+                        // after removing the event from the attendees' lists, this removes the event
+                        //     from the event collection as well
+                        collection.document(eventId)
+                                .delete()
+                                .addOnSuccessListener(unused -> Log.d(TAG, "Event has been deleted successfully"))
+                                .addOnFailureListener(e -> Log.d(TAG, "Error deleting event" + e));
+                    } else {
+                        Log.e(TAG, "Document does not exist");
+                    }
+                }else{
+                    Log.e(TAG, "Task Failed: " + task.getException());
+                }
+            }
+        });
     }
 
     /**

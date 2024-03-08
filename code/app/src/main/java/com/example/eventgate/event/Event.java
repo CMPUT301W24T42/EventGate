@@ -48,6 +48,10 @@ public class Event {
         this.alerts = new ArrayList<>();
     }
 
+    /**
+     * this get the name of an event
+     * @return the name of the event
+     */
     public String getEventDetails() {
         return eventDetails;
     }
@@ -55,27 +59,53 @@ public class Event {
     public void setEventDetails(String eventDetails) {
         this.eventDetails = eventDetails;
     }
+
     public String getEventName() {
         return eventName;
     }
 
+    /**
+     * this sets the name of the event
+     * @param eventName the name to be set
+     */
     public void setEventName(String eventName) {
         this.eventName = eventName;
     }
+
+
+    /**
+     * this gets the id of the event
+     * @return the id of the event
+     */
+
     public String getEventDescription() { return eventDescription; }
+  
     public void setEventDescription(String eventDescription) { this.eventDescription = eventDescription; }
+  
     public String getEventId() {
         return eventId;
     }
 
+    /**
+     * this sets the id for the event
+     * @param id the id to be set
+     */
     public void setEventId(String id) {
         this.eventId = id;
     }
 
+    /**
+     * this gets the bitmap for the event's QR code
+     * @return the QR's bitmap
+     */
     public Bitmap getEventQRBitmap() {
         return eventQRBitmap;
     }
 
+    /**
+     * this sets the bitmap for the event's QR code
+     * @param eventQRBitmap the bitmap of the event's QR code
+     */
     public void setEventQRBitmap(Bitmap eventQRBitmap) {
         this.eventQRBitmap = eventQRBitmap;
     }

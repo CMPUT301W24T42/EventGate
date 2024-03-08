@@ -2,6 +2,7 @@ package com.example.eventgate;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
@@ -24,11 +25,29 @@ import com.google.firebase.auth.FirebaseUser;
  * It allows the user to select their role and  navigate to other activities
  */
 public class MainActivity extends AppCompatActivity {
+    /**
+     * the button that sends a user to the AttendeeActivity
+     */
     Button attendeeButton;
+    /**
+     * the button that sends a user to the OrganizerMainMenuActivity
+     */
     Button organizerButton;
+    /**
+     * the button that sends a user to the AdminActivity
+     */
     Button adminButton;
+    /**
+     * a Firebase object where references are held
+     */
     public static final Firebase db = new Firebase();
+    /**
+     * an instance of firebase authentication
+     */
     private FirebaseAuth mAuth;
+    /**
+     * a tag for logging
+     */
     public static final String TAG = "Firebase Auth";
     /**
      * this is the launcher that requests permission to receive notifications
@@ -70,6 +89,9 @@ public class MainActivity extends AppCompatActivity {
                 AdminActivity.class)));
     }
 
+    /**
+     * called when the activity is visible to the user, immediately after onCreate
+     */
     @Override
     protected void onStart() {
         super.onStart();
@@ -82,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
         }
         else {
 //            updateUI(currentUser);
+            // TODO: check for admin permission and update ui accordingly
         }
 
     }
