@@ -25,9 +25,6 @@ import java.util.concurrent.CompletableFuture;
 //citations
 //https://www.geeksforgeeks.org/how-to-use-picasso-image-loader-library-in-android/
 public class AttendeeEventViewer extends AppCompatActivity {
-
-
-
     private TextView textViewEventName;
     private String eventID;
     private String eventName;

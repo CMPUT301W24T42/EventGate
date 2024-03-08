@@ -48,7 +48,7 @@ public class OrganizerEventEditorActivity extends AppCompatActivity {
 
     private TextView eventTitle;
     private Button backButton, uploadPosterButton;
-
+    private Button createAlert;
     private String eventId;
     private DocumentReference eventRef;
     ArrayList<String> attendeeDataList;
@@ -121,6 +121,14 @@ public class OrganizerEventEditorActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 finish();
+            }
+        });
+
+        createAlert = findViewById(R.id.button_create_alert);
+        createAlert.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new CreateAlertFragment().show(getSupportFragmentManager(), "CREATE ALERT");
             }
         });
     }
