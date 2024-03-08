@@ -23,4 +23,5 @@
     <string name="send_button">Send</string>
     <string name="enter_message">Enter Message</string>
     <string name="enter_title">Enter Title</string>
+    <string name="alert_title">Alert Title</string>
 </resources>

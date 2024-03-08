@@ -156,6 +156,7 @@ public class AttendeeActivity extends AppCompatActivity {
                 intent.putExtra("EventID", clickedEvent.getEventId());
                 System.out.println("eventid is:" + clickedEvent.getEventId());
                 intent.putExtra("EventName", clickedEvent.getEventName());
+                intent.putExtra("alerts", clickedEvent.getAlerts());
                 startActivity(intent);
             }
         });

@@ -4,7 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -12,6 +14,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.eventgate.R;
+import com.example.eventgate.organizer.AttendeeListAdapter;
+import com.example.eventgate.organizer.OrganizerAlert;
+import com.google.android.gms.common.util.ArrayUtils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -27,6 +32,9 @@ public class AttendeeEventViewer extends AppCompatActivity {
     private TextView textViewEventName;
     private String eventID;
     private String eventName;
+    private ArrayList<OrganizerAlert> alertsDataList;
+    private ListView alertsList;
+    private ArrayAdapter<OrganizerAlert> alertsAdapter;
     Button back_button, viewAttendeesButton;
 
     @Override
@@ -41,8 +49,12 @@ public class AttendeeEventViewer extends AppCompatActivity {
         if (extras != null) {
             eventID = extras.getString("EventID");
             eventName = extras.getString("EventName");
-
+            alertsDataList = (ArrayList<OrganizerAlert>) extras.getSerializable("alerts");
         }
+
+        alertsList = findViewById(R.id.alertList);
+        alertsAdapter = new AlertListAdapter(this, alertsDataList);
+        alertsList.setAdapter(alertsAdapter);
 
         //eventID = "t4sVMhhFRrZIO7VjulOd";
 
