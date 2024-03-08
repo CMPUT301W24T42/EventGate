@@ -10,16 +10,24 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
+import com.example.eventgate.MainActivity;
 import com.example.eventgate.R;
+import com.example.eventgate.event.Event;
+import com.example.eventgate.event.EventDB;
 import com.example.eventgate.organizer.AttendeeListAdapter;
 import com.example.eventgate.organizer.OrganizerAlert;
 import com.google.android.gms.common.util.ArrayUtils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -72,12 +80,9 @@ public class AttendeeEventViewer extends AppCompatActivity {
             }
         });
 
-
-
         //no announcement or detail functionality yet, add placeholders
         TextView eventDetailsTextview = findViewById(R.id.eventDetailsTextview);
         eventDetailsTextview.setText("Event Starts at 9:00am");
-
 
         //view attendees button
         viewAttendeesButton = findViewById(R.id.attendeeViewParticipantsButton);
@@ -91,8 +96,15 @@ public class AttendeeEventViewer extends AppCompatActivity {
             }
         });
 
+        CollectionReference collection = MainActivity.db.getEventsRef();
 
-
+        // snapshot listener that adds/updates all the alerts from the database
+        collection.document(eventID).addSnapshotListener((value, error) -> {
+            if (value != null) {
+                OrganizerAlert alert = new OrganizerAlert((String) value.get("title"), (String) value.get("message"));
+                alertsDataList.add(alert);
+            }
+        });
 
     }
     private void displayEventPosters(String eventId) {
