@@ -37,7 +37,6 @@ public class OrganizerCreateEventFragment extends DialogFragment {
     private Bitmap eventQRBitmap;
     private Bitmap descriptionQRBitmap;
     private OnQRCodeGeneratedListener qrCodeListener;
-    private OnQRCodeGeneratedListener descriptionQRCodeListener;
     private Event eventAdded;
     private String eventName;
 

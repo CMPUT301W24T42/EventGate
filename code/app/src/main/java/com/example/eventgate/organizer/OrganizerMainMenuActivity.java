@@ -3,8 +3,6 @@ package com.example.eventgate.organizer;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -65,15 +63,12 @@ public class OrganizerMainMenuActivity extends AppCompatActivity implements Orga
                 finish()
         );
 
-        eventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Event clickedEvent = eventDataList.get(position);
-                Intent intent = new Intent(OrganizerMainMenuActivity.this, OrganizerEventEditorActivity.class);
-                intent.putExtra("eventId", clickedEvent.getEventId());
-                intent.putExtra("eventName", clickedEvent.getEventName());
-                startActivity(intent);
-            }
+        eventList.setOnItemClickListener((parent, view, position, id) -> {
+            Event clickedEvent = eventDataList.get(position);
+            Intent intent = new Intent(OrganizerMainMenuActivity.this, OrganizerEventEditorActivity.class);
+            intent.putExtra("eventId", clickedEvent.getEventId());
+            intent.putExtra("eventName", clickedEvent.getEventName());
+            startActivity(intent);
         });
     }
 
