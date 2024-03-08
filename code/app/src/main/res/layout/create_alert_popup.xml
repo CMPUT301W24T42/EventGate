@@ -17,7 +17,7 @@
             android:id="@+id/create_alert_title"
             android:layout_width="match_parent"
             android:layout_height="45dp"
-            android:background="@color/red"
+            android:background="@color/green"
             android:gravity="center"
             android:text="@string/create_alert_title"
             android:textAlignment="center"
