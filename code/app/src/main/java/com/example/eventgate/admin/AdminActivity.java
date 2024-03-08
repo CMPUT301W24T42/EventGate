@@ -1,5 +1,6 @@
 package com.example.eventgate.admin;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -11,9 +12,16 @@ import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.eventgate.MainActivity;
 import com.example.eventgate.event.Event;
 import com.example.eventgate.R;
 import com.example.eventgate.event.EventDB;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
@@ -38,7 +46,7 @@ public class AdminActivity extends AppCompatActivity {
      * This is the button used to get back to the Main Menu activity
      */
     Button adminActivityBackButton;
-    Button adminDelEventButton;
+    EventDB eventDB;
 
     /**
      * Called when the activity is starting.
@@ -58,6 +66,20 @@ public class AdminActivity extends AppCompatActivity {
 
         eventAdapter = new AdminEventListAdapter(this, eventDataList);
         eventList.setAdapter(eventAdapter);
+
+        eventDB = new EventDB();
+        CollectionReference collection = MainActivity.db.getEventsRef();
+
+        // snapshot listener that adds/updates all the events from the database
+        collection.addSnapshotListener((queryDocumentSnapshots, error) -> {
+            for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
+            {
+                Event event = new Event((String) doc.getData().get("name"));
+                event.setEventId(doc.getId());
+                eventDataList.add(event);
+            }
+            eventAdapter.notifyDataSetChanged();
+        });
 
         // sends admin back to the main menu
         adminActivityBackButton.setOnClickListener(v -> finish());
