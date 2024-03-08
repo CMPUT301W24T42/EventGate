@@ -91,18 +91,21 @@ public class OrganizerCreateEventFragment extends DialogFragment {
         Button continueButton = view.findViewById(R.id.organizerCreateEventContinueButton);
         Button cancelButton = view.findViewById(R.id.organizerCreateEventCancelButton);
         EditText organizerCreateEventName = view.findViewById(R.id.organizerCreateEventName);
-        EditText organizerEventDescription = view.findViewById(R.id.organizerCreateEventDescription);
+
         ImageView checkInQRCode = view.findViewById(R.id.organizerCreateEventQRCode);
         ImageView descriptionQRCode = view.findViewById(R.id.organizerEventDescriptionQRCode);
         Button generateQRButton = view.findViewById(R.id.generateQRButton);
         Button generateDescriptionQRButton = view.findViewById(R.id.generateDescriptionQRButton);
+
+        EditText eventDetailsEditText = view.findViewById(R.id.eventDetailsEdittext);
+
 
         // This QR Code is for attendees to check in to the event
         generateQRButton.setOnClickListener(v -> {
             // Only generate one QR Code
             if (!qRCodeGenerated) {
                 eventName = organizerCreateEventName.getText().toString().trim();
-                eventDescription = organizerEventDescription.getText().toString().trim();
+
 
                 // Check if the eventName is empty or null
                 if (eventName.isEmpty()) {
@@ -111,17 +114,14 @@ public class OrganizerCreateEventFragment extends DialogFragment {
                     return; // Exit the method
                 }
 
-                // Check if eventDescription is empty
-                if (eventDescription.isEmpty()) {
-                    Toast.makeText(getActivity(), "Please enter an Event description.", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+
+
 
                 // If the Description QR code has not been generated, then an event must be created
                 if (!descriptionQRCodeGenerated) {
                     // Create an Event object
                     eventAdded = new Event(eventName);
-                    eventAdded.setEventDescription(eventDescription);
+
                 }
 
                 if (qrCodeListener != null) {
@@ -143,7 +143,7 @@ public class OrganizerCreateEventFragment extends DialogFragment {
             // Only create 1 QR Code
             if (!descriptionQRCodeGenerated) {
                 eventName = organizerCreateEventName.getText().toString().trim();
-                eventDescription = organizerEventDescription.getText().toString().trim();
+
 
                 if (eventName.isEmpty()) {
                     // Show a message to the user indicating that they need to enter an event name
@@ -151,14 +151,12 @@ public class OrganizerCreateEventFragment extends DialogFragment {
                     return; // Exit the method
                 }
 
-                if (eventDescription.isEmpty()) {
-                    // Show a message to the user indicating that they need to enter an event description
-                    Toast.makeText(getActivity(), "Please enter an Event description.", Toast.LENGTH_SHORT).show();
-                    return; // Exit the method
-                }
+
 
                 // Create an Event object
                 eventAdded = new Event(eventName);
+                String eventDetails = eventDetailsEditText.getText().toString();
+                eventAdded.setEventDetails(eventDetails);
 
                 // Create Event Description QR Code
                 MultiFormatWriter writer = new MultiFormatWriter();
@@ -173,7 +171,7 @@ public class OrganizerCreateEventFragment extends DialogFragment {
                 }
 
                 eventAdded.setEventQRBitmap(eventQRBitmap);
-                eventAdded.setEventDescription(eventDescription);
+
                 descriptionQRCode.setImageBitmap(descriptionQRBitmap);
                 descriptionQRCodeGenerated = true;
             }
@@ -181,7 +179,7 @@ public class OrganizerCreateEventFragment extends DialogFragment {
 
         continueButton.setOnClickListener(v -> {
             String eventName = organizerCreateEventName.getText().toString().trim();
-            String eventDescription = organizerEventDescription.getText().toString().trim();
+
 
             // Check if the QR code has been generated
             if (!qRCodeGenerated) {
@@ -201,10 +199,6 @@ public class OrganizerCreateEventFragment extends DialogFragment {
                 Toast.makeText(getActivity(), "Please enter a valid event name", Toast.LENGTH_SHORT).show();
             }
 
-            if (eventDescription.isEmpty()) { // Check if the event name is not empty
-                // Show a toast message indicating that the event name cannot be empty
-                Toast.makeText(getActivity(), "Please enter a valid event description", Toast.LENGTH_SHORT).show();
-            }
 
             dismiss();
         });
@@ -213,6 +207,8 @@ public class OrganizerCreateEventFragment extends DialogFragment {
         cancelButton.setOnClickListener(v -> {
             if (eventAdded != null) {
                 EventDB eventDB = new EventDB();
+
+
                 eventDB.removeEvent(eventAdded);
 
                 // Update the event list in the main activity

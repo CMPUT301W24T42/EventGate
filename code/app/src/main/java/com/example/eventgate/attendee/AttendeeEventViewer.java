@@ -31,8 +31,11 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 //citations
 //https://www.geeksforgeeks.org/how-to-use-picasso-image-loader-library-in-android/
@@ -60,16 +63,20 @@ public class AttendeeEventViewer extends AppCompatActivity {
             alertsDataList = (ArrayList<OrganizerAlert>) extras.getSerializable("alerts");
         }
 
+
         alertsList = findViewById(R.id.alertList);
         alertsAdapter = new AlertListAdapter(this, alertsDataList);
         alertsList.setAdapter(alertsAdapter);
 
-        //eventID = "t4sVMhhFRrZIO7VjulOd";
+
 
         displayEventPosters(eventID);
 
         TextView eventNameTitle = findViewById(R.id.eventNameTitle);
         eventNameTitle.setText(eventName);
+
+        TextView eventDetailsTextview = findViewById(R.id.eventDetailsTextview);
+
 
         back_button = findViewById(R.id.attendee_back_button);
 
@@ -80,9 +87,28 @@ public class AttendeeEventViewer extends AppCompatActivity {
             }
         });
 
-        //no announcement or detail functionality yet, add placeholders
-        TextView eventDetailsTextview = findViewById(R.id.eventDetailsTextview);
-        eventDetailsTextview.setText("Event Starts at 9:00am");
+
+        TextView eventDetailsTv = findViewById(R.id.eventDetailsTextview);
+        EventDB eventDB = new EventDB();
+
+        CompletableFuture<String> eventDetailsFuture = eventDB.getEventDetailsDB(eventID);
+
+
+        eventDetailsFuture.thenAccept(eventDetails -> {
+
+            runOnUiThread(() -> {
+                if (eventDetails != null) {
+                    eventDetailsTv.setText(eventDetails);
+                } else {
+                    eventDetailsTv.setText("Details not found for event ID: " + eventID);
+                }
+            });
+        }).exceptionally(e -> {
+
+            e.printStackTrace();
+            runOnUiThread(() -> eventDetailsTv.setText("Failed to load event details."));
+            return null;
+        });
 
         //view attendees button
         viewAttendeesButton = findViewById(R.id.attendeeViewParticipantsButton);
@@ -136,5 +162,7 @@ public class AttendeeEventViewer extends AppCompatActivity {
         PosterPagerAdapter adapter = new PosterPagerAdapter(this, posterImageUrls);
         viewPager.setAdapter(adapter);
     }
+
+
 
 }
