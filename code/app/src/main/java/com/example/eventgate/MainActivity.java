@@ -73,8 +73,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        FirebaseApp.initializeApp(this);  // initialize the firebase admin sdk
-
         // ask the user to permission to receive notifications from the app
         askNotificationPermission();
 
