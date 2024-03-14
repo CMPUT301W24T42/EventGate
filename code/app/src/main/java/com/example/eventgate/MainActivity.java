@@ -17,8 +17,10 @@ import android.widget.Toast;
 import com.example.eventgate.admin.AdminActivity;
 import com.example.eventgate.attendee.AttendeeActivity;
 import com.example.eventgate.organizer.OrganizerMainMenuActivity;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 /**
  * This is the activity for the app's main menu.
@@ -70,6 +72,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        FirebaseApp.initializeApp(this);  // initialize the firebase admin sdk
 
         // ask the user to permission to receive notifications from the app
         askNotificationPermission();
