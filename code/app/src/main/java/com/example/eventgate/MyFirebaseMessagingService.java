@@ -17,6 +17,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.RemoteMessage;
 
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.Random;
 
 /**
@@ -136,7 +137,13 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
     @Override
     public void onMessageReceived(@NonNull RemoteMessage message) {
         super.onMessageReceived(message);
-        Log.d(TAG, "From: " + message.getFrom());
+        // log
+        Log.d(TAG, "Notification received");
+        // get title and body of the notification from the remote message
+        String title = Objects.requireNonNull(message.getNotification()).getTitle();
+        String body = message.getNotification().getBody();
+        // create and show the notification to the user
+        createNotification(title, body);
     }
 
     private void createNotificationChannel() {
@@ -144,7 +151,7 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
         // the NotificationChannel class is not in the Support Library.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = "Event Alerts";
-            String description = "Alerts that Organizers can send";
+            String description = "Alerts regarding events";
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
             channel.setDescription(description);
@@ -158,7 +165,8 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
     public void createNotification(String title, String body) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle(title)
-                .setContentText(body);
+                .setContentText(body)
+                .setTimeoutAfter(5000);
 
         // if the user has disabled post notifications then the built notification will not show
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS)
