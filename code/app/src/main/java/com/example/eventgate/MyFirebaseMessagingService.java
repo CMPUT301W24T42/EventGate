@@ -82,4 +82,36 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
         Log.d(TAG, "Refreshed token: " + token);  // Log
         sendTokenToFirebase(token);  // send new token to firebase for storage
     }
+
+    /**
+     * this subscribes a user to a topic that allows them to receive notifications from the
+     *     associated event
+     * @param eventId the id of the event that the user will be subscribed to
+     */
+    public void addUserToTopic(String eventId) {
+        fcm.subscribeToTopic(eventId)
+                .addOnCompleteListener(task -> {
+                    String msg = "Subscribed";
+                    if (!task.isSuccessful()) {
+                        msg = "Subscribe failed";
+                    }
+                    Log.d(TAG, msg);
+                });
+    }
+
+    /**
+     * this unsubscribes a user from a topic so they stop receiving notifications from the
+     *     associated event
+     * @param eventId the id of the event that the user will be unsubscribed from
+     */
+    public void removeUserFromTopic(String eventId) {
+        fcm.unsubscribeFromTopic(eventId)
+                .addOnCompleteListener(task -> {
+                    String msg = "Unsubscribed";
+                    if (!task.isSuccessful()) {
+                        msg = "Unsubscribe failed";
+                    }
+                    Log.d(TAG, msg);
+                });
+    }
 }
