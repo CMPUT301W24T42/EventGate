@@ -21,10 +21,6 @@ public class Firebase {
      */
     private final FirebaseAuth mAuth;
     /**
-     * this holds an instance of the Firebase Cloud Messaging
-     */
-    private final FirebaseMessaging fcm;
-    /**
      * this is the reference to the events collection in the database
      */
     private final CollectionReference eventsRef;
@@ -33,8 +29,6 @@ public class Firebase {
      * this is the reference to the attendees collection in the database
      */
     private final CollectionReference attendeesRef;
-
-    private final CollectionReference fcmTokensRef;
     private FirebaseUser currentUser;
 
     /**
@@ -43,10 +37,8 @@ public class Firebase {
     public Firebase() {
         this.db = FirebaseFirestore.getInstance();
         this.mAuth = FirebaseAuth.getInstance();
-        this.fcm = FirebaseMessaging.getInstance();
         this.eventsRef = db.collection("events");
         this.attendeesRef = db.collection("attendees");
-        this.fcmTokensRef = db.collection("fcmTokens");
         this.currentUser = null;
     }
 
@@ -70,11 +62,6 @@ public class Firebase {
      * this gets a reference to the events collection in the database
      * @return a collection reference to the events collection
      */
-
-    public FirebaseMessaging getFcm() {
-        return this.fcm;
-    }
-
     public CollectionReference getEventsRef() {
         return this.eventsRef;
     }
@@ -86,14 +73,11 @@ public class Firebase {
     public CollectionReference getAttendeesRef() {
         return this.attendeesRef;
     }
-  
-    public CollectionReference getFcmTokensRef() {
-        return this.fcmTokensRef;
-    }
 
     public void setUser(FirebaseUser user) {
         currentUser = user;
     }
+
     public FirebaseUser getUser() {
         return currentUser;
     }
