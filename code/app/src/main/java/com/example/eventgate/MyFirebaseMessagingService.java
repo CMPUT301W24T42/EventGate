@@ -1,12 +1,17 @@
 package com.example.eventgate;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.RemoteMessage;
 
 import java.util.HashMap;
 import java.util.Objects;
@@ -31,6 +36,10 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
      * a tag for logging
      */
     final String TAG = "Firebase Cloud Messaging";
+    /**
+     * the name of the notification channel for events
+     */
+    private final String CHANNEL_ID = "event_channel";
 
     /**
      * this creates a new MyFirebaseMessagingService object
@@ -54,6 +63,7 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
                     String msg = "Your token is" + token;
                     Log.d(TAG, msg);
                 });
+
     }
 
     /**
@@ -69,6 +79,7 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
                 .set(data)
                 .addOnSuccessListener(unused -> Log.d(TAG, "Token has been sent successfully!"))
                 .addOnFailureListener(e -> Log.d(TAG, "Token could not be sent!" + e));
+        createNotificationChannel();
     }
 
     /**
@@ -113,5 +124,37 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
                     }
                     Log.d(TAG, msg);
                 });
+    }
+
+    /**
+     * creates notifications when messaging service receives a message
+     * @param message Remote message that has been received.
+     */
+    @Override
+    public void onMessageReceived(@NonNull RemoteMessage message) {
+        super.onMessageReceived(message);
+        Log.d(TAG, "From: " + message.getFrom());
+    }
+
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is not in the Support Library.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "Event Alerts";
+            String description = "Alerts that Organizers can send";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system. You can't change the importance
+            // or other notification behaviors after this.
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
+    public void buildNotification(String title, String body) {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setContentTitle(title)
+                .setContentText(body);
     }
 }
