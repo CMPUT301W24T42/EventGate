@@ -74,9 +74,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //test
-        FirebaseMessagingService messaging = new MyFirebaseMessagingService();
-
         // ask the user to permission to receive notifications from the app
         askNotificationPermission();
 
@@ -101,10 +98,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
+
+        db.setMessagingService(new MyFirebaseMessagingService());
 
         mAuth = db.getmAuth();
 
+        // Check if user is signed in (non-null) and update UI accordingly.
         if (mAuth.getCurrentUser() == null) {
             signInUser();
         }

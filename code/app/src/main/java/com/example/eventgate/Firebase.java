@@ -5,6 +5,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.FirebaseMessagingService;
 
 /**
  * This class represents Firebase
@@ -24,6 +25,7 @@ public class Firebase {
      * this holds an instance of the Firebase Cloud Messaging
      */
     private final FirebaseMessaging fcm;
+    private FirebaseMessagingService messagingService;
     /**
      * this is the reference to the events collection in the database
      */
@@ -49,6 +51,7 @@ public class Firebase {
         this.db = FirebaseFirestore.getInstance();
         this.mAuth = FirebaseAuth.getInstance();
         this.fcm = FirebaseMessaging.getInstance();
+        this.messagingService = null;
         this.eventsRef = db.collection("events");
         this.attendeesRef = db.collection("attendees");
         this.fcmTokensRef = db.collection("fcmTokens");
@@ -77,6 +80,10 @@ public class Firebase {
      */
     public FirebaseMessaging getFcm() {
         return this.fcm;
+    }
+
+    public void setMessagingService(MyFirebaseMessagingService service) {
+        this.messagingService = service;
     }
 
     /**
