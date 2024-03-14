@@ -2,11 +2,14 @@ package com.example.eventgate;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
@@ -14,7 +17,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.RemoteMessage;
 
 import java.util.HashMap;
-import java.util.Objects;
+import java.util.Random;
 
 /**
  * this class takes care of functions regarding firebase cloud messaging and post notifications
@@ -152,9 +155,21 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
         }
     }
 
-    public void buildNotification(String title, String body) {
+    public void createNotification(String title, String body) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle(title)
                 .setContentText(body);
+
+        // if the user has disabled post notifications then the built notification will not show
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS)
+                != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+
+        // create a random number to serve as the notification id
+        Random notificationId = new Random();
+        // make the notification appear
+        NotificationManagerCompat.from(this).notify(notificationId.nextInt(), builder.build());
     }
+
 }
