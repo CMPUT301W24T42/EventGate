@@ -1,6 +1,7 @@
 package com.example.eventgate;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -34,6 +35,7 @@ public class Firebase {
     private final CollectionReference attendeesRef;
 
     private final CollectionReference fcmTokensRef;
+    private FirebaseUser currentUser;
 
     /**
      * this constructs a new Firebase object
@@ -45,6 +47,7 @@ public class Firebase {
         this.eventsRef = db.collection("events");
         this.attendeesRef = db.collection("attendees");
         this.fcmTokensRef = db.collection("fcmTokens");
+        this.currentUser = null;
     }
 
     /**
@@ -86,5 +89,12 @@ public class Firebase {
   
     public CollectionReference getFcmTokensRef() {
         return this.fcmTokensRef;
+    }
+
+    public void setUser(FirebaseUser user) {
+        currentUser = user;
+    }
+    public FirebaseUser getUser() {
+        return currentUser;
     }
 }

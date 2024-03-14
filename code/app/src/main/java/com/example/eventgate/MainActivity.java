@@ -104,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
         }
         else {
 //            updateUI(currentUser);
+            db.setUser(mAuth.getCurrentUser());
             // TODO: check for admin permission and update ui accordingly
         }
 
@@ -120,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
                         Log.d(TAG, "signInAnonymously:success");
                         FirebaseUser user = mAuth.getCurrentUser();
 //                            updateUI(user);
+                        db.setUser(user);
                     } else {
                         // If sign in fails, display a message to the user.
                         Log.w(TAG, "signInAnonymously:failure", task.getException());

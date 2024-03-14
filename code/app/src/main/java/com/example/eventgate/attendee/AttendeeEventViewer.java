@@ -129,6 +129,7 @@ public class AttendeeEventViewer extends AppCompatActivity {
             if (value != null) {
                 OrganizerAlert alert = new OrganizerAlert((String) value.get("title"), (String) value.get("message"));
                 alertsDataList.add(alert);
+                alertsAdapter.notifyDataSetChanged();
             }
         });
 
