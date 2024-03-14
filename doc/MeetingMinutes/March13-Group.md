@@ -17,3 +17,4 @@ Date: March 13, 2024
 
 ## To Dos:
 - Work on part 4
+- Try to get ~2 user stories done per week
