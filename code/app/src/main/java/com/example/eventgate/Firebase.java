@@ -21,6 +21,10 @@ public class Firebase {
      */
     private final FirebaseAuth mAuth;
     /**
+     * this holds an instance of the Firebase Cloud Messaging
+     */
+    private final FirebaseMessaging fcm;
+    /**
      * this is the reference to the events collection in the database
      */
     private final CollectionReference eventsRef;
@@ -29,6 +33,13 @@ public class Firebase {
      * this is the reference to the attendees collection in the database
      */
     private final CollectionReference attendeesRef;
+    /**
+     * this is the reference to the fcmTokens collection in the database
+     */
+    private final CollectionReference fcmTokensRef;
+    /**
+     * this holds the info from firebase of the current user
+     */
     private FirebaseUser currentUser;
 
     /**
@@ -37,8 +48,10 @@ public class Firebase {
     public Firebase() {
         this.db = FirebaseFirestore.getInstance();
         this.mAuth = FirebaseAuth.getInstance();
+        this.fcm = FirebaseMessaging.getInstance();
         this.eventsRef = db.collection("events");
         this.attendeesRef = db.collection("attendees");
+        this.fcmTokensRef = db.collection("fcmTokens");
         this.currentUser = null;
     }
 
@@ -52,10 +65,18 @@ public class Firebase {
 
     /**
      * this gets an instance of firebase authentication
-     * @return an of FirebaseAuth
+     * @return an instance of FirebaseAuth
      */
     public FirebaseAuth getmAuth() {
         return this.mAuth;
+    }
+
+    /**
+     * this gets an instance of firebase cloud messaging
+     * @return an instance of FirebaseCloudMessaging
+     */
+    public FirebaseMessaging getFcm() {
+        return this.fcm;
     }
 
     /**
@@ -72,6 +93,14 @@ public class Firebase {
      */
     public CollectionReference getAttendeesRef() {
         return this.attendeesRef;
+    }
+
+    /**
+     * this gets a reference to the fcmTokens collection in the database
+     * @return a collection reference to the fcmTokens collection
+     */
+    public CollectionReference getFcmTokensRef() {
+        return this.fcmTokensRef;
     }
 
     public void setUser(FirebaseUser user) {
