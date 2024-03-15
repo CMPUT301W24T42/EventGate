@@ -4,14 +4,26 @@ admin.initializeApp();
 
 exports.androidPushNotification = functions.firestore.document("alerts/{docId}").onCreate(
     (snapshot, context) => {
-        admin.messaging().sendToTopic(
-            snapshot.data().eventId,
-            {
+        // get data to create a notification payload
+        const data = snapshot.data();
+        const eventId = data.eventId;
+        const title = data.title;
+        const body = data.body;
+        const channelId = data.channelId;  // the notification channel we want to send the notification through
+
+        const notificationPayload = {
+            notification: {
+                title: title,
+                body: body
+            },
+            android: {
                 notification: {
-                    title: snapshot.data().title,
-                    body: snapshot.data().body
+                    channelId: channelId
                 }
-            }
-        );
+            },
+            topic: eventId
+        };
+
+        admin.messaging().send(notificationPayload);
     }
 );
