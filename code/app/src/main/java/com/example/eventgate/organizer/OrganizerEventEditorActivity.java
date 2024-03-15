@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.eventgate.MainActivity;
 import com.example.eventgate.R;
 import com.example.eventgate.event.EventDB;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -208,15 +209,31 @@ public class OrganizerEventEditorActivity extends AppCompatActivity implements C
      */
     @Override
     public void onAlertCreated(OrganizerAlert alert) {
+        // add alert to data list
         alerts.add(alert);
-        CollectionReference collection = MainActivity.db.getEventsRef();
+
+        // get references to firebase collections
+        CollectionReference eventsRef = MainActivity.db.getEventsRef();
+        CollectionReference alertsRef = MainActivity.db.getAlertsRef();
+
+        // get alert data that will be stored in firebase
         HashMap<String, Object> newAlert = new HashMap<>();
         newAlert.put("title", alert.getTitle());
         newAlert.put("message", alert.getMessage());
-        collection
+
+        // send to events collection
+        eventsRef
                 .document(eventId)
                 .update("alerts", FieldValue.arrayUnion(newAlert))
-                .addOnSuccessListener(unused -> Log.d("EventDB", "Alert has been sent to firebase"));
+                .addOnSuccessListener(unused -> Log.d("EventDB", "Alert has been sent to events collection"));
+
+        // send to alerts collection
+        String alertId = alertsRef.document().getId();
+        newAlert.put("eventId", eventId);
+        alertsRef
+                .document(alertId)
+                .set(newAlert)
+                .addOnSuccessListener(unused -> Log.d("EventDB", "Alert has been sent to alerts collection"));
 
     }
 }
