@@ -228,6 +228,7 @@ public class OrganizerEventEditorActivity extends AppCompatActivity implements C
         HashMap<String, String> newAlert = new HashMap<>();
         newAlert.put("title", alert.getTitle());
         newAlert.put("body", alert.getMessage());
+        newAlert.put("channelId", alert.getChannelId());
 
         // send to events collection
         eventsRef
