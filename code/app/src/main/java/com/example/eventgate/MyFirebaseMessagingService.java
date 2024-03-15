@@ -2,6 +2,7 @@ package com.example.eventgate;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.util.Log;
@@ -83,7 +84,6 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
                 .set(data)
                 .addOnSuccessListener(unused -> Log.d(TAG, "Token has been sent successfully!"))
                 .addOnFailureListener(e -> Log.d(TAG, "Token could not be sent!" + e));
-        createNotificationChannel();
     }
 
     /**
@@ -139,6 +139,8 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
         super.onMessageReceived(message);
         // log
         Log.d(TAG, "Notification received");
+        // create notification channel
+        createNotificationChannel();
         // get title and body of the notification from the remote message
         String title = Objects.requireNonNull(message.getNotification()).getTitle();
         String body = message.getNotification().getBody();
