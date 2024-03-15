@@ -137,6 +137,10 @@ public class EventDB {
                         attendeeEvents.add(eventId);
                         updates.put("events", attendeeEvents);
                         db.collection("attendees").document(attendee.getId()).update(updates);
+
+                        // subscribe attendee to the events topic so they can receive notifications
+                        MainActivity.db.getMessagingService().addUserToTopic(eventId);
+
                         // Add attendee to event collection
                         updates = new HashMap<>();
                         ArrayList<String> eventAttendees = (ArrayList<String>) documentSnapshot.get("attendees");

@@ -25,7 +25,7 @@ public class Firebase {
      * this holds an instance of the Firebase Cloud Messaging
      */
     private final FirebaseMessaging fcm;
-    private FirebaseMessagingService messagingService;
+    private MyFirebaseMessagingService messagingService;
     /**
      * this is the reference to the events collection in the database
      */
@@ -89,6 +89,10 @@ public class Firebase {
 
     public void setMessagingService(MyFirebaseMessagingService service) {
         this.messagingService = service;
+    }
+
+    public MyFirebaseMessagingService getMessagingService() {
+        return this.messagingService;
     }
 
     /**

@@ -217,9 +217,9 @@ public class OrganizerEventEditorActivity extends AppCompatActivity implements C
         CollectionReference alertsRef = MainActivity.db.getAlertsRef();
 
         // get alert data that will be stored in firebase
-        HashMap<String, Object> newAlert = new HashMap<>();
+        HashMap<String, String> newAlert = new HashMap<>();
         newAlert.put("title", alert.getTitle());
-        newAlert.put("message", alert.getMessage());
+        newAlert.put("body", alert.getMessage());
 
         // send to events collection
         eventsRef
