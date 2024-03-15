@@ -165,10 +165,12 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
     }
 
     public void createNotification(String title, String body) {
+        // build the notification
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_stat_onesignal_default)
                 .setContentTitle(title)
-                .setContentText(body);
+                .setContentText(body)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
         // if the user has disabled post notifications then the built notification will not show
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS)

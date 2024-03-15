@@ -18,6 +18,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.EventGate"
         tools:targetApi="31">
+        <meta-data android:name="com.google.firebase.messaging.default_notification_icon"
+
+            android:resource="@drawable/ic_stat_onesignal_default" />
         <service
             android:name=".MyFirebaseMessagingService"
             android:exported="false">
