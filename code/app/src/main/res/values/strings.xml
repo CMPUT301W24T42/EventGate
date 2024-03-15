@@ -25,4 +25,7 @@
     <string name="enter_message">Enter Message</string>
     <string name="enter_title">Enter Title</string>
     <string name="alert_title">Alert Title</string>
+    <string name="realtime_attendance">Realtime Attendance:</string>
+    <string name="hashtag">#</string>
+    <string name="attendees_list">List of attendees</string>
 </resources>
