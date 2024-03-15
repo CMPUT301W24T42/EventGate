@@ -8,8 +8,8 @@ exports.androidPushNotification = functions.firestore.document("alerts/{docId}")
             snapshot.data().eventId,
             {
                 notification: {
-                    title: snapshot.data().title(),
-                    body: snapshot.data().body()
+                    title: snapshot.data().title,
+                    body: snapshot.data().body
                 }
             }
         );
