@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -25,16 +24,18 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.eventgate.MainActivity;
 import com.example.eventgate.event.Event;
 import com.example.eventgate.event.EventDB;
 import com.example.eventgate.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.installations.FirebaseInstallations;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -342,9 +343,8 @@ public class AttendeeActivity extends AppCompatActivity {
     //
     private void generateHash() {
         try {
-            FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-            String userId = currentUser.getUid();
-            String input = userId;
+            FirebaseUser currentUser = MainActivity.db.getmAuth().getCurrentUser();
+            String input = currentUser.getUid();
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] hash = digest.digest(input.getBytes());
             StringBuilder hexString = new StringBuilder();

@@ -31,10 +31,12 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import org.checkerframework.checker.units.qual.A;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 //citations
@@ -122,15 +124,22 @@ public class AttendeeEventViewer extends AppCompatActivity {
             }
         });
 
-        CollectionReference collection = MainActivity.db.getEventsRef();
+        CollectionReference collection = MainActivity.db.getAlertsRef();
 
         // snapshot listener that adds/updates all the alerts from the database
-        collection.document(eventID).addSnapshotListener((value, error) -> {
-            if (value != null) {
-                OrganizerAlert alert = new OrganizerAlert((String) value.get("title"), (String) value.get("message"));
-                alertsDataList.add(alert);
-            }
-        });
+        collection
+                .whereEqualTo("eventId", eventID)
+                .addSnapshotListener((value, error) -> {
+                    for (QueryDocumentSnapshot doc : value) {
+                        if (doc.get("title") != null) {
+                            String title = doc.getString("title");
+                            String body = doc.getString("body");
+                            OrganizerAlert alert = new OrganizerAlert(title, body);
+                            alertsDataList.add(alert);
+                            alertsAdapter.notifyDataSetChanged();
+                        }
+                    }
+                });
 
     }
 
