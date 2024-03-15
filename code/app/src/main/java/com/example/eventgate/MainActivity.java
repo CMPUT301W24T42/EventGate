@@ -17,8 +17,11 @@ import android.widget.Toast;
 import com.example.eventgate.admin.AdminActivity;
 import com.example.eventgate.attendee.AttendeeActivity;
 import com.example.eventgate.organizer.OrganizerMainMenuActivity;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.FirebaseMessagingService;
 
 /**
  * This is the activity for the app's main menu.
@@ -95,10 +98,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
+
+        db.setMessagingService(new MyFirebaseMessagingService());
 
         mAuth = db.getmAuth();
 
+        // Check if user is signed in (non-null) and update UI accordingly.
         if (mAuth.getCurrentUser() == null) {
             signInUser();
         }
