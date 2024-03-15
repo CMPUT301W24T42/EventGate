@@ -16,15 +16,20 @@ public class OrganizerAlert {
      * this is the notification channel that we want alerts to be sent through
      */
     private String channelId;
+    /**
+     * specify if its an event alert to send to attendees or if its a milestone alert for organizers
+     */
+    private String alertType;
 
     /**
      * Creates a new OrganizerAlert object
      * @param message the message that will be sent
      */
-    public OrganizerAlert(String title, String message, String channelId) {
+    public OrganizerAlert(String title, String message, String channelId, String alertType) {
         this.title = title;
         this.message = message;
         this.channelId = channelId;
+        this.alertType = alertType;
     }
 
     public String getTitle() {
@@ -37,5 +42,9 @@ public class OrganizerAlert {
 
     public String getChannelId() {
         return channelId;
+    }
+
+    public String getAlertType() {
+        return alertType;
     }
 }

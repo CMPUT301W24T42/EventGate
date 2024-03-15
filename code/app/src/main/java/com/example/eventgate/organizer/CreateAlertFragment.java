@@ -53,7 +53,7 @@ public class CreateAlertFragment extends DialogFragment {
             } else if (message.isEmpty()) {
                 Toast.makeText(getActivity(), "Please enter a message", Toast.LENGTH_SHORT).show();
             } else {
-                OrganizerAlert alert = new OrganizerAlert(title, message, "event_channel");
+                OrganizerAlert alert = new OrganizerAlert(title, message, "event_channel", "event");
                 ((CreateAlertFragment.OnAlertCreatedListener) getActivity()).onAlertCreated(alert);
                 dismiss();
             }

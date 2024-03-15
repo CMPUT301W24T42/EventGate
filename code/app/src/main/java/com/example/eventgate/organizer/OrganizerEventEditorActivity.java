@@ -229,6 +229,7 @@ public class OrganizerEventEditorActivity extends AppCompatActivity implements C
         newAlert.put("title", alert.getTitle());
         newAlert.put("body", alert.getMessage());
         newAlert.put("channelId", alert.getChannelId());
+        newAlert.put("alertType", alert.getAlertType());
 
         // send to events collection
         eventsRef
