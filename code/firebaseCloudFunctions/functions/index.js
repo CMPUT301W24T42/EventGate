@@ -14,4 +14,4 @@ exports.androidPushNotification = functions.firestore.document("alerts/{docId}")
             }
         );
     }
-)
+);
