@@ -343,7 +343,7 @@ public class AttendeeActivity extends AppCompatActivity {
     //
     private void generateHash() {
         try {
-            FirebaseUser currentUser = MainActivity.db.getUser();
+            FirebaseUser currentUser = MainActivity.db.getmAuth().getCurrentUser();
             String input = currentUser.getUid();
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] hash = digest.digest(input.getBytes());

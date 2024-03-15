@@ -65,7 +65,7 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
                     sendTokenToFirebase(token);
 
                     // Log
-                    String msg = "Your token is" + token;
+                    String msg = "Your token is " + token;
                     Log.d(TAG, msg);
                 });
 
