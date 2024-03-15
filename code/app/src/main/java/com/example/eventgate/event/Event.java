@@ -1,16 +1,18 @@
 package com.example.eventgate.event;
 
 import android.graphics.Bitmap;
+import android.os.Parcelable;
 
 import com.example.eventgate.organizer.OrganizerAlert;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * this class represents an event
  * it allows users to get and set info regarding the event
  */
-public class Event {
+public class Event implements Serializable {
     /**
      * Holds the document id for the event
      */
@@ -31,7 +33,14 @@ public class Event {
      * Holds the Bitmap of the event description QR Code.
      */
     private Bitmap descriptionQRBitmap;
+    /**
+     * list of alerts associated with the event
+     */
     private ArrayList<OrganizerAlert> alerts;
+    /**
+     * the number of attendees attending the event
+     */
+    private String attendanceCount;
 
 
     /**
@@ -120,5 +129,13 @@ public class Event {
 
     public ArrayList<OrganizerAlert> getAlerts() {
         return alerts;
+    }
+
+    public void setAttendanceCount(String attendanceCount) {
+        this.attendanceCount = attendanceCount;
+    }
+
+    public String getAttendanceCount() {
+        return attendanceCount;
     }
 }

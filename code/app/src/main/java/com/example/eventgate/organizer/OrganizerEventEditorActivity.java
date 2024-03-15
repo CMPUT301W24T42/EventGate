@@ -17,8 +17,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.eventgate.MainActivity;
 import com.example.eventgate.R;
+import com.example.eventgate.event.Event;
 import com.example.eventgate.event.EventDB;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -43,6 +43,7 @@ public class OrganizerEventEditorActivity extends AppCompatActivity implements C
     private Button backButton, uploadPosterButton;
     private Button createAlert;
     private String eventId;
+    private Event event;
     private String eventDescription;
     private ArrayList<OrganizerAlert> alerts;
     private DocumentReference eventRef;
@@ -68,7 +69,9 @@ public class OrganizerEventEditorActivity extends AppCompatActivity implements C
         eventTitle.setText(intent.getStringExtra("eventName"));
         eventId = intent.getStringExtra("eventId");
         eventDescription = intent.getStringExtra("eventDescription");
+        event = (Event) intent.getSerializableExtra("event");
         TextView eventDetailsText =  findViewById(R.id.EventDetails);
+        TextView attendanceCount = findViewById(R.id.attendance_text_view);
         eventDetailsText.setText(eventDescription);
         alerts = (ArrayList<OrganizerAlert>) intent.getSerializableExtra("alerts");
 
@@ -100,6 +103,10 @@ public class OrganizerEventEditorActivity extends AppCompatActivity implements C
                                             }
                                         });
                             }
+                            // update number of attendees attending the event
+                            int attendeeCount = attendeeIds.size();
+                            event.setAttendanceCount(Integer.toString(attendeeCount));
+                            attendanceCount.setText(event.getAttendanceCount());
                         }
                     }
                 }
@@ -130,6 +137,7 @@ public class OrganizerEventEditorActivity extends AppCompatActivity implements C
                 new CreateAlertFragment().show(getSupportFragmentManager(), "CREATE ALERT");
             }
         });
+
     }
 
 
