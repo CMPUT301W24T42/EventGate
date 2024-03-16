@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.eventgate.R;
+import com.google.firebase.installations.FirebaseInstallations;
 
 /**
  * A fragment for creating a new alert.
@@ -53,7 +54,8 @@ public class CreateAlertFragment extends DialogFragment {
             } else if (message.isEmpty()) {
                 Toast.makeText(getActivity(), "Please enter a message", Toast.LENGTH_SHORT).show();
             } else {
-                OrganizerAlert alert = new OrganizerAlert(title, message, "event_channel", "event");
+                String organizerId = String.valueOf(FirebaseInstallations.getInstance().getId());
+                OrganizerAlert alert = new OrganizerAlert(title, message, "event_channel", organizerId);
                 ((CreateAlertFragment.OnAlertCreatedListener) getActivity()).onAlertCreated(alert);
                 dismiss();
             }

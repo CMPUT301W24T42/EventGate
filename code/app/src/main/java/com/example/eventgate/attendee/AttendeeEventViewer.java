@@ -135,8 +135,8 @@ public class AttendeeEventViewer extends AppCompatActivity {
                             String title = doc.getString("title");
                             String body = doc.getString("body");
                             String channelId = doc.getString("channelId");
-                            String alertType = doc.getString("alertType");
-                            OrganizerAlert alert = new OrganizerAlert(title, body, channelId, alertType);
+                            String organizerId = doc.getString("organizerId");
+                            OrganizerAlert alert = new OrganizerAlert(title, body, channelId, organizerId);
                             alertsDataList.add(alert);
                             alertsAdapter.notifyDataSetChanged();
                         }
