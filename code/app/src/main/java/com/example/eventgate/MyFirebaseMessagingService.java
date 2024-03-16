@@ -148,8 +148,9 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
         // get title and body of the notification from the remote message
         String title = Objects.requireNonNull(message.getNotification()).getTitle();
         String body = message.getNotification().getBody();
+        String channelId = message.getNotification().getChannelId();
         // create and show the notification to the user
-        createNotification(title, body);
+        createNotification(title, body, channelId);
     }
 
     private void createEventNotifChannel() {
@@ -184,9 +185,9 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
         }
     }
 
-    public void createNotification(String title, String body) {
+    public void createNotification(String title, String body, String channelId) {
         // build the notification
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, EVENT_CHANNEL_ID)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId)
                 .setSmallIcon(R.drawable.ic_stat_onesignal_default)
                 .setContentTitle(title)
                 .setContentText(body)
