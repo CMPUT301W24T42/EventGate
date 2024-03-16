@@ -144,8 +144,8 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
         // log
         Log.d(TAG, "Notification received");
         // create notification channels
-        createEventNotifChannel();
-        createMilestoneNotifChannel();
+//        createEventNotifChannel();
+//        createMilestoneNotifChannel();
         // get title and body of the notification from the remote message
         RemoteMessage.Notification notification = Objects.requireNonNull(message.getNotification());
         String title = notification.getTitle();
@@ -188,7 +188,7 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
         }
     }
 
-    public void createNotification(String title, String body, String channelId, String organizerId) {
+    private void createNotification(String title, String body, String channelId, String organizerId) {
         // get the deviceId
         String deviceId = String.valueOf(FirebaseInstallations.getInstance().getId());
 
