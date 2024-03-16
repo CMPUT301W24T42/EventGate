@@ -48,7 +48,6 @@ public class OrganizerEventEditorActivity extends AppCompatActivity implements C
     private Button createAlert;
     private String eventName;
     private String eventId;
-    private Event event;
     private String eventDescription;
     private ArrayList<OrganizerAlert> alerts;
     private DocumentReference eventRef;
@@ -75,7 +74,6 @@ public class OrganizerEventEditorActivity extends AppCompatActivity implements C
         eventTitle.setText(eventName);
         eventId = intent.getStringExtra("eventId");
         eventDescription = intent.getStringExtra("eventDescription");
-        event = (Event) intent.getSerializableExtra("event");
         TextView eventDetailsText =  findViewById(R.id.EventDetails);
         TextView attendanceCount = findViewById(R.id.attendance_text_view);
         eventDetailsText.setText(eventDescription);
@@ -111,8 +109,7 @@ public class OrganizerEventEditorActivity extends AppCompatActivity implements C
                             }
                             // update number of attendees attending the event
                             int attendeeCount = attendeeIds.size();
-                            event.setAttendanceCount(Integer.toString(attendeeCount));
-                            attendanceCount.setText(event.getAttendanceCount());
+                            attendanceCount.setText(Integer.toString(attendeeCount));
                             ArrayList<Integer> milestones = new ArrayList<>(Arrays.asList(1, 5, 10, 25, 50, 100));
                             // create a milestone alert if the number of attendees is in the list of numbers considered a milestone
                             if (milestones.contains(attendeeCount)) {

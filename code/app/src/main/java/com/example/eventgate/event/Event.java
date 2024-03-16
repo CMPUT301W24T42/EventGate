@@ -12,7 +12,7 @@ import java.util.ArrayList;
  * this class represents an event
  * it allows users to get and set info regarding the event
  */
-public class Event implements Serializable {
+public class Event {
     /**
      * Holds the document id for the event
      */
@@ -37,12 +37,6 @@ public class Event implements Serializable {
      * list of alerts associated with the event
      */
     private ArrayList<OrganizerAlert> alerts;
-    /**
-     * the number of attendees attending the event
-     */
-    private String attendanceCount;
-
-
     /**
      * Holds the details of the event
      */
@@ -129,13 +123,5 @@ public class Event implements Serializable {
 
     public ArrayList<OrganizerAlert> getAlerts() {
         return alerts;
-    }
-
-    public void setAttendanceCount(String attendanceCount) {
-        this.attendanceCount = attendanceCount;
-    }
-
-    public String getAttendanceCount() {
-        return attendanceCount;
     }
 }
