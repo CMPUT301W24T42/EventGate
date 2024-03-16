@@ -69,8 +69,8 @@ public class AdminActivity extends AppCompatActivity {
                 Event event = new Event((String) doc.getData().get("name"));
                 event.setEventId(doc.getId());
                 eventDataList.add(event);
+                eventAdapter.notifyDataSetChanged();
             }
-            eventAdapter.notifyDataSetChanged();
         });
 
         // sends admin back to the main menu

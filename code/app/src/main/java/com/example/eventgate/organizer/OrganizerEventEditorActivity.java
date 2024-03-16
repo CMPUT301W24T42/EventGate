@@ -270,7 +270,8 @@ public class OrganizerEventEditorActivity extends AppCompatActivity implements C
 
     private void createMilestoneAlert(int attendeeCount, String eventName) {
         String title = "Milestone reached!";
-        String message = String.format(Locale.US,"%s has reached %d attendees.", eventName, attendeeCount);
+        String attendeeString = (attendeeCount == 1) ? "attendee" : "attendees";
+        String message = String.format(Locale.US,"%s has reached %d %s.", eventName, attendeeCount, attendeeString);
         FirebaseInstallations.getInstance().getId().addOnSuccessListener(id -> {
             OrganizerAlert alert = new OrganizerAlert(title, message, "milestone_channel", id);
             ((CreateAlertFragment.OnAlertCreatedListener) this).onAlertCreated(alert);
