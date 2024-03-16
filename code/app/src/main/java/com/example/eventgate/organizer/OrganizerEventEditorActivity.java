@@ -28,8 +28,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
+
+import com.google.firebase.installations.FirebaseInstallations;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -42,6 +46,7 @@ public class OrganizerEventEditorActivity extends AppCompatActivity implements C
     private TextView eventTitle;
     private Button backButton, uploadPosterButton;
     private Button createAlert;
+    private String eventName;
     private String eventId;
     private Event event;
     private String eventDescription;
@@ -66,7 +71,8 @@ public class OrganizerEventEditorActivity extends AppCompatActivity implements C
         eventTitle = findViewById(R.id.EventListViewTitle);
 
         Intent intent = getIntent();
-        eventTitle.setText(intent.getStringExtra("eventName"));
+        eventName = intent.getStringExtra("eventName");
+        eventTitle.setText(eventName);
         eventId = intent.getStringExtra("eventId");
         eventDescription = intent.getStringExtra("eventDescription");
         event = (Event) intent.getSerializableExtra("event");
@@ -107,6 +113,11 @@ public class OrganizerEventEditorActivity extends AppCompatActivity implements C
                             int attendeeCount = attendeeIds.size();
                             event.setAttendanceCount(Integer.toString(attendeeCount));
                             attendanceCount.setText(event.getAttendanceCount());
+                            ArrayList<Integer> milestones = new ArrayList<>(Arrays.asList(1, 5, 10, 25, 50, 100));
+                            // create a milestone alert if the number of attendees is in the list of numbers considered a milestone
+                            if (milestones.contains(attendeeCount)) {
+                                createMilestoneAlert(attendeeCount, eventName);
+                            }
                         }
                     }
                 }
@@ -221,7 +232,6 @@ public class OrganizerEventEditorActivity extends AppCompatActivity implements C
         alerts.add(alert);
 
         // get references to firebase collections
-        CollectionReference eventsRef = MainActivity.db.getEventsRef();
         CollectionReference alertsRef = MainActivity.db.getAlertsRef();
 
         // get alert data that will be stored in firebase
@@ -231,11 +241,11 @@ public class OrganizerEventEditorActivity extends AppCompatActivity implements C
         newAlert.put("channelId", alert.getChannelId());
         newAlert.put("organizerId", alert.getOrganizerId());
 
-        // send to events collection
-        eventsRef
-                .document(eventId)
-                .update("alerts", FieldValue.arrayUnion(newAlert))
-                .addOnSuccessListener(unused -> Log.d("EventDB", "Alert has been sent to events collection"));
+        // send to events collection only if its an event alert, we do not need to store milestone
+        //      alerts in the event database
+        if (alert.getChannelId().equals("event_channel")) {
+            sendToEventsCollection(newAlert);
+        }
 
         // send to alerts collection
         String alertId = alertsRef.document().getId();
@@ -245,5 +255,25 @@ public class OrganizerEventEditorActivity extends AppCompatActivity implements C
                 .set(newAlert)
                 .addOnSuccessListener(unused -> Log.d("EventDB", "Alert has been sent to alerts collection"));
 
+
+    }
+
+    private void sendToEventsCollection(HashMap<String, String> newAlert) {
+        // get reference to the events collection
+        CollectionReference eventsRef = MainActivity.db.getEventsRef();
+        // send to events collection
+        eventsRef
+                .document(eventId)
+                .update("alerts", FieldValue.arrayUnion(newAlert))
+                .addOnSuccessListener(unused -> Log.d("EventDB", "Alert has been sent to events collection"));
+    }
+
+    private void createMilestoneAlert(int attendeeCount, String eventName) {
+        String title = "Milestone reached!";
+        String message = String.format(Locale.US,"%s has reached %d attendees.", eventName, attendeeCount);
+        FirebaseInstallations.getInstance().getId().addOnSuccessListener(id -> {
+            OrganizerAlert alert = new OrganizerAlert(title, message, "milestone_channel", id);
+            ((CreateAlertFragment.OnAlertCreatedListener) this).onAlertCreated(alert);
+        });
     }
 }

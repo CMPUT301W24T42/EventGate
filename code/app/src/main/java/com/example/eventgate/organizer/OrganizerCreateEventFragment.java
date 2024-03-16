@@ -180,7 +180,6 @@ public class OrganizerCreateEventFragment extends DialogFragment {
         continueButton.setOnClickListener(v -> {
             String eventName = organizerCreateEventName.getText().toString().trim();
 
-
             // Check if the QR code has been generated
             if (!qRCodeGenerated) {
                 // Show a message to the user indicating that they need to generate a QR code
