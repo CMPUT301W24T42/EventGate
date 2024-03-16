@@ -15,10 +15,12 @@ import androidx.core.app.NotificationManagerCompat;
 import com.example.eventgate.event.Event;
 import com.example.eventgate.organizer.CreateAlertFragment;
 import com.example.eventgate.organizer.OrganizerAlert;
+import com.google.android.gms.common.util.ArrayUtils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -187,19 +189,38 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
                     String eventName = document.getString("name");
                     String eventId = document.getString("eventId");
                     Object attendeesObject = document.get("attendees");
+                    Object milestonesObject = document.get("milestones");
+                    if (milestonesObject instanceof ArrayList) {
+                        // arraylist stores values as Long in firestore so switch it back to Integers
+                        ArrayList<Integer> currentMilestones = getIntegers((ArrayList<Long>) milestonesObject);
+                        if (attendeesObject instanceof ArrayList) {
+                            ArrayList<String> attendeeIds = (ArrayList<String>) attendeesObject;
 
-                    if (attendeesObject instanceof ArrayList) {
-                        ArrayList<String> attendeeIds = (ArrayList<String>) attendeesObject;
-
-                        // create a milestone alert if the number of attendees is a milestone
-                        int attendeeCount = attendeeIds.size();
-                        if (milestones.contains(attendeeCount)) {
-                            createMilestoneAlert(attendeeCount, eventName, eventId);
+                            // create a milestone alert if the number of attendees is a milestone
+                            //      that has not already been acknowledged by the database
+                            Integer attendeeCount = attendeeIds.size();
+                            if (milestones.contains(attendeeCount) && !currentMilestones.contains(attendeeCount)) {
+                                createMilestoneAlert(attendeeCount, eventName, eventId);
+                                eventRef
+                                        .document(eventId)
+                                        .update("milestones", FieldValue.arrayUnion(attendeeCount));
+                            }
                         }
                     }
                 }
             }
         });
+    }
+
+    @NonNull
+    private static ArrayList<Integer> getIntegers(ArrayList<Long> milestonesObject) {
+        ArrayList<Long> currentMilestonesLong = milestonesObject;
+        ArrayList<Integer> currentMilestones = new ArrayList<>();
+        for (Long milestoneLong : currentMilestonesLong) {
+            Integer milestoneInteger = milestoneLong.intValue();
+            currentMilestones.add(milestoneInteger);
+        }
+        return currentMilestones;
     }
 
     private void createEventNotifChannel() {

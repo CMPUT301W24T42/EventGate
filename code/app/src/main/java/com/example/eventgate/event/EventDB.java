@@ -101,6 +101,7 @@ public class EventDB {
         data.put("organizer", deviceId); // Set organizer field to firebase installation id
         data.put("attendees", new ArrayList<String>()); // Set attendees field to blank
         data.put("eventDetails", event.getEventDetails());
+        data.put("milestones", new ArrayList<Integer>());
         System.out.println(event.getEventDetails());
         System.out.println(event.getEventId());
 
