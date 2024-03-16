@@ -2,7 +2,6 @@ package com.example.eventgate;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.util.Log;
@@ -44,7 +43,11 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
     /**
      * the name of the notification channel for events
      */
-    private final String CHANNEL_ID = "event_channel";
+    private final String EVENT_CHANNEL_ID = "event_channel";
+    /**
+     * the name of the notification channel for organizer milestones
+     */
+    private final String MILESTONE_CHANNEL_ID = "milestone_channel";
 
     /**
      * this creates a new MyFirebaseMessagingService object
@@ -139,8 +142,9 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
         super.onMessageReceived(message);
         // log
         Log.d(TAG, "Notification received");
-        // create notification channel
-        createNotificationChannel();
+        // create notification channels
+        createEventNotifChannel();
+        createMilestoneNotifChannel();
         // get title and body of the notification from the remote message
         String title = Objects.requireNonNull(message.getNotification()).getTitle();
         String body = message.getNotification().getBody();
@@ -148,14 +152,30 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
         createNotification(title, body);
     }
 
-    private void createNotificationChannel() {
+    private void createEventNotifChannel() {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is not in the Support Library.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = "Event Alerts";
             String description = "Alerts regarding events";
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            NotificationChannel channel = new NotificationChannel(EVENT_CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system. You can't change the importance
+            // or other notification behaviors after this.
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
+    private void createMilestoneNotifChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is not in the Support Library.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "Milestone Alerts";
+            String description = "Alerts that are sent once your events reach a milestone";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(MILESTONE_CHANNEL_ID, name, importance);
             channel.setDescription(description);
             // Register the channel with the system. You can't change the importance
             // or other notification behaviors after this.
@@ -166,7 +186,7 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
 
     public void createNotification(String title, String body) {
         // build the notification
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, EVENT_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_stat_onesignal_default)
                 .setContentTitle(title)
                 .setContentText(body)
