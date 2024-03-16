@@ -7,17 +7,30 @@ import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
+import com.example.eventgate.event.Event;
+import com.example.eventgate.organizer.CreateAlertFragment;
+import com.example.eventgate.organizer.OrganizerAlert;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.installations.FirebaseInstallations;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.RemoteMessage;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -25,7 +38,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * this class takes care of functions regarding firebase cloud messaging and post notifications
  */
-public class MyFirebaseMessagingService extends com.google.firebase.messaging.FirebaseMessagingService {
+public class MyFirebaseMessagingService extends com.google.firebase.messaging.FirebaseMessagingService implements CreateAlertFragment.OnAlertCreatedListener{
     /**
      * this holds an instance of FirebaseMessaging
      */
@@ -73,7 +86,7 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
                     String msg = "Your token is " + token;
                     Log.d(TAG, msg);
                 });
-
+        eventListener();
     }
 
     /**
@@ -157,6 +170,38 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
         createNotification(title, body, channelId, organizerId);
     }
 
+    private void eventListener() {
+        CollectionReference eventRef = MainActivity.db.getEventsRef();
+
+        eventRef.addSnapshotListener((EventListener<QuerySnapshot>) (value, error) -> {
+            if (error != null) {
+                Log.e("Messaging Service", error.toString());
+                return;
+            }
+            if (value != null) {
+                // List of milestones
+                ArrayList<Integer> milestones = new ArrayList<>(Arrays.asList(1, 5, 10, 25, 50, 100));
+
+                for (QueryDocumentSnapshot document : value) {
+                    // Get the event name and attendee IDs for each document
+                    String eventName = document.getString("name");
+                    String eventId = document.getString("eventId");
+                    Object attendeesObject = document.get("attendees");
+
+                    if (attendeesObject instanceof ArrayList) {
+                        ArrayList<String> attendeeIds = (ArrayList<String>) attendeesObject;
+
+                        // create a milestone alert if the number of attendees is a milestone
+                        int attendeeCount = attendeeIds.size();
+                        if (milestones.contains(attendeeCount)) {
+                            createMilestoneAlert(attendeeCount, eventName, eventId);
+                        }
+                    }
+                }
+            }
+        });
+    }
+
     private void createEventNotifChannel() {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is not in the Support Library.
@@ -236,5 +281,37 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
         });
 
         return future;
+    }
+
+    private void createMilestoneAlert(int attendeeCount, String eventName, String eventId) {
+        String title = "Milestone reached!";
+        String attendeeString = (attendeeCount == 1) ? "attendee" : "attendees";
+        String message = String.format(Locale.US,"%s has reached %d %s.", eventName, attendeeCount, attendeeString);
+        FirebaseInstallations.getInstance().getId().addOnSuccessListener(id -> {
+            OrganizerAlert alert = new OrganizerAlert(title, message, "milestone_channel", id, eventId);
+            ((CreateAlertFragment.OnAlertCreatedListener) this).onAlertCreated(alert);
+        });
+    }
+
+    @Override
+    public void onAlertCreated(OrganizerAlert alert) {
+        // get reference to firebase collection
+        CollectionReference alertsRef = MainActivity.db.getAlertsRef();
+
+        // get alert data that will be stored in firebase
+        HashMap<String, String> newAlert = new HashMap<>();
+        newAlert.put("title", alert.getTitle());
+        newAlert.put("body", alert.getMessage());
+        newAlert.put("channelId", alert.getChannelId());
+        newAlert.put("organizerId", alert.getOrganizerId());
+
+        // send to alerts collection
+        String alertId = alertsRef.document().getId();
+        newAlert.put("eventId", alert.getEventId());
+        alertsRef
+                .document(alertId)
+                .set(newAlert)
+                .addOnSuccessListener(unused -> Log.d("EventDB", "Alert has been sent to alerts collection"));
+
     }
 }

@@ -45,21 +45,30 @@ public class CreateAlertFragment extends DialogFragment {
         Button sendButton = view.findViewById(R.id.create_alert_send_button);
         Button cancelButton = view.findViewById(R.id.create_alert_cancel_button);
 
+
+
         // takes the inputted message and creates an OrganizerAlert object with it
         sendButton.setOnClickListener(v -> {
-            String title = titleEditText.getText().toString().trim();
-            String message = messageEditText.getText().toString().trim();
-            if (title.isEmpty()) {
-                Toast.makeText(getActivity(), "Please enter a title", Toast.LENGTH_SHORT).show();
-            } else if (message.isEmpty()) {
-                Toast.makeText(getActivity(), "Please enter a message", Toast.LENGTH_SHORT).show();
-            } else {
-                FirebaseInstallations.getInstance().getId().addOnSuccessListener(id -> {
-                    OrganizerAlert alert = new OrganizerAlert(title, message, "event_channel", id);
-                    ((CreateAlertFragment.OnAlertCreatedListener) getActivity()).onAlertCreated(alert);
-                    dismiss();
-                });
+            Bundle args = getArguments();
+            String eventId;
+            // get data from bundle
+            if (args != null) {
+                eventId = args.getString("eventId");
+                String title = titleEditText.getText().toString().trim();
+                String message = messageEditText.getText().toString().trim();
+                if (title.isEmpty()) {
+                    Toast.makeText(getActivity(), "Please enter a title", Toast.LENGTH_SHORT).show();
+                } else if (message.isEmpty()) {
+                    Toast.makeText(getActivity(), "Please enter a message", Toast.LENGTH_SHORT).show();
+                } else {
+                    FirebaseInstallations.getInstance().getId().addOnSuccessListener(id -> {
+                        OrganizerAlert alert = new OrganizerAlert(title, message, "event_channel", id, eventId);
+                        ((CreateAlertFragment.OnAlertCreatedListener) getActivity()).onAlertCreated(alert);
+                        dismiss();
+                    });
+                }
             }
+
         });
 
         // dismisses dialog if user does not want to create an alert

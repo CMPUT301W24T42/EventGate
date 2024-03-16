@@ -20,16 +20,21 @@ public class OrganizerAlert {
      * this is the Id of the organizer who created the event
      */
     private String organizerId;
+    /**
+     * this is the Id of the event who the alert belongs to
+     */
+    private String eventId;
 
     /**
      * Creates a new OrganizerAlert object
      * @param message the message that will be sent
      */
-    public OrganizerAlert(String title, String message, String channelId, String organizerId) {
+    public OrganizerAlert(String title, String message, String channelId, String organizerId, String eventId) {
         this.title = title;
         this.message = message;
         this.channelId = channelId;
         this.organizerId = organizerId;
+        this.eventId = eventId;
     }
 
     public String getTitle() {
@@ -46,5 +51,9 @@ public class OrganizerAlert {
 
     public String getOrganizerId() {
         return organizerId;
+    }
+
+    public String getEventId() {
+        return eventId;
     }
 }

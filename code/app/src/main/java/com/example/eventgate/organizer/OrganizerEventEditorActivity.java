@@ -110,11 +110,6 @@ public class OrganizerEventEditorActivity extends AppCompatActivity implements C
                             // update number of attendees attending the event
                             int attendeeCount = attendeeIds.size();
                             attendanceCount.setText(Integer.toString(attendeeCount));
-                            ArrayList<Integer> milestones = new ArrayList<>(Arrays.asList(1, 5, 10, 25, 50, 100));
-                            // create a milestone alert if the number of attendees is in the list of numbers considered a milestone
-                            if (milestones.contains(attendeeCount)) {
-                                createMilestoneAlert(attendeeCount, eventName);
-                            }
                         }
                     }
                 }
@@ -142,7 +137,12 @@ public class OrganizerEventEditorActivity extends AppCompatActivity implements C
         createAlert.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new CreateAlertFragment().show(getSupportFragmentManager(), "CREATE ALERT");
+                CreateAlertFragment fragment = new CreateAlertFragment();
+                // create a bundle so we can access the eventId in the dialog fragment
+                Bundle args = new Bundle();
+                args.putString("eventId", eventId);
+                fragment.setArguments(args);
+                fragment.show(getSupportFragmentManager(), "CREATE ALERT");
             }
         });
 
@@ -238,11 +238,8 @@ public class OrganizerEventEditorActivity extends AppCompatActivity implements C
         newAlert.put("channelId", alert.getChannelId());
         newAlert.put("organizerId", alert.getOrganizerId());
 
-        // send to events collection only if its an event alert, we do not need to store milestone
-        //      alerts in the event database
-        if (alert.getChannelId().equals("event_channel")) {
-            sendToEventsCollection(newAlert);
-        }
+        // sent to events collection
+        sendToEventsCollection(newAlert);
 
         // send to alerts collection
         String alertId = alertsRef.document().getId();
@@ -265,13 +262,4 @@ public class OrganizerEventEditorActivity extends AppCompatActivity implements C
                 .addOnSuccessListener(unused -> Log.d("EventDB", "Alert has been sent to events collection"));
     }
 
-    private void createMilestoneAlert(int attendeeCount, String eventName) {
-        String title = "Milestone reached!";
-        String attendeeString = (attendeeCount == 1) ? "attendee" : "attendees";
-        String message = String.format(Locale.US,"%s has reached %d %s.", eventName, attendeeCount, attendeeString);
-        FirebaseInstallations.getInstance().getId().addOnSuccessListener(id -> {
-            OrganizerAlert alert = new OrganizerAlert(title, message, "milestone_channel", id);
-            ((CreateAlertFragment.OnAlertCreatedListener) this).onAlertCreated(alert);
-        });
-    }
 }
