@@ -13,6 +13,7 @@ import androidx.core.app.NotificationManagerCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.installations.FirebaseInstallations;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -146,11 +147,13 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
         createEventNotifChannel();
         createMilestoneNotifChannel();
         // get title and body of the notification from the remote message
-        String title = Objects.requireNonNull(message.getNotification()).getTitle();
-        String body = message.getNotification().getBody();
-        String channelId = message.getNotification().getChannelId();
+        RemoteMessage.Notification notification = Objects.requireNonNull(message.getNotification());
+        String title = notification.getTitle();
+        String body = notification.getBody();
+        String channelId = Objects.requireNonNull(notification.getChannelId());
+        String organizerId = message.getData().get("organizerId");
         // create and show the notification to the user
-        createNotification(title, body, channelId);
+        createNotification(title, body, channelId, organizerId);
     }
 
     private void createEventNotifChannel() {
@@ -185,7 +188,30 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
         }
     }
 
-    public void createNotification(String title, String body, String channelId) {
+    public void createNotification(String title, String body, String channelId, String organizerId) {
+        // get the deviceId
+        String deviceId = String.valueOf(FirebaseInstallations.getInstance().getId());
+
+        // only builds notification for milestones if the current device belongs to the organizer of the event
+        if (channelId.equals(MILESTONE_CHANNEL_ID)) {
+            if (!deviceId.equals(organizerId)) {
+                return;
+            }
+        }
+
+        // prevents organizers from getting alerts for their own events
+        if (channelId.equals(EVENT_CHANNEL_ID)) {
+            if (deviceId.equals(organizerId)) {
+                return;
+            }
+        }
+
+        // if the user has disabled post notifications then the notification will not be built
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS)
+                != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+
         // build the notification
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId)
                 .setSmallIcon(R.drawable.ic_stat_onesignal_default)
@@ -193,14 +219,9 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
                 .setContentText(body)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
-        // if the user has disabled post notifications then the built notification will not show
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS)
-                != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-
         // create a random number to serve as the notification id
         Random notificationId = new Random();
+
         // make the notification appear
         NotificationManagerCompat.from(this).notify(notificationId.nextInt(), builder.build());
     }
