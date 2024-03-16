@@ -9,8 +9,8 @@ exports.androidPushNotification = functions.firestore.document("alerts/{docId}")
         const eventId = data.eventId;
         const title = data.title;
         const body = data.body;
-        const channelId = data.channelId;  // the notification channel we want to send the notification through
         const organizerId = data.organizerId;
+        const channelId = data.channelId;  // the notification channel we want to send the notification through
 
         const notificationPayload = {
             notification: {

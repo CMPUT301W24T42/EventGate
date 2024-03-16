@@ -18,8 +18,9 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.RemoteMessage;
 
 import java.util.HashMap;
-import java.util.Objects;
 import java.util.Random;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * this class takes care of functions regarding firebase cloud messaging and post notifications
@@ -144,13 +145,13 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
         // log
         Log.d(TAG, "Notification received");
         // create notification channels
-//        createEventNotifChannel();
-//        createMilestoneNotifChannel();
+        createEventNotifChannel();
+        createMilestoneNotifChannel();
         // get title and body of the notification from the remote message
-        RemoteMessage.Notification notification = Objects.requireNonNull(message.getNotification());
+        RemoteMessage.Notification notification = message.getNotification();
         String title = notification.getTitle();
         String body = notification.getBody();
-        String channelId = Objects.requireNonNull(notification.getChannelId());
+        String channelId = notification.getChannelId();
         String organizerId = message.getData().get("organizerId");
         // create and show the notification to the user
         createNotification(title, body, channelId, organizerId);
@@ -189,41 +190,51 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
     }
 
     private void createNotification(String title, String body, String channelId, String organizerId) {
-        // get the deviceId
-        String deviceId = String.valueOf(FirebaseInstallations.getInstance().getId());
-
-        // only builds notification for milestones if the current device belongs to the organizer of the event
-        if (channelId.equals(MILESTONE_CHANNEL_ID)) {
-            if (!deviceId.equals(organizerId)) {
+        // check for scenarios where the notification should not be built
+        CompletableFuture<Boolean> shouldCreate = notifShouldBeBuilt(channelId, organizerId);
+        shouldCreate.thenAccept(result -> {
+            // notification should not be built
+            if (!result) {
                 return;
             }
-        }
-
-        // prevents organizers from getting alerts for their own events
-        if (channelId.equals(EVENT_CHANNEL_ID)) {
-            if (deviceId.equals(organizerId)) {
+            // if the user has disabled post notifications then the notification will not be built
+            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS)
+                    != PackageManager.PERMISSION_GRANTED) {
                 return;
             }
-        }
+            // build the notification
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId)
+                    .setSmallIcon(R.drawable.ic_stat_onesignal_default)
+                    .setContentTitle(title)
+                    .setContentText(body)
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
-        // if the user has disabled post notifications then the notification will not be built
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS)
-                != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
+            // create a random number to serve as the notification id
+            Random notificationId = new Random();
 
-        // build the notification
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId)
-                .setSmallIcon(R.drawable.ic_stat_onesignal_default)
-                .setContentTitle(title)
-                .setContentText(body)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+            // make the notification appear
+            NotificationManagerCompat.from(this).notify(notificationId.nextInt(), builder.build());
+                });
 
-        // create a random number to serve as the notification id
-        Random notificationId = new Random();
-
-        // make the notification appear
-        NotificationManagerCompat.from(this).notify(notificationId.nextInt(), builder.build());
     }
 
+    private CompletableFuture<Boolean> notifShouldBeBuilt(String channelId, String organizerId) {
+        CompletableFuture<Boolean> future = new CompletableFuture<>();
+        AtomicBoolean create = new AtomicBoolean(true);
+
+        // get the deviceId and check for scenarios where a notification should not be built
+        FirebaseInstallations.getInstance().getId().addOnSuccessListener(s -> {
+            // only builds notification for milestones if the current device belongs to the organizer of the event
+            if (channelId.equals(MILESTONE_CHANNEL_ID) && !s.equals(organizerId)) {
+                create.set(false);
+            }
+            // prevents organizers from getting alerts for their own events
+            if (channelId.equals(EVENT_CHANNEL_ID) && s.equals(organizerId)) {
+                create.set(false);
+            }
+            future.complete(create.get());
+        });
+
+        return future;
+    }
 }

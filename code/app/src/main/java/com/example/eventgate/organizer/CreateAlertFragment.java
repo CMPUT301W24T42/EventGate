@@ -54,10 +54,11 @@ public class CreateAlertFragment extends DialogFragment {
             } else if (message.isEmpty()) {
                 Toast.makeText(getActivity(), "Please enter a message", Toast.LENGTH_SHORT).show();
             } else {
-                String organizerId = String.valueOf(FirebaseInstallations.getInstance().getId());
-                OrganizerAlert alert = new OrganizerAlert(title, message, "event_channel", organizerId);
-                ((CreateAlertFragment.OnAlertCreatedListener) getActivity()).onAlertCreated(alert);
-                dismiss();
+                FirebaseInstallations.getInstance().getId().addOnSuccessListener(id -> {
+                    OrganizerAlert alert = new OrganizerAlert(title, message, "event_channel", id);
+                    ((CreateAlertFragment.OnAlertCreatedListener) getActivity()).onAlertCreated(alert);
+                    dismiss();
+                });
             }
         });
 
