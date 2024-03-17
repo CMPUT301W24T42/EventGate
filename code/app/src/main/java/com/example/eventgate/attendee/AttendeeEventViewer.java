@@ -37,6 +37,7 @@ import org.w3c.dom.Text;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 //citations
@@ -131,7 +132,7 @@ public class AttendeeEventViewer extends AppCompatActivity {
                 .whereEqualTo("eventId", eventID)
                 .addSnapshotListener((value, error) -> {
                     for (QueryDocumentSnapshot doc : value) {
-                        if (doc.get("title") != null) {
+                        if (doc.get("title") != null && Objects.equals(doc.get("channelId"), "event_channel")) {
                             String title = doc.getString("title");
                             String body = doc.getString("body");
                             String channelId = doc.getString("channelId");

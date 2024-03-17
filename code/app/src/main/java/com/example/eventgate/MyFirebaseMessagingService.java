@@ -325,10 +325,10 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
         newAlert.put("body", alert.getMessage());
         newAlert.put("channelId", alert.getChannelId());
         newAlert.put("organizerId", alert.getOrganizerId());
+        newAlert.put("eventId", alert.getEventId());
 
         // send to alerts collection
         String alertId = alertsRef.document().getId();
-        newAlert.put("eventId", alert.getEventId());
         alertsRef
                 .document(alertId)
                 .set(newAlert)
