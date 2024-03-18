@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="405dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/bell_image"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="25dp"
+            android:layout_centerHorizontal="true"
+            android:contentDescription="a notification bell"
+            app:srcCompat="@drawable/notification" />
+
+        <TextView
+            android:id="@+id/permission_info"
+            android:layout_width="375dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/bell_image"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="25dp"
+            android:text="@string/notification_info"
+            android:textAlignment="center"
+            android:textSize="22sp">
+        </TextView>
+
+        <LinearLayout
+            android:layout_width="330dp"
+            android:layout_height="60dp"
+            android:orientation="horizontal"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/permission_info"
+            android:layout_marginTop="25dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/no_thanks_button"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:backgroundTint="@color/light_gray"
+                android:text="@string/no_thanks_button"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:ems="7"
+                app:cornerRadius="5dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/ok_button"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="37dp"
+                android:backgroundTint="@color/green"
+                android:ems="7"
+                android:text="@string/ok_button"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                app:cornerRadius="5dp" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
