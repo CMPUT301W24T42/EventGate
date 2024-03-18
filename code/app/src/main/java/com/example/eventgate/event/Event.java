@@ -63,6 +63,10 @@ public class Event {
         this.eventDetails = eventDetails;
     }
 
+    /**
+     * this gets the name of the event
+     * @return the name of the event
+     */
     public String getEventName() {
         return eventName;
     }
@@ -84,7 +88,11 @@ public class Event {
     public String getEventDescription() { return eventDescription; }
   
     public void setEventDescription(String eventDescription) { this.eventDescription = eventDescription; }
-  
+
+    /**
+     * this is used to get the id of an event
+     * @return a string representing an event's id
+     */
     public String getEventId() {
         return eventId;
     }
@@ -121,6 +129,10 @@ public class Event {
         this.descriptionQRBitmap = descriptionQRBitmap;
     }
 
+    /**
+     * this is used to get the list of alerts associated with an event
+     * @return a list of OrganizerAlert objects
+     */
     public ArrayList<OrganizerAlert> getAlerts() {
         return alerts;
     }

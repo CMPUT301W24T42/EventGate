@@ -21,6 +21,7 @@ import com.google.firebase.installations.FirebaseInstallations;
  * This fragment provides functionality for organizers to create new alerts by entering a message
  */
 public class CreateAlertFragment extends DialogFragment {
+
     /**
      * Interface definition for a callback to be invoked when an alert is added.
      * Implementing classes must define the behavior to be executed when an alert is added.

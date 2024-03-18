@@ -198,7 +198,7 @@ public class EventDB {
 
     /**
      * retrieves event details
-     * @param eventID
+     * @param eventID the id of the event
      * @return event details
      */
     public CompletableFuture<String> getEventDetailsDB(String eventID) {

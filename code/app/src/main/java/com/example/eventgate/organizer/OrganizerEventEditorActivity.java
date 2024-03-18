@@ -252,6 +252,10 @@ public class OrganizerEventEditorActivity extends AppCompatActivity implements C
 
     }
 
+    /**
+     * stores the alert in the events collection of the database
+     * @param newAlert the alert to be stored
+     */
     private void sendToEventsCollection(HashMap<String, String> newAlert) {
         // get reference to the events collection
         CollectionReference eventsRef = MainActivity.db.getEventsRef();

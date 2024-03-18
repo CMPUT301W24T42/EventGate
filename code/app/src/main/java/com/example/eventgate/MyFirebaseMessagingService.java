@@ -212,8 +212,14 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
         });
     }
 
+    /**
+     * used to turn a list of Longs into a list of integers
+     * @param milestonesObject the list of Longs that will be changed to integers
+     * @return a list of integers
+     */
     @NonNull
     private static ArrayList<Integer> getIntegers(ArrayList<Long> milestonesObject) {
+        // arraylist stores values as Long in firestore so switch it back to Integers
         ArrayList<Long> currentMilestonesLong = milestonesObject;
         ArrayList<Integer> currentMilestones = new ArrayList<>();
         for (Long milestoneLong : currentMilestonesLong) {
@@ -223,6 +229,9 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
         return currentMilestones;
     }
 
+    /**
+     * creates a notification channel to send event alerts through
+     */
     private void createEventNotifChannel() {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is not in the Support Library.
@@ -232,13 +241,15 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
             NotificationChannel channel = new NotificationChannel(EVENT_CHANNEL_ID, name, importance);
             channel.setDescription(description);
-            // Register the channel with the system. You can't change the importance
-            // or other notification behaviors after this.
+            // Register the channel with the system
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }
     }
 
+    /**
+     * creates a notification channel to send milestone alerts through
+     */
     private void createMilestoneNotifChannel() {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is not in the Support Library.
@@ -248,13 +259,22 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
             NotificationChannel channel = new NotificationChannel(MILESTONE_CHANNEL_ID, name, importance);
             channel.setDescription(description);
-            // Register the channel with the system. You can't change the importance
-            // or other notification behaviors after this.
+            // Register the channel with the system
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }
     }
 
+    /**
+     * builds and shows a notification to the user on three conditions
+     *      1. user must have post notifications enabled
+     *      2. if it is an event alert, the user must not also be the organizer of the event
+     *      3. if it is a milestone alert, the user must be the organizer
+     * @param title the title of the notification
+     * @param body the message of the notification
+     * @param channelId the notification channel that the notification will be sent through
+     * @param organizerId the id of the organizer who the alert is associated with
+     */
     private void createNotification(String title, String body, String channelId, String organizerId) {
         // check for scenarios where the notification should not be built
         CompletableFuture<Boolean> shouldCreate = notifShouldBeBuilt(channelId, organizerId);
@@ -275,7 +295,8 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
                     .setContentText(body)
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
-            // create a random number to serve as the notification id
+            // create a random number to serve as the notification id, we will not store or keep
+            //      track of this number as we won't need to update or delete notifications
             Random notificationId = new Random();
 
             // make the notification appear
@@ -284,6 +305,15 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
 
     }
 
+    /**
+     * used to determine if a notification should be built and shown to a user based on two conditions:
+     *      1. if it is an event alert, the user must not also be the organizer of the event
+     *      3. if it is a milestone alert, the user must be the organizer
+     * @param channelId the notification channel that the notification will be sent through
+     * @param organizerId the id of the organizer that the notification is associated with
+     * @return a completable future instance that will contain a boolean that is true if the notification
+     *          should be built and shown, or false if it should not
+     */
     private CompletableFuture<Boolean> notifShouldBeBuilt(String channelId, String organizerId) {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
         AtomicBoolean create = new AtomicBoolean(true);
@@ -304,19 +334,31 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
         return future;
     }
 
+    /**
+     * creates an alert that notifies organizers of milestones that their events reach
+     * @param attendeeCount the number of attendees currently checked into the organizer's event
+     * @param eventName the name of the event
+     * @param eventId the id of the event
+     */
     private void createMilestoneAlert(int attendeeCount, String eventName, String eventId) {
         String title = "Milestone reached!";
+        // determine the syntax of the message
         String attendeeString = (attendeeCount == 1) ? "attendee" : "attendees";
         String message = String.format(Locale.US,"%s has reached %d %s.", eventName, attendeeCount, attendeeString);
+        // create the alert
         FirebaseInstallations.getInstance().getId().addOnSuccessListener(id -> {
             OrganizerAlert alert = new OrganizerAlert(title, message, "milestone_channel", id, eventId);
             ((CreateAlertFragment.OnAlertCreatedListener) this).onAlertCreated(alert);
         });
     }
 
+    /**
+     * Callback method to handle the addition of a new alert.
+     * @param alert The alert created.
+     */
     @Override
     public void onAlertCreated(OrganizerAlert alert) {
-        // get reference to firebase collection
+        // get reference to firebase alerts collection
         CollectionReference alertsRef = MainActivity.db.getAlertsRef();
 
         // get alert data that will be stored in firebase
