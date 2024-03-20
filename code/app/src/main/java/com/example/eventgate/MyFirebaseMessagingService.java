@@ -160,8 +160,8 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
         // log
         Log.d(TAG, "Notification received");
         // create notification channels
-        createEventNotifChannel();
-        createMilestoneNotifChannel();
+//        createEventNotifChannel();
+//        createMilestoneNotifChannel();
         // get title and body of the notification from the remote message
         RemoteMessage.Notification notification = message.getNotification();
         String title = notification.getTitle();
@@ -227,42 +227,6 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
             currentMilestones.add(milestoneInteger);
         }
         return currentMilestones;
-    }
-
-    /**
-     * creates a notification channel to send event alerts through
-     */
-    private void createEventNotifChannel() {
-        // Create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is not in the Support Library.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "Event Alerts";
-            String description = "Alerts regarding events";
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel(EVENT_CHANNEL_ID, name, importance);
-            channel.setDescription(description);
-            // Register the channel with the system
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-        }
-    }
-
-    /**
-     * creates a notification channel to send milestone alerts through
-     */
-    private void createMilestoneNotifChannel() {
-        // Create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is not in the Support Library.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "Milestone Alerts";
-            String description = "Alerts that are sent once your events reach a milestone";
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel(MILESTONE_CHANNEL_ID, name, importance);
-            channel.setDescription(description);
-            // Register the channel with the system
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-        }
     }
 
     /**
