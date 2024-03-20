@@ -1,9 +1,11 @@
 package com.example.eventgate.event;
 
 import android.graphics.Bitmap;
+import android.os.Parcelable;
 
 import com.example.eventgate.organizer.OrganizerAlert;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -31,9 +33,10 @@ public class Event {
      * Holds the Bitmap of the event description QR Code.
      */
     private Bitmap descriptionQRBitmap;
+    /**
+     * list of alerts associated with the event
+     */
     private ArrayList<OrganizerAlert> alerts;
-
-
     /**
      * Holds the details of the event
      */
@@ -60,6 +63,10 @@ public class Event {
         this.eventDetails = eventDetails;
     }
 
+    /**
+     * this gets the name of the event
+     * @return the name of the event
+     */
     public String getEventName() {
         return eventName;
     }
@@ -81,7 +88,11 @@ public class Event {
     public String getEventDescription() { return eventDescription; }
   
     public void setEventDescription(String eventDescription) { this.eventDescription = eventDescription; }
-  
+
+    /**
+     * this is used to get the id of an event
+     * @return a string representing an event's id
+     */
     public String getEventId() {
         return eventId;
     }
@@ -118,6 +129,10 @@ public class Event {
         this.descriptionQRBitmap = descriptionQRBitmap;
     }
 
+    /**
+     * this is used to get the list of alerts associated with an event
+     * @return a list of OrganizerAlert objects
+     */
     public ArrayList<OrganizerAlert> getAlerts() {
         return alerts;
     }

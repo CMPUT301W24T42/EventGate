@@ -14,12 +14,14 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.eventgate.R;
+import com.google.firebase.installations.FirebaseInstallations;
 
 /**
  * A fragment for creating a new alert.
  * This fragment provides functionality for organizers to create new alerts by entering a message
  */
 public class CreateAlertFragment extends DialogFragment {
+
     /**
      * Interface definition for a callback to be invoked when an alert is added.
      * Implementing classes must define the behavior to be executed when an alert is added.
@@ -44,19 +46,30 @@ public class CreateAlertFragment extends DialogFragment {
         Button sendButton = view.findViewById(R.id.create_alert_send_button);
         Button cancelButton = view.findViewById(R.id.create_alert_cancel_button);
 
+
+
         // takes the inputted message and creates an OrganizerAlert object with it
         sendButton.setOnClickListener(v -> {
-            String title = titleEditText.getText().toString().trim();
-            String message = messageEditText.getText().toString().trim();
-            if (title.isEmpty()) {
-                Toast.makeText(getActivity(), "Please enter a title", Toast.LENGTH_SHORT).show();
-            } else if (message.isEmpty()) {
-                Toast.makeText(getActivity(), "Please enter a message", Toast.LENGTH_SHORT).show();
-            } else {
-                OrganizerAlert alert = new OrganizerAlert(title, message);
-                ((CreateAlertFragment.OnAlertCreatedListener) getActivity()).onAlertCreated(alert);
-                dismiss();
+            Bundle args = getArguments();
+            String eventId;
+            // get data from bundle
+            if (args != null) {
+                eventId = args.getString("eventId");
+                String title = titleEditText.getText().toString().trim();
+                String message = messageEditText.getText().toString().trim();
+                if (title.isEmpty()) {
+                    Toast.makeText(getActivity(), "Please enter a title", Toast.LENGTH_SHORT).show();
+                } else if (message.isEmpty()) {
+                    Toast.makeText(getActivity(), "Please enter a message", Toast.LENGTH_SHORT).show();
+                } else {
+                    FirebaseInstallations.getInstance().getId().addOnSuccessListener(id -> {
+                        OrganizerAlert alert = new OrganizerAlert(title, message, "event_channel", id, eventId);
+                        ((CreateAlertFragment.OnAlertCreatedListener) getActivity()).onAlertCreated(alert);
+                        dismiss();
+                    });
+                }
             }
+
         });
 
         // dismisses dialog if user does not want to create an alert

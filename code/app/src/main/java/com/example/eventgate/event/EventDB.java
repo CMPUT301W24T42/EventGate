@@ -3,6 +3,7 @@ package com.example.eventgate.event;
 import android.graphics.Bitmap;
 import android.util.Log;
 
+import com.example.eventgate.MyFirebaseMessagingService;
 import com.example.eventgate.attendee.AttendeeDB;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -63,6 +64,9 @@ public class EventDB {
     public Bitmap AddOrganizerEvent(Event event, String deviceId) {
         String eventId = collection.document().getId();
         event.setEventId(eventId);
+        // add the organizer to eventid topic so that thet can receive alerts for event milestones
+        MyFirebaseMessagingService messagingService = MainActivity.db.getMessagingService();
+        messagingService.addUserToTopic(eventId);
 
         // Create Check in QR Code
         MultiFormatWriter writer = new MultiFormatWriter();
@@ -97,6 +101,7 @@ public class EventDB {
         data.put("organizer", deviceId); // Set organizer field to firebase installation id
         data.put("attendees", new ArrayList<String>()); // Set attendees field to blank
         data.put("eventDetails", event.getEventDetails());
+        data.put("milestones", new ArrayList<Integer>());
         System.out.println(event.getEventDetails());
         System.out.println(event.getEventId());
 
@@ -193,7 +198,7 @@ public class EventDB {
 
     /**
      * retrieves event details
-     * @param eventID
+     * @param eventID the id of the event
      * @return event details
      */
     public CompletableFuture<String> getEventDetailsDB(String eventID) {

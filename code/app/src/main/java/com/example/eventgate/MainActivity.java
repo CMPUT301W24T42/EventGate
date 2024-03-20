@@ -1,15 +1,21 @@
 package com.example.eventgate;
 
+import static androidx.core.content.ContentProviderCompat.requireContext;
+
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.Toast;
@@ -74,6 +80,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // create notification channels
+        createEventNotifChannel();
+        createMilestoneNotifChannel();
         // ask the user to permission to receive notifications from the app
         askNotificationPermission();
 
@@ -143,19 +152,53 @@ public class MainActivity extends AppCompatActivity {
         // This is only necessary for API level >= 33 (TIRAMISU)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) ==
-                    PackageManager.PERMISSION_GRANTED) {
-                // FCM SDK (and your app) can post notifications.
-            } else if (shouldShowRequestPermissionRationale(android.Manifest.permission.POST_NOTIFICATIONS)) {
-                // TODO: display an educational UI explaining to the user the features that will be enabled
-                //       by them granting the POST_NOTIFICATION permission. This UI should provide the user
-                //       "OK" and "No thanks" buttons. If the user selects "OK," directly request the permission.
-                //       If the user selects "No thanks," allow the user to continue without notifications.
-            } else {
-                // Directly ask for the permission
-                requestPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS);
+                    PackageManager.PERMISSION_DENIED) {
+                // create a boolean to keep track of whether a user wants to
+                //      be asked for notification permissions, if true then do not ask for permission again
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+                boolean dontAskAgain = preferences.getBoolean("dont_ask_again", false);
+                if (!dontAskAgain) {
+                    // create new fragment that educates the user about the benefits of having notifications
+                    //      turned on
+                    new NotificationPermissionFragment().show(getSupportFragmentManager(), "REQUEST NOTIFICATION PERMISSION");
+                }
             }
         }
     }
 
+    /**
+     * creates a notification channel to send event alerts through
+     */
+    private void createEventNotifChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is not in the Support Library.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "Event Alerts";
+            String description = "Alerts regarding events";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel("event_channel", name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
 
+    /**
+     * creates a notification channel to send milestone alerts through
+     */
+    private void createMilestoneNotifChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is not in the Support Library.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "Milestone Alerts";
+            String description = "Alerts that are sent once your events reach a milestone";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel("milestone_channel", name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
 }

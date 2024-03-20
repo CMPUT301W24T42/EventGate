@@ -87,10 +87,18 @@ public class Firebase {
         return this.fcm;
     }
 
+    /**
+     * this sets the Firebase Messaging Service
+     * @param service the firebase messaging service
+     */
     public void setMessagingService(MyFirebaseMessagingService service) {
         this.messagingService = service;
     }
 
+    /**
+     * this gets the firebase messaging service
+     * @return an instance of MyFirebaseMessagingService
+     */
     public MyFirebaseMessagingService getMessagingService() {
         return this.messagingService;
     }
@@ -127,10 +135,18 @@ public class Firebase {
         return this.alertsRef;
     }
 
+    /**
+     * this sets the current user of the app
+     * @param user the user to be set
+     */
     public void setUser(FirebaseUser user) {
         currentUser = user;
     }
 
+    /**
+     * this gets the current user of the app
+     * @return an instance of FirebaseUser
+     */
     public FirebaseUser getUser() {
         return currentUser;
     }

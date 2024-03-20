@@ -17,8 +17,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.eventgate.MainActivity;
 import com.example.eventgate.R;
+import com.example.eventgate.event.Event;
 import com.example.eventgate.event.EventDB;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -28,8 +28,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
+
+import com.google.firebase.installations.FirebaseInstallations;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -42,6 +46,7 @@ public class OrganizerEventEditorActivity extends AppCompatActivity implements C
     private TextView eventTitle;
     private Button backButton, uploadPosterButton;
     private Button createAlert;
+    private String eventName;
     private String eventId;
     private String eventDescription;
     private ArrayList<OrganizerAlert> alerts;
@@ -65,10 +70,12 @@ public class OrganizerEventEditorActivity extends AppCompatActivity implements C
         eventTitle = findViewById(R.id.EventListViewTitle);
 
         Intent intent = getIntent();
-        eventTitle.setText(intent.getStringExtra("eventName"));
+        eventName = intent.getStringExtra("eventName");
+        eventTitle.setText(eventName);
         eventId = intent.getStringExtra("eventId");
         eventDescription = intent.getStringExtra("eventDescription");
         TextView eventDetailsText =  findViewById(R.id.EventDetails);
+        TextView attendanceCount = findViewById(R.id.attendance_text_view);
         eventDetailsText.setText(eventDescription);
         alerts = (ArrayList<OrganizerAlert>) intent.getSerializableExtra("alerts");
 
@@ -100,6 +107,9 @@ public class OrganizerEventEditorActivity extends AppCompatActivity implements C
                                             }
                                         });
                             }
+                            // update number of attendees attending the event
+                            int attendeeCount = attendeeIds.size();
+                            attendanceCount.setText(Integer.toString(attendeeCount));
                         }
                     }
                 }
@@ -127,9 +137,15 @@ public class OrganizerEventEditorActivity extends AppCompatActivity implements C
         createAlert.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new CreateAlertFragment().show(getSupportFragmentManager(), "CREATE ALERT");
+                CreateAlertFragment fragment = new CreateAlertFragment();
+                // create a bundle so we can access the eventId in the dialog fragment
+                Bundle args = new Bundle();
+                args.putString("eventId", eventId);
+                fragment.setArguments(args);
+                fragment.show(getSupportFragmentManager(), "CREATE ALERT");
             }
         });
+
     }
 
 
@@ -213,19 +229,17 @@ public class OrganizerEventEditorActivity extends AppCompatActivity implements C
         alerts.add(alert);
 
         // get references to firebase collections
-        CollectionReference eventsRef = MainActivity.db.getEventsRef();
         CollectionReference alertsRef = MainActivity.db.getAlertsRef();
 
         // get alert data that will be stored in firebase
         HashMap<String, String> newAlert = new HashMap<>();
         newAlert.put("title", alert.getTitle());
         newAlert.put("body", alert.getMessage());
+        newAlert.put("channelId", alert.getChannelId());
+        newAlert.put("organizerId", alert.getOrganizerId());
 
-        // send to events collection
-        eventsRef
-                .document(eventId)
-                .update("alerts", FieldValue.arrayUnion(newAlert))
-                .addOnSuccessListener(unused -> Log.d("EventDB", "Alert has been sent to events collection"));
+        // sent to events collection
+        sendToEventsCollection(newAlert);
 
         // send to alerts collection
         String alertId = alertsRef.document().getId();
@@ -235,5 +249,21 @@ public class OrganizerEventEditorActivity extends AppCompatActivity implements C
                 .set(newAlert)
                 .addOnSuccessListener(unused -> Log.d("EventDB", "Alert has been sent to alerts collection"));
 
+
     }
+
+    /**
+     * stores the alert in the events collection of the database
+     * @param newAlert the alert to be stored
+     */
+    private void sendToEventsCollection(HashMap<String, String> newAlert) {
+        // get reference to the events collection
+        CollectionReference eventsRef = MainActivity.db.getEventsRef();
+        // send to events collection
+        eventsRef
+                .document(eventId)
+                .update("alerts", FieldValue.arrayUnion(newAlert))
+                .addOnSuccessListener(unused -> Log.d("EventDB", "Alert has been sent to events collection"));
+    }
+
 }

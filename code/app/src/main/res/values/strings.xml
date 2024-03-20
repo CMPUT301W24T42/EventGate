@@ -25,4 +25,13 @@
     <string name="enter_message">Enter Message</string>
     <string name="enter_title">Enter Title</string>
     <string name="alert_title">Alert Title</string>
+    <string name="realtime_attendance">Realtime Attendance:</string>
+    <string name="hashtag">#</string>
+    <string name="attendees_list">List of attendees</string>
+    <string name="notification_info">EventGate would like to send you notifications. Enabling
+        notifications keep you informed about event updates and milestones that your events have
+        reached. Notifications can be always be managed in settings at a later time.</string>
+    <string name="no_thanks_button">No Thanks</string>
+    <string name="ok_button">OK</string>
+    <string name="dont_ask_again">Don\'t ask again</string>
 </resources>

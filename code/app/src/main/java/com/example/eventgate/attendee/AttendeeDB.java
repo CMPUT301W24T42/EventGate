@@ -8,6 +8,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
+/**
+ * This is used to add, remove, and retrieve attendee data from the database
+ */
 public class AttendeeDB {
     /**
      * An instance of the Firebase Firestore database
