@@ -40,7 +40,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * this class takes care of functions regarding firebase cloud messaging and post notifications
  */
-public class MyFirebaseMessagingService extends com.google.firebase.messaging.FirebaseMessagingService implements CreateAlertFragment.OnAlertCreatedListener{
+public class MyFirebaseMessagingService extends com.google.firebase.messaging.FirebaseMessagingService {
     /**
      * this holds an instance of FirebaseMessaging
      */
@@ -312,15 +312,14 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
         // create the alert
         FirebaseInstallations.getInstance().getId().addOnSuccessListener(id -> {
             OrganizerAlert alert = new OrganizerAlert(title, message, "milestone_channel", id, eventId);
-            ((CreateAlertFragment.OnAlertCreatedListener) this).onAlertCreated(alert);
+            onAlertCreated(alert);
         });
     }
 
     /**
-     * Callback method to handle the addition of a new alert.
+     * method to handle the addition of a new alert.
      * @param alert The alert created.
      */
-    @Override
     public void onAlertCreated(OrganizerAlert alert) {
         // get reference to firebase alerts collection
         CollectionReference alertsRef = MainActivity.db.getAlertsRef();

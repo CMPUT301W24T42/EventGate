@@ -7,18 +7,18 @@
       </entry>
       <entry key="app">
         <State>
-          <runningDeviceTargetSelectedWithDropDown>
+          <targetSelectedWithDropDown>
             <Target>
-              <type value="RUNNING_DEVICE_TARGET" />
+              <type value="QUICK_BOOT_TARGET" />
               <deviceKey>
                 <Key>
                   <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="$USER_HOME$/.android/avd/Pixel_6_API_34_2.avd" />
+                  <value value="$USER_HOME$/.android/avd/Pixel_6_Pro_API_34.avd" />
                 </Key>
               </deviceKey>
             </Target>
-          </runningDeviceTargetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-03-20T20:54:45.178994Z" />
+          </targetSelectedWithDropDown>
+          <timeTargetWasSelectedWithDropDown value="2024-03-20T21:52:19.651840Z" />
         </State>
       </entry>
     </value>
