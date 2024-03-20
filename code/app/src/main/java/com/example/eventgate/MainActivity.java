@@ -1,5 +1,7 @@
 package com.example.eventgate;
 
+import static androidx.core.content.ContentProviderCompat.requireContext;
+
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 
@@ -7,9 +9,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.Toast;
@@ -143,10 +147,16 @@ public class MainActivity extends AppCompatActivity {
         // This is only necessary for API level >= 33 (TIRAMISU)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) ==
-                    PackageManager.PERMISSION_GRANTED) {
-                // FCM SDK (and your app) can post notifications.
-            } else {
-                new NotificationPermissionFragment().show(getSupportFragmentManager(), "REQUEST NOTIFICATION PERMISSION");
+                    PackageManager.PERMISSION_DENIED) {
+                // create a boolean to keep track of whether a user wants to
+                //      be asked for notification permissions, if true then do not ask for permission again
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+                boolean dontAskAgain = preferences.getBoolean("dont_ask_again", false);
+                if (!dontAskAgain) {
+                    // create new fragment that educates the user about the benefits of having notifications
+                    //      turned on
+                    new NotificationPermissionFragment().show(getSupportFragmentManager(), "REQUEST NOTIFICATION PERMISSION");
+                }
             }
         }
     }

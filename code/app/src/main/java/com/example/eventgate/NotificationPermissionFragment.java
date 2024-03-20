@@ -2,11 +2,14 @@ package com.example.eventgate;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -48,12 +51,19 @@ public class NotificationPermissionFragment extends DialogFragment {
 
         Button noThanksButton = view.findViewById(R.id.no_thanks_button);
         Button okButton = view.findViewById(R.id.ok_button);
+        CheckBox doNotAskCheckbox = view.findViewById(R.id.permission_checkbox);
 
         // dismiss dialog if user clicks no thanks button
-        noThanksButton.setOnClickListener(v -> dismiss());
+        noThanksButton.setOnClickListener(v -> {
+            boolean doNotAsk = doNotAskCheckbox.isChecked();
+            checkDoNotAsk(doNotAsk);
+            dismiss();
+        });
 
         // request permission for notification if the user agrees to receiving them
         okButton.setOnClickListener(v -> {
+            boolean doNotAsk = doNotAskCheckbox.isChecked();
+            checkDoNotAsk(doNotAsk);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 requestPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS);
                 dismiss();
@@ -64,5 +74,20 @@ public class NotificationPermissionFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setView(view); // Set the custom layout
         return builder.create();
+    }
+
+    /**
+     * this edits the user's sharedpreferences so that the app will know not to ask the user for
+     *      notification permissions
+     * @param doNotAsk true if the user has checked the checkbox confirming that they no longer
+     *                 want to be asked for notification permissions, false otherwise
+     */
+    private void checkDoNotAsk(boolean doNotAsk) {
+        if (doNotAsk) {
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putBoolean("dont_ask_again", true);
+            editor.apply();
+        }
     }
 }

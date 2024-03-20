@@ -33,4 +33,5 @@
         reached. Notifications can be always be managed in settings at a later time.</string>
     <string name="no_thanks_button">No Thanks</string>
     <string name="ok_button">OK</string>
+    <string name="dont_ask_again">Don\'t ask again</string>
 </resources>
