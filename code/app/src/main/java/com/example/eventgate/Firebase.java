@@ -44,6 +44,10 @@ public class Firebase {
      */
     private final CollectionReference alertsRef;
     /**
+     * this is the reference to the admins collection in the database
+     */
+    private final CollectionReference adminsRef;
+    /**
      * this holds the info from firebase of the current user
      */
     private FirebaseUser currentUser;
@@ -60,6 +64,7 @@ public class Firebase {
         this.attendeesRef = db.collection("attendees");
         this.fcmTokensRef = db.collection("fcmTokens");
         this.alertsRef = db.collection("alerts");
+        this.adminsRef = db.collection("admins");
         this.currentUser = null;
     }
 
@@ -133,6 +138,14 @@ public class Firebase {
      */
     public CollectionReference getAlertsRef() {
         return this.alertsRef;
+    }
+
+    /**
+     * this gets a reference to the admins collection in the database
+     * @return a collection reference to the admins collection
+     */
+    public CollectionReference getAdminsRef() {
+        return adminsRef;
     }
 
     /**
