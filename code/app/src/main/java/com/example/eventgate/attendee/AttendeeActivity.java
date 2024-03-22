@@ -30,6 +30,8 @@ import com.example.eventgate.MainActivity;
 import com.example.eventgate.event.Event;
 import com.example.eventgate.event.EventDB;
 import com.example.eventgate.R;
+import com.example.eventgate.organizer.AttendeeListAdapter;
+import com.example.eventgate.organizer.EventListAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.installations.FirebaseInstallations;
@@ -59,11 +61,16 @@ public class AttendeeActivity extends AppCompatActivity {
     private static final int RESULT_REDUNDANT = 3;
 
     ArrayList<Event> eventDataList;
+
     ListView eventList;
     ArrayAdapter<Event> eventAdapter;
     Button qr_button;
     Button back_button;
     Button registered_button;
+
+    ArrayList<Event> allEventsDataList;
+    ArrayAdapter<Event> allEventsAdapter;
+    ListView allEventsList;
 
     private final ActivityResultLauncher<Intent> qrLauncher =
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
@@ -166,7 +173,7 @@ public class AttendeeActivity extends AppCompatActivity {
 
 
         qr_button = findViewById(R.id.qr_button);
-        registered_button = findViewById(R.id.attendee_registered_button);
+        registered_button = findViewById(R.id.registeredEventsButton);
         back_button = findViewById(R.id.attendee_back_button);
 
         qr_button.setOnClickListener(new View.OnClickListener() {
@@ -190,6 +197,83 @@ public class AttendeeActivity extends AppCompatActivity {
                 registeredEventDialog();
             }
         });
+
+        //view all events dialogue
+        Button viewAllEventsButton = findViewById(R.id.allEventsButton);
+
+        viewAllEventsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Open a dialog
+                viewAllEventsDialog2();
+            }
+        });
+
+
+
+    }
+
+
+
+
+    //prepares all events popup listview on button click
+    //uses eventlistadapter, probably wont use this one
+
+    /*private void viewAllEventsDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_attendeeviewallevents, null);
+
+
+        allEventsDataList = new ArrayList<>();
+        ListView allEventsList = dialogView.findViewById(R.id.allEventsListview);
+        EventListAdapter allEventsAdapter = new EventListAdapter(this, allEventsDataList);
+        allEventsList.setAdapter(allEventsAdapter);
+
+
+        FirebaseInstallations.getInstance().getId().addOnSuccessListener(id -> {
+            CompletableFuture<ArrayList<Event>> attendeeEvents = new EventDB().getAttendeeEvents(id);
+            attendeeEvents.thenAccept(r -> {
+                allEventsDataList.clear();
+                allEventsDataList.addAll(r);
+                allEventsAdapter.notifyDataSetChanged();
+            });
+        });
+
+        builder.setView(dialogView);
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+    }*/
+
+    //uses attendeelistadapter
+    private void viewAllEventsDialog2() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_attendeeviewallevents, null);
+
+
+        ArrayList<String> allAttendeeNamesList = new ArrayList<>();
+        ListView allEventsList = dialogView.findViewById(R.id.allEventsListview);
+        AttendeeListAdapter allAttendeesAdapter = new AttendeeListAdapter(this, allAttendeeNamesList);
+        allEventsList.setAdapter(allAttendeesAdapter);
+
+        FirebaseInstallations.getInstance().getId().addOnSuccessListener(id -> {
+            CompletableFuture<ArrayList<Event>> attendeeEvents = new EventDB().getAttendeeEvents(id);
+            attendeeEvents.thenAccept(events -> {
+                allAttendeeNamesList.clear();
+                //get name since attendeelistadapter needs strings
+                for(Event event : events) {
+                    allAttendeeNamesList.add(event.getEventName());
+                }
+                allAttendeesAdapter.notifyDataSetChanged();
+            });
+        });
+
+        builder.setView(dialogView);
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     /**
@@ -231,10 +315,8 @@ public class AttendeeActivity extends AppCompatActivity {
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View customView = inflater.inflate(R.layout.user_settings_dialog, null);
 
-
         AlertDialog.Builder builder = new AlertDialog.Builder(AttendeeActivity.this);
         builder.setView(customView);
-
 
         EditText editTextName = customView.findViewById(R.id.edittext_name);
         EditText editTextHomepage = customView.findViewById(R.id.edittext_homepage);
