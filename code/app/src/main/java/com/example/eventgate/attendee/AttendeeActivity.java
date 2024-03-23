@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -251,7 +252,7 @@ public class AttendeeActivity extends AppCompatActivity {
         allEventsList.setAdapter(allAttendeesAdapter);
 
         FirebaseInstallations.getInstance().getId().addOnSuccessListener(id -> {
-            CompletableFuture<ArrayList<Event>> attendeeEvents = new EventDB().getAttendeeEvents(id);
+            CompletableFuture<ArrayList<Event>> attendeeEvents = new EventDB().getAllEvents();
             attendeeEvents.thenAccept(events -> {
                 allAttendeeNamesList.clear();
                 //get name since attendeelistadapter needs strings
@@ -264,6 +265,7 @@ public class AttendeeActivity extends AppCompatActivity {
 
         builder.setView(dialogView);
         AlertDialog dialog = builder.create();
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.show();
     }
 

@@ -313,5 +313,29 @@ public class EventDB {
         return allAttendees;
     }
 
+    public CompletableFuture<ArrayList<Event>> getAllEvents() {
+        CompletableFuture<ArrayList<Event>> futureEvents = new CompletableFuture<>();
+        ArrayList<Event> events = new ArrayList<>();
+
+        db.collection("events").get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (queryDocumentSnapshots.isEmpty()) {
+                        futureEvents.complete(events);
+                        return;
+                    }
+                    for (QueryDocumentSnapshot queryResult : queryDocumentSnapshots) {
+                        String eventName = queryResult.getString("name");
+                        Event event = new Event(eventName);
+                        event.setEventId(queryResult.getId());
+                        events.add(event);
+                    }
+                    futureEvents.complete(events);
+                }).addOnFailureListener(e -> {
+
+                    futureEvents.completeExceptionally(e);
+                });
+        return futureEvents;
+    }
+
 
 }
