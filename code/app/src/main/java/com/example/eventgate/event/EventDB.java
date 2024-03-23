@@ -231,6 +231,38 @@ public class EventDB {
     }
 
     /**
+     * Checks whether a user is signed up for an event
+     * @param deviceId attendee's firebase installation id
+     * @return CompleteableFuture of Arraylist of Events
+     * */
+    public CompletableFuture<Boolean> isAttendeeSignedUp(String userId, String eventId) {
+        CompletableFuture<Boolean> future = new CompletableFuture<>();
+
+        db.collection("events").document(eventId).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+
+                        List<String> registeredUsers = (List<String>) documentSnapshot.get("registeredUsers");
+                        if (registeredUsers != null && registeredUsers.contains(userId)) {
+                            System.out.println("true");
+                            future.complete(true);
+                        } else {
+                            System.out.println("false");
+                            future.complete(false);
+                        }
+                    } else {
+                        System.out.println("Event document not found.");
+                        future.complete(false);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    System.out.println("Error accessing document: " + e.getMessage());
+                    future.completeExceptionally(e);
+                });
+        return future;
+    }
+
+    /**
      * retrieves event details
      * @param eventID the id of the event
      * @return event details

@@ -253,8 +253,8 @@ public class AttendeeActivity extends AppCompatActivity {
         LayoutInflater inflater = getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_attendeeviewallevents, null);
 
-
-        ArrayList<String> allAttendeeNamesList = new ArrayList<>();
+        ArrayList<Event> allEvents = new ArrayList<>(); // For use in onItemClick
+        ArrayList<String> allAttendeeNamesList = new ArrayList<>(); // For display in ListView
         ListView allEventsList = dialogView.findViewById(R.id.allEventsListview);
         AttendeeListAdapter allAttendeesAdapter = new AttendeeListAdapter(this, allAttendeeNamesList);
         allEventsList.setAdapter(allAttendeesAdapter);
@@ -263,12 +263,22 @@ public class AttendeeActivity extends AppCompatActivity {
             CompletableFuture<ArrayList<Event>> attendeeEvents = new EventDB().getAllEvents();
             attendeeEvents.thenAccept(events -> {
                 allAttendeeNamesList.clear();
-                //get name since attendeelistadapter needs strings
+                allEvents.clear(); // Clear to ensure it's in sync with allAttendeeNamesList
                 for(Event event : events) {
                     allAttendeeNamesList.add(event.getEventName());
+                    allEvents.add(event); // Populate allEvents in sync with allAttendeeNamesList
                 }
                 allAttendeesAdapter.notifyDataSetChanged();
             });
+        });
+
+        allEventsList.setOnItemClickListener((parent, view, position, id) -> {
+            Event clickedEvent = allEvents.get(position); // This should now be safe
+            Intent intent = new Intent(AttendeeActivity.this, AttendeeAllEventViewerDetail.class);
+            intent.putExtra("EventID", clickedEvent.getEventId());
+            intent.putExtra("EventName", clickedEvent.getEventName());
+            intent.putExtra("alerts", clickedEvent.getAlerts());
+            startActivity(intent);
         });
 
         builder.setView(dialogView);
