@@ -2,13 +2,18 @@ package com.example.eventgate.admin;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
 import com.example.eventgate.attendee.Attendee;
 import com.example.eventgate.MainActivity;
+import com.example.eventgate.attendee.AttendeeActivity;
+import com.example.eventgate.attendee.AttendeeEventViewer;
 import com.example.eventgate.event.Event;
 import com.example.eventgate.R;
 import com.google.firebase.firestore.CollectionReference;
@@ -49,6 +54,14 @@ public class AdminActivity extends AppCompatActivity {
      * This is the button used to get back to the Main Menu activity
      */
     Button adminActivityBackButton;
+    /**
+     * holds reference to events collection in the database
+     */
+    CollectionReference eventsRef;
+    /**
+     * holds reference to attendees collection in the database
+     */
+    CollectionReference attendeesRef;
 
     /**
      * Called when the activity is starting.
@@ -70,28 +83,18 @@ public class AdminActivity extends AppCompatActivity {
         createAttendeeList();
 
         // get references to firestore events and attendees collections
-        CollectionReference eventsRef = MainActivity.db.getEventsRef();
-        CollectionReference attendeesRef = MainActivity.db.getAttendeesRef();
+        eventsRef = MainActivity.db.getEventsRef();
+        attendeesRef = MainActivity.db.getAttendeesRef();
 
-        // snapshot listener that adds/updates all the events from the database
-        eventsRef.addSnapshotListener((queryDocumentSnapshots, error) -> {
-            for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
-            {
-                Event event = new Event((String) doc.getData().get("name"));
-                event.setEventId(doc.getId());
-                eventDataList.add(event);
-                eventAdapter.notifyDataSetChanged();
-            }
-        });
+        // adds/updates info from the database
+        createDBListeners(eventsRef, attendeesRef);
 
-        // snapshot listener that adds/updates all the attendees/users from the database
-        attendeesRef.addSnapshotListener((queryDocumentSnapshots, error) -> {
-            for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
-            {
-                Attendee attendee = new Attendee((String) doc.getData().get("name"), (String) doc.getData().get("deviceId"));
-                attendeeDataList.add(attendee);
-                attendeeAdapter.notifyDataSetChanged();
-            }
+        eventList.setOnItemClickListener((parent, view, position, id) -> {
+            Event event = eventDataList.get(position);
+            Intent intent = new Intent(AdminActivity.this, AdminEventViewerActivity.class);
+            intent.putExtra("eventId", event.getEventId());
+            intent.putExtra("name", event.getEventName());
+            startActivity(intent);
         });
     }
 
@@ -117,5 +120,33 @@ public class AdminActivity extends AppCompatActivity {
 
         attendeeAdapter = new AdminAttendeeListAdapter(this, attendeeDataList);
         attendeeList.setAdapter(attendeeAdapter);
+    }
+
+    /**
+     * creates snapshot listeners to add or update info from the database
+     * @param eventsRef a reference to the events collection in the database
+     * @param attendeesRef a reference to the attendees collection in the database
+     */
+    private void createDBListeners(CollectionReference eventsRef, CollectionReference attendeesRef) {
+        // snapshot listener that adds/updates all the events from the database
+        eventsRef.addSnapshotListener((queryDocumentSnapshots, error) -> {
+            for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
+            {
+                Event event = new Event((String) doc.getData().get("name"));
+                event.setEventId(doc.getId());
+                eventDataList.add(event);
+                eventAdapter.notifyDataSetChanged();
+            }
+        });
+
+        // snapshot listener that adds/updates all the attendees/users from the database
+        attendeesRef.addSnapshotListener((queryDocumentSnapshots, error) -> {
+            for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
+            {
+                Attendee attendee = new Attendee((String) doc.getData().get("name"), (String) doc.getData().get("deviceId"));
+                attendeeDataList.add(attendee);
+                attendeeAdapter.notifyDataSetChanged();
+            }
+        });
     }
 }
