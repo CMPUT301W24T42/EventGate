@@ -11,7 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.example.eventgate.Attendee;
+import com.example.eventgate.attendee.Attendee;
 import com.example.eventgate.attendee.AttendeeDB;
 import com.example.eventgate.R;
 

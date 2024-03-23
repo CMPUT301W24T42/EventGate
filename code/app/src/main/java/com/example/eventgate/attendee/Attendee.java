@@ -1,4 +1,4 @@
-package com.example.eventgate;
+package com.example.eventgate.attendee;
 
 /**
  * this class represents a attendee

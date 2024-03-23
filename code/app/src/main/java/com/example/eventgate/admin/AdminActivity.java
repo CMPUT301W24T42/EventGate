@@ -1,6 +1,5 @@
 package com.example.eventgate.admin;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -8,16 +7,12 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
-import com.example.eventgate.Attendee;
+import com.example.eventgate.attendee.Attendee;
 import com.example.eventgate.MainActivity;
 import com.example.eventgate.event.Event;
 import com.example.eventgate.R;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.auth.User;
 
 import java.util.ArrayList;
 
