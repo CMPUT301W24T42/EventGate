@@ -44,6 +44,9 @@
             android:name=".attendee.AttendeeEventViewer"
             android:exported="false" />
         <activity
+            android:name=".attendee.AttendeeAllEventViewerDetail"
+            android:exported="false" />
+        <activity
             android:name=".attendee.AttendeeViewParticipants"
             android:exported="false" />
         <activity
