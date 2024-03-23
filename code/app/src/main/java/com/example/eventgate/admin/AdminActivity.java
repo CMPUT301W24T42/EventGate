@@ -1,5 +1,6 @@
 package com.example.eventgate.admin;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -7,12 +8,16 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
+import com.example.eventgate.Attendee;
 import com.example.eventgate.MainActivity;
 import com.example.eventgate.event.Event;
 import com.example.eventgate.R;
-import com.example.eventgate.event.EventDB;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.auth.User;
 
 import java.util.ArrayList;
 
@@ -34,11 +39,21 @@ public class AdminActivity extends AppCompatActivity {
      */
     ArrayAdapter<Event> eventAdapter;
     /**
+     * this is an array list that holds attendees
+     */
+    ArrayList<Attendee> attendeeDataList;
+    /**
+     * this is the listview that displays the attendees in the attendeeDataList
+     */
+    ListView attendeeList;
+    /**
+     * this is an adapter for displaying a list of attendees
+     */
+    ArrayAdapter<Attendee> attendeeAdapter;
+    /**
      * This is the button used to get back to the Main Menu activity
      */
     Button adminActivityBackButton;
-  
-    EventDB eventDB;
 
     /**
      * Called when the activity is starting.
@@ -51,19 +66,20 @@ public class AdminActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin);
 
-        eventDataList = new ArrayList<>();
-
-        eventList = findViewById(R.id.event_list);
+        // sends admin back to the main menu
         adminActivityBackButton = findViewById(R.id.admin_back_button);
+        adminActivityBackButton.setOnClickListener(v -> finish());
 
-        eventAdapter = new AdminEventListAdapter(this, eventDataList);
-        eventList.setAdapter(eventAdapter);
+        // create the event and attendee lists and set adapters
+        createEventList();
+        createAttendeeList();
 
-        eventDB = new EventDB();
-        CollectionReference collection = MainActivity.db.getEventsRef();
+        // get references to firestore events and attendees collections
+        CollectionReference eventsRef = MainActivity.db.getEventsRef();
+        CollectionReference attendeesRef = MainActivity.db.getAttendeesRef();
 
         // snapshot listener that adds/updates all the events from the database
-        collection.addSnapshotListener((queryDocumentSnapshots, error) -> {
+        eventsRef.addSnapshotListener((queryDocumentSnapshots, error) -> {
             for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
             {
                 Event event = new Event((String) doc.getData().get("name"));
@@ -73,7 +89,38 @@ public class AdminActivity extends AppCompatActivity {
             }
         });
 
-        // sends admin back to the main menu
-        adminActivityBackButton.setOnClickListener(v -> finish());
+        // snapshot listener that adds/updates all the attendees/users from the database
+        attendeesRef.addSnapshotListener((queryDocumentSnapshots, error) -> {
+            for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
+            {
+                Attendee attendee = new Attendee((String) doc.getData().get("name"), (String) doc.getData().get("deviceId"));
+                attendeeDataList.add(attendee);
+                attendeeAdapter.notifyDataSetChanged();
+            }
+        });
+    }
+
+    /**
+     * creates the event list and sets the adapter
+     */
+    private void createEventList() {
+        eventDataList = new ArrayList<>();
+
+        eventList = findViewById(R.id.event_list);
+
+        eventAdapter = new AdminEventListAdapter(this, eventDataList);
+        eventList.setAdapter(eventAdapter);
+    }
+
+    /**
+     * creates the attendee list and sets the adapter
+     */
+    private void createAttendeeList() {
+        attendeeDataList = new ArrayList<>();
+
+        attendeeList = findViewById(R.id.user_list);
+
+        attendeeAdapter = new AdminAttendeeListAdapter(this, attendeeDataList);
+        attendeeList.setAdapter(attendeeAdapter);
     }
 }

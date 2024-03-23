@@ -11,35 +11,35 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.example.eventgate.event.Event;
+import com.example.eventgate.Attendee;
+import com.example.eventgate.attendee.AttendeeDB;
 import com.example.eventgate.R;
-import com.example.eventgate.event.EventDB;
 
 import java.util.ArrayList;
 
 /**
- * This is an adapter for displaying a list of events that includes a delete button that the admin
+ * This is an adapter for displaying a list of attendees that includes a delete button that the admin
  *     can use
  */
-public class AdminEventListAdapter extends ArrayAdapter<Event> {
+public class AdminAttendeeListAdapter extends ArrayAdapter<Attendee> {
     /**
-     * this is the list of events that will be displayed by the adapter
+     * this is the list of attendees that will be displayed by the adapter
      */
-    private ArrayList<Event> events;
+    private ArrayList<Attendee> attendees;
     /**
      * this holds the context
      */
     private Context context;
 
     /**
-     * Constructs a new AdminEventListAdapter.
+     * Constructs a new AdminAttendeeListAdapter.
      *
      * @param context The context.
-     * @param events  The list of events to be displayed.
+     * @param attendees  The list of attendees to be displayed.
      */
-    public AdminEventListAdapter(Context context, ArrayList<Event> events) {
-        super(context, 0, events);
-        this.events = events;
+    public AdminAttendeeListAdapter(Context context, ArrayList<Attendee> attendees) {
+        super(context, 0, attendees);
+        this.attendees = attendees;
         this.context = context;
     }
 
@@ -58,21 +58,23 @@ public class AdminEventListAdapter extends ArrayAdapter<Event> {
             convertView = LayoutInflater.from(context).inflate(R.layout.admin_list_item, parent, false);
         }
 
-        Event event = events.get(position);
-        EventDB eventDB = new EventDB();
+        Attendee attendee = attendees.get(position);
+        AttendeeDB attendeeDB = new AttendeeDB();
 
-        TextView eventName = convertView.findViewById(R.id.list_item_name);
-        Button adminDelEventButton = convertView.findViewById(R.id.delete_button);
+        TextView attendeeName = convertView.findViewById(R.id.list_item_name);
+        Button adminDeleteButton = convertView.findViewById(R.id.delete_button);
 
-        eventName.setText(event.getEventName());
+        attendeeName.setText(attendee.getName());
 
-        // this removes events from the app and database once the admin clicks on the delete button
-        adminDelEventButton.setOnClickListener(v -> {
-            events.remove(position);
-            eventDB.removeEvent(event);
-            notifyDataSetChanged();
+        // this removes attendees from the app and database once the admin clicks on the delete button
+        adminDeleteButton.setOnClickListener(v -> {
+//            attendees.remove(position);
+//            attendeeDB.removeAttendee(attendee);
+//            notifyDataSetChanged();
         });
 
         return convertView;
     }
 }
+
+
