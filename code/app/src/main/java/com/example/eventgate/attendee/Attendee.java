@@ -13,15 +13,20 @@ public class Attendee {
      * this holds the firebase installation id of the attendee
      */
     private String deviceId;
+    /**
+     * this holds the id of the firestore collection document for the attendee
+     */
+    private String attendeeId;
 
     /**
      * this constructs a new attendee object
      * @param name the name of the attendee
      * @param deviceId the firebase installation id of the attendee
      */
-    public Attendee(String name, String deviceId) {
+    public Attendee(String name, String deviceId, String attendeeId) {
         this.name = name;
         this.deviceId = deviceId;
+        this.attendeeId = attendeeId;
     }
 
     public String getName() {
@@ -38,5 +43,13 @@ public class Attendee {
 
     public void setDeviceId(String deviceId) {
         this.deviceId = deviceId;
+    }
+
+    public String getAttendeeId() {
+        return attendeeId;
+    }
+
+    public void setAttendeeId(String attendeeId) {
+        this.attendeeId = attendeeId;
     }
 }

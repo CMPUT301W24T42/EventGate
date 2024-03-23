@@ -22,6 +22,8 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
 public class AdminEventViewerActivity extends AppCompatActivity {
@@ -33,6 +35,10 @@ public class AdminEventViewerActivity extends AppCompatActivity {
      * this holds the name of the event
      */
     private String eventName;
+    /**
+     * this holds the details of the event
+     */
+    private String eventDetails;
     /**
      * this is an array list that holds attendees
      */
@@ -57,15 +63,20 @@ public class AdminEventViewerActivity extends AppCompatActivity {
         if (extras != null) {
             eventId = extras.getString("eventId");
             eventName = extras.getString("name");
+            eventDetails = extras.getString("eventDetails");
+            // event details not working
+            eventDetails = "null";
         }
 
         // sends admin back to the main menu
         backButton = findViewById(R.id.event_back_button);
         backButton.setOnClickListener(v -> finish());
 
-        // set name of event
+        // set name and details of event
         TextView eventTitle = findViewById(R.id.event_title);
+        TextView detailsTextview = findViewById(R.id.event_details_textview);
         eventTitle.setText(eventName);
+        detailsTextview.setText(eventDetails);
 
         // create the attendee list and set adapter
         createAttendeeList();
@@ -88,8 +99,9 @@ public class AdminEventViewerActivity extends AppCompatActivity {
 
         attendeeList = findViewById(R.id.user_list);
 
-        attendeeAdapter = new AdminAttendeeListAdapter(this, attendeeDataList);
+        attendeeAdapter = new AdminAttendeeListAdapter(this, attendeeDataList, eventId);
         attendeeList.setAdapter(attendeeAdapter);
+
     }
 
     /**
@@ -115,11 +127,14 @@ public class AdminEventViewerActivity extends AppCompatActivity {
                             attendeesRef
                                     .document(attendeeId).get().addOnSuccessListener(documentSnapshot -> {
                                         Attendee attendee = new Attendee(documentSnapshot.getString("name"),
-                                                documentSnapshot.getString("deviceId"));
+                                                documentSnapshot.getString("deviceId"),
+                                                documentSnapshot.getString("attendeeId"));
                                         attendeeDataList.add(attendee);
+                                        attendeeAdapter.notifyDataSetChanged();
                                     });
+
                         }
-                        attendeeAdapter.notifyDataSetChanged();
+
                     }
                 }
             }

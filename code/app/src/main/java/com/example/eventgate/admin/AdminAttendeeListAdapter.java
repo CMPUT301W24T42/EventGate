@@ -30,6 +30,10 @@ public class AdminAttendeeListAdapter extends ArrayAdapter<Attendee> {
      * this holds the context
      */
     private Context context;
+    /**
+     * this holds an event's id
+     */
+    private String eventId;
 
     /**
      * Constructs a new AdminAttendeeListAdapter.
@@ -37,10 +41,11 @@ public class AdminAttendeeListAdapter extends ArrayAdapter<Attendee> {
      * @param context The context.
      * @param attendees  The list of attendees to be displayed.
      */
-    public AdminAttendeeListAdapter(Context context, ArrayList<Attendee> attendees) {
+    public AdminAttendeeListAdapter(Context context, ArrayList<Attendee> attendees, String eventId) {
         super(context, 0, attendees);
         this.attendees = attendees;
         this.context = context;
+        this.eventId = eventId;
     }
 
     /**
@@ -66,14 +71,30 @@ public class AdminAttendeeListAdapter extends ArrayAdapter<Attendee> {
 
         attendeeName.setText(attendee.getName());
 
-        // this removes attendees from the app and database once the admin clicks on the delete button
-        adminDeleteButton.setOnClickListener(v -> {
-//            attendees.remove(position);
-//            attendeeDB.removeAttendee(attendee);
-//            notifyDataSetChanged();
-        });
+        if (context instanceof AdminActivity) {
+            setAdminActivityClickListener(adminDeleteButton, position, attendeeDB, attendee);
+        } else {
+            setAdminEventViewerClickListener(adminDeleteButton, position, attendeeDB, attendee);
+        }
 
         return convertView;
+    }
+
+    private void setAdminActivityClickListener(Button adminDeleteButton, int position, AttendeeDB attendeeDB, Attendee attendee) {
+        // this removes attendees from the app and database once the admin clicks on the delete button
+        adminDeleteButton.setOnClickListener(v -> {
+            attendees.remove(position);
+            attendeeDB.removeAttendee(attendee);
+            notifyDataSetChanged();
+        });
+    }
+
+    private void setAdminEventViewerClickListener(Button adminDeleteButton, int position, AttendeeDB attendeeDB, Attendee attendee) {
+        adminDeleteButton.setOnClickListener(v -> {
+            attendees.remove(position);
+            attendeeDB.removeAttendeeFromEvent(attendee, eventId);
+            notifyDataSetChanged();
+        });
     }
 }
 

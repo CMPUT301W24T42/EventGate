@@ -89,11 +89,13 @@ public class AdminActivity extends AppCompatActivity {
         // adds/updates info from the database
         createDBListeners(eventsRef, attendeesRef);
 
+        // starts a new activity to view event info including attendees of event
         eventList.setOnItemClickListener((parent, view, position, id) -> {
             Event event = eventDataList.get(position);
             Intent intent = new Intent(AdminActivity.this, AdminEventViewerActivity.class);
             intent.putExtra("eventId", event.getEventId());
             intent.putExtra("name", event.getEventName());
+            intent.putExtra("eventDetails", event.getEventDetails());
             startActivity(intent);
         });
     }
@@ -118,7 +120,7 @@ public class AdminActivity extends AppCompatActivity {
 
         attendeeList = findViewById(R.id.user_list);
 
-        attendeeAdapter = new AdminAttendeeListAdapter(this, attendeeDataList);
+        attendeeAdapter = new AdminAttendeeListAdapter(this, attendeeDataList, "");
         attendeeList.setAdapter(attendeeAdapter);
     }
 
@@ -130,6 +132,7 @@ public class AdminActivity extends AppCompatActivity {
     private void createDBListeners(CollectionReference eventsRef, CollectionReference attendeesRef) {
         // snapshot listener that adds/updates all the events from the database
         eventsRef.addSnapshotListener((queryDocumentSnapshots, error) -> {
+            eventDataList.clear();
             for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
             {
                 Event event = new Event((String) doc.getData().get("name"));
@@ -141,9 +144,11 @@ public class AdminActivity extends AppCompatActivity {
 
         // snapshot listener that adds/updates all the attendees/users from the database
         attendeesRef.addSnapshotListener((queryDocumentSnapshots, error) -> {
+            attendeeDataList.clear();
             for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
             {
-                Attendee attendee = new Attendee((String) doc.getData().get("name"), (String) doc.getData().get("deviceId"));
+                Attendee attendee = new Attendee((String) doc.getData().get("name"),
+                        (String) doc.getData().get("deviceId"), (String) doc.getData().get("attendeeId"));
                 attendeeDataList.add(attendee);
                 attendeeAdapter.notifyDataSetChanged();
             }
