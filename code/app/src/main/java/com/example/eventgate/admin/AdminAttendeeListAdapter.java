@@ -101,7 +101,7 @@ public class AdminAttendeeListAdapter extends ArrayAdapter<Attendee> {
                 }
                 notifyDataSetChanged();
             });
-            confirmDeleteDialog.show(((AppCompatActivity) context).getSupportFragmentManager(), "CONFIRM DELETE DIALOG");
+            confirmDeleteDialog.show(((AppCompatActivity) context).getSupportFragmentManager(), "CONFIRM DELETE ATTENDEE");
         });
     }
 }

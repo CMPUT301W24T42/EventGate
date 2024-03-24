@@ -78,7 +78,7 @@ public class AdminEventListAdapter extends ArrayAdapter<Event> {
                 eventDB.removeEvent(event);
                 notifyDataSetChanged();
             });
-            confirmDeleteDialog.show(((AppCompatActivity) context).getSupportFragmentManager(), "CONFIRM DELETE DIALOG");
+            confirmDeleteDialog.show(((AppCompatActivity) context).getSupportFragmentManager(), "CONFIRM DELETE EVENT");
         });
 
         return convertView;

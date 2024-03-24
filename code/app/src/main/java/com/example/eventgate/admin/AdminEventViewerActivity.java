@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
+import com.example.eventgate.ConfirmDeleteDialog;
 import com.example.eventgate.MainActivity;
 import com.example.eventgate.R;
 import com.example.eventgate.attendee.Attendee;
@@ -40,6 +41,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * This is the activity for the admin event viewer
+ * It allows the administrator to view an event's posters, details, and attendees.
+ * It also allows the administrator to delete posters
+ */
 public class AdminEventViewerActivity extends AppCompatActivity {
     /**
      * this holds the id of the event
@@ -86,6 +92,12 @@ public class AdminEventViewerActivity extends AppCompatActivity {
      */
     final String TAG = "AdminEventViewerActivity";
 
+    /**
+     * Called when the activity is starting.
+     * Initializes the activity layout and views.
+     *
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down, this Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle).
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,7 +118,6 @@ public class AdminEventViewerActivity extends AppCompatActivity {
             // get/set event details
             EventDB eventDB = new EventDB();
             CompletableFuture<String> eventDetailsFuture = eventDB.getEventDetailsDB(eventId);
-
             eventDetailsFuture.thenAccept(eventDetails -> {
                 runOnUiThread(() -> {
                     if (eventDetails != null) {
@@ -122,8 +133,7 @@ public class AdminEventViewerActivity extends AppCompatActivity {
             });
         }
 
-
-
+        // get a reference to the event's poster subcollection
         postersRef = MainActivity.db.getEventsRef().document(eventId).collection("posters");
 
         // sends admin back to the main menu
@@ -139,7 +149,10 @@ public class AdminEventViewerActivity extends AppCompatActivity {
         // deletes an event poster
         deleteButton = findViewById(R.id.delete_poster_button);
         deleteButton.setOnClickListener(v -> {
-            deleteEventPoster();
+            // create a dialog to confirm that the admin wants to delete the poster
+            ConfirmDeleteDialog confirmDeleteDialog = new ConfirmDeleteDialog();
+            confirmDeleteDialog.setOnDeleteClickListener(() -> deleteEventPoster());
+            confirmDeleteDialog.show(getSupportFragmentManager(), "CONFIRM DELETE POSTER");
         });
 
         // create the attendee list and set adapter
