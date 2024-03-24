@@ -17,6 +17,7 @@ import com.example.eventgate.MainActivity;
 import com.example.eventgate.R;
 import com.example.eventgate.attendee.Attendee;
 import com.example.eventgate.attendee.PosterPagerAdapter;
+import com.example.eventgate.event.Event;
 import com.example.eventgate.event.EventDB;
 import com.example.eventgate.organizer.OrganizerAlert;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -37,6 +38,7 @@ import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class AdminEventViewerActivity extends AppCompatActivity {
     /**
@@ -45,14 +47,6 @@ public class AdminEventViewerActivity extends AppCompatActivity {
     String eventId;
     /**
      * this holds the name of the event
-     */
-    String eventName;
-    /**
-     * this holds the details of the event
-     */
-    String eventDetails;
-    /**
-     * this is an array list that holds attendees
      */
     ArrayList<Attendee> attendeeDataList;
     /**
@@ -97,27 +91,44 @@ public class AdminEventViewerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_event_viewer);
 
-        // get event info
+        // get/set event info
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
+            // find textviews
+            TextView eventTitle = findViewById(R.id.event_title);
+            TextView detailsTextview = findViewById(R.id.event_details_textview);
+
+            // get/set event name and id
             eventId = extras.getString("eventId");
-            eventName = extras.getString("name");
-            eventDetails = extras.getString("eventDetails");
-            // event details not working
-            eventDetails = "null";
+            String eventName = extras.getString("name");
+            eventTitle.setText(eventName);
+
+            // get/set event details
+            EventDB eventDB = new EventDB();
+            CompletableFuture<String> eventDetailsFuture = eventDB.getEventDetailsDB(eventId);
+
+            eventDetailsFuture.thenAccept(eventDetails -> {
+                runOnUiThread(() -> {
+                    if (eventDetails != null) {
+                        detailsTextview.setText(eventDetails);
+                    } else {
+                        detailsTextview.setText(String.format("Details not found for event ID: %s", eventId));
+                    }
+                });
+            }).exceptionally(e -> {
+                e.printStackTrace();
+                runOnUiThread(() -> detailsTextview.setText("Failed to load event details."));
+                return null;
+            });
         }
+
+
 
         postersRef = MainActivity.db.getEventsRef().document(eventId).collection("posters");
 
         // sends admin back to the main menu
         backButton = findViewById(R.id.event_back_button);
         backButton.setOnClickListener(v -> finish());
-
-        // set name and details of event
-        TextView eventTitle = findViewById(R.id.event_title);
-        TextView detailsTextview = findViewById(R.id.event_details_textview);
-        eventTitle.setText(eventName);
-        detailsTextview.setText(eventDetails);
 
         // set up viewpager
         setupViewPager();

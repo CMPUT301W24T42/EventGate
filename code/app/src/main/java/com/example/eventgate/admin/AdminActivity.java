@@ -95,7 +95,6 @@ public class AdminActivity extends AppCompatActivity {
             Intent intent = new Intent(AdminActivity.this, AdminEventViewerActivity.class);
             intent.putExtra("eventId", event.getEventId());
             intent.putExtra("name", event.getEventName());
-            intent.putExtra("eventDetails", event.getEventDetails());
             startActivity(intent);
         });
     }

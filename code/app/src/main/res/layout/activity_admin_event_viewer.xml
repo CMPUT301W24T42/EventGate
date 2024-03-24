@@ -42,7 +42,7 @@
             android:id="@+id/event_details_textview"
             android:layout_width="match_parent"
             android:text="event details"
-            android:textSize="22sp"
+            android:textSize="18sp"
             android:paddingHorizontal="10dp"
             android:layout_height="80dp" />
 
