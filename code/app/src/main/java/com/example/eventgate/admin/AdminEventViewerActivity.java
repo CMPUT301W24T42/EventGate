@@ -113,6 +113,12 @@ public class AdminEventViewerActivity extends AppCompatActivity {
         backButton = findViewById(R.id.event_back_button);
         backButton.setOnClickListener(v -> finish());
 
+        // set name and details of event
+        TextView eventTitle = findViewById(R.id.event_title);
+        TextView detailsTextview = findViewById(R.id.event_details_textview);
+        eventTitle.setText(eventName);
+        detailsTextview.setText(eventDetails);
+
         // set up viewpager
         setupViewPager();
 
@@ -124,8 +130,6 @@ public class AdminEventViewerActivity extends AppCompatActivity {
         deleteButton.setOnClickListener(v -> {
             deleteEventPoster();
         });
-
-
 
         // create the attendee list and set adapter
         createAttendeeList();
