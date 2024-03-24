@@ -47,6 +47,7 @@
             android:layout_height="80dp" />
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/delete_poster_button"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:text="Delete poster"

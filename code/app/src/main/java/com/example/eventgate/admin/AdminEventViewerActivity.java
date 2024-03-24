@@ -2,6 +2,7 @@ package com.example.eventgate.admin;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -9,10 +10,12 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager.widget.ViewPager;
 
 import com.example.eventgate.MainActivity;
 import com.example.eventgate.R;
 import com.example.eventgate.attendee.Attendee;
+import com.example.eventgate.attendee.PosterPagerAdapter;
 import com.example.eventgate.event.EventDB;
 import com.example.eventgate.organizer.OrganizerAlert;
 import com.google.firebase.firestore.CollectionReference;
@@ -21,24 +24,26 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class AdminEventViewerActivity extends AppCompatActivity {
     /**
      * this holds the id of the event
      */
-    private String eventId;
+    String eventId;
     /**
      * this holds the name of the event
      */
-    private String eventName;
+    String eventName;
     /**
      * this holds the details of the event
      */
-    private String eventDetails;
+    String eventDetails;
     /**
      * this is an array list that holds attendees
      */
@@ -51,7 +56,26 @@ public class AdminEventViewerActivity extends AppCompatActivity {
      * this is an adapter for displaying a list of attendees
      */
     ArrayAdapter<Attendee> attendeeAdapter;
+    /**
+     * this is the button that sends the user back to AdminActivity
+     */
     Button backButton;
+    /**
+     * this is the button that deletes an event poster
+     */
+    Button deleteButton;
+    /**
+     * this is the viewpager to display event posters
+     */
+    ViewPager viewPager;
+    /**
+     * this is the adapter for displaying event posters
+     */
+    PosterPagerAdapter posterPagerAdapter;
+    /**
+     * this is a list of image urls for the posters
+     */
+    List<String> posterImageUrls = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,11 +96,19 @@ public class AdminEventViewerActivity extends AppCompatActivity {
         backButton = findViewById(R.id.event_back_button);
         backButton.setOnClickListener(v -> finish());
 
-        // set name and details of event
-        TextView eventTitle = findViewById(R.id.event_title);
-        TextView detailsTextview = findViewById(R.id.event_details_textview);
-        eventTitle.setText(eventName);
-        detailsTextview.setText(eventDetails);
+        // set up viewpager
+        setupViewPager();
+
+        // display posters
+        displayEventPosters(eventId);
+
+        // deletes an event poster
+        deleteButton = findViewById(R.id.delete_poster_button);
+        deleteButton.setOnClickListener(v -> {
+            deleteEventPoster();
+        });
+
+
 
         // create the attendee list and set adapter
         createAttendeeList();
@@ -139,5 +171,52 @@ public class AdminEventViewerActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    /**
+     * queries current event in firestore for all its poster paths, then use paths to find
+     * stored posters in firebase db, then display for attendee
+     * @param eventId event's unique id
+     */
+    private void displayEventPosters(String eventId) {
+        CollectionReference postersRef = MainActivity.db.getEventsRef().document(eventId).collection("posters");
+
+        postersRef
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            String imageUrl = document.getString("url");
+                            posterImageUrls.add(imageUrl);
+                            posterPagerAdapter.notifyDataSetChanged();
+                        }
+                    } else {
+                        Log.d("AdminEventViewerActivity", "get failed with ", task.getException());
+                    }
+                });
+    }
+
+    /**
+     * creates and sets a posterPagerAdapter for the ViewPager
+     */
+    private void setupViewPager() {
+        viewPager = findViewById(R.id.image_view_pager);
+        posterPagerAdapter = new PosterPagerAdapter(this, posterImageUrls);
+        viewPager.setAdapter(posterPagerAdapter);
+    }
+
+    /**
+     * this removes the current poster displayed from the viewpager, firebase storage, and firebase firestore
+     */
+    private void deleteEventPoster() {
+        // remove the poster from the viewpager
+        int currentPoster = viewPager.getCurrentItem();
+        posterPagerAdapter.removePoster(currentPoster);
+        viewPager.setAdapter(posterPagerAdapter);
+
+        // remove poster from firebase database
+
+        // remove poster from firebase storage
+
     }
 }
