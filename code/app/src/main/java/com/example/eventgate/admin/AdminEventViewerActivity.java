@@ -2,13 +2,11 @@ package com.example.eventgate.admin;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
@@ -18,24 +16,15 @@ import com.example.eventgate.MainActivity;
 import com.example.eventgate.R;
 import com.example.eventgate.attendee.Attendee;
 import com.example.eventgate.attendee.PosterPagerAdapter;
-import com.example.eventgate.event.Event;
 import com.example.eventgate.event.EventDB;
-import com.example.eventgate.organizer.OrganizerAlert;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.zxing.common.StringUtils;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,21 +45,9 @@ public class AdminEventViewerActivity extends AppCompatActivity {
      */
     ArrayList<Attendee> attendeeDataList;
     /**
-     * this is the listview that displays the attendees in the attendeeDataList
-     */
-    ListView attendeeList;
-    /**
      * this is an adapter for displaying a list of attendees
      */
     ArrayAdapter<Attendee> attendeeAdapter;
-    /**
-     * this is the button that sends the user back to AdminActivity
-     */
-    Button backButton;
-    /**
-     * this is the button that deletes an event poster
-     */
-    Button deleteButton;
     /**
      * this is the viewpager to display event posters
      */
@@ -137,7 +114,7 @@ public class AdminEventViewerActivity extends AppCompatActivity {
         postersRef = MainActivity.db.getEventsRef().document(eventId).collection("posters");
 
         // sends admin back to the main menu
-        backButton = findViewById(R.id.event_back_button);
+        Button backButton = findViewById(R.id.event_back_button);
         backButton.setOnClickListener(v -> finish());
 
         // set up viewpager
@@ -147,7 +124,7 @@ public class AdminEventViewerActivity extends AppCompatActivity {
         displayEventPosters();
 
         // deletes an event poster
-        deleteButton = findViewById(R.id.delete_poster_button);
+        Button deleteButton = findViewById(R.id.delete_poster_button);
         deleteButton.setOnClickListener(v -> {
             // create a dialog to confirm that the admin wants to delete the poster
             ConfirmDeleteDialog confirmDeleteDialog = new ConfirmDeleteDialog();
@@ -174,7 +151,7 @@ public class AdminEventViewerActivity extends AppCompatActivity {
     private void createAttendeeList() {
         attendeeDataList = new ArrayList<>();
 
-        attendeeList = findViewById(R.id.user_list);
+        ListView attendeeList = findViewById(R.id.user_list);
 
         attendeeAdapter = new AdminAttendeeListAdapter(this, attendeeDataList, eventId);
         attendeeList.setAdapter(attendeeAdapter);

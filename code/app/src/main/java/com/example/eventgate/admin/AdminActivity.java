@@ -4,16 +4,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
 import com.example.eventgate.attendee.Attendee;
 import com.example.eventgate.MainActivity;
-import com.example.eventgate.attendee.AttendeeActivity;
-import com.example.eventgate.attendee.AttendeeEventViewer;
 import com.example.eventgate.event.Event;
 import com.example.eventgate.R;
 import com.google.firebase.firestore.CollectionReference;
@@ -43,25 +39,9 @@ public class AdminActivity extends AppCompatActivity {
      */
     ArrayList<Attendee> attendeeDataList;
     /**
-     * this is the listview that displays the attendees in the attendeeDataList
-     */
-    ListView attendeeList;
-    /**
      * this is an adapter for displaying a list of attendees
      */
     ArrayAdapter<Attendee> attendeeAdapter;
-    /**
-     * This is the button used to get back to the Main Menu activity
-     */
-    Button adminActivityBackButton;
-    /**
-     * holds reference to events collection in the database
-     */
-    CollectionReference eventsRef;
-    /**
-     * holds reference to attendees collection in the database
-     */
-    CollectionReference attendeesRef;
 
     /**
      * Called when the activity is starting.
@@ -75,7 +55,7 @@ public class AdminActivity extends AppCompatActivity {
         setContentView(R.layout.activity_admin);
 
         // sends admin back to the main menu
-        adminActivityBackButton = findViewById(R.id.admin_back_button);
+        Button adminActivityBackButton = findViewById(R.id.admin_back_button);
         adminActivityBackButton.setOnClickListener(v -> finish());
 
         // create the event and attendee lists and set adapters
@@ -83,8 +63,8 @@ public class AdminActivity extends AppCompatActivity {
         createAttendeeList();
 
         // get references to firestore events and attendees collections
-        eventsRef = MainActivity.db.getEventsRef();
-        attendeesRef = MainActivity.db.getAttendeesRef();
+        CollectionReference eventsRef = MainActivity.db.getEventsRef();
+        CollectionReference attendeesRef = MainActivity.db.getAttendeesRef();
 
         // adds/updates info from the database
         createDBListeners(eventsRef, attendeesRef);
@@ -117,7 +97,7 @@ public class AdminActivity extends AppCompatActivity {
     private void createAttendeeList() {
         attendeeDataList = new ArrayList<>();
 
-        attendeeList = findViewById(R.id.user_list);
+        ListView attendeeList = findViewById(R.id.user_list);
 
         attendeeAdapter = new AdminAttendeeListAdapter(this, attendeeDataList, "");
         attendeeList.setAdapter(attendeeAdapter);

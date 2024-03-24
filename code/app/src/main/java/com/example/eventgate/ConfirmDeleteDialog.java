@@ -16,16 +16,15 @@ import androidx.fragment.app.DialogFragment;
  */
 public class ConfirmDeleteDialog extends DialogFragment {
     /**
-     * this is a listener for the delete button click listener
-     */
-    private OnDeleteClickListener mListener;
-
-    /**
      * this is an interface for delete button clicks
      */
     public interface OnDeleteClickListener {
         void onDelete();
     }
+    /**
+     * this is a listener for the delete button click listener
+     */
+    private OnDeleteClickListener mListener;
 
     /**
      * sets up a listener to be notified when the delete button is clicked in the ConfirmDeleteDialog
