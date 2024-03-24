@@ -10,7 +10,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.eventgate.ConfirmDeleteDialog;
 import com.example.eventgate.attendee.Attendee;
 import com.example.eventgate.attendee.AttendeeDB;
 import com.example.eventgate.R;
@@ -71,29 +73,35 @@ public class AdminAttendeeListAdapter extends ArrayAdapter<Attendee> {
 
         attendeeName.setText(attendee.getName());
 
-        if (context instanceof AdminActivity) {
-            setAdminActivityClickListener(adminDeleteButton, position, attendeeDB, attendee);
-        } else {
-            setAdminEventViewerClickListener(adminDeleteButton, position, attendeeDB, attendee);
-        }
+        setDeleteClickListener(adminDeleteButton, position, attendeeDB, attendee);
 
         return convertView;
     }
 
-    private void setAdminActivityClickListener(Button adminDeleteButton, int position, AttendeeDB attendeeDB, Attendee attendee) {
+    /**
+     * this sets up the clicklistener for the delete button on the attendees list
+     * @param adminDeleteButton the button whose click listener is being set
+     * @param position the position of the attendee in the attendee list
+     * @param attendeeDB an instance of AttendeeDB
+     * @param attendee the attendee that we want to delete
+     */
+    private void setDeleteClickListener(Button adminDeleteButton, int position, AttendeeDB attendeeDB, Attendee attendee) {
         // this removes attendees from the app and database once the admin clicks on the delete button
         adminDeleteButton.setOnClickListener(v -> {
-            attendees.remove(position);
-            attendeeDB.removeAttendee(attendee);
-            notifyDataSetChanged();
-        });
-    }
-
-    private void setAdminEventViewerClickListener(Button adminDeleteButton, int position, AttendeeDB attendeeDB, Attendee attendee) {
-        adminDeleteButton.setOnClickListener(v -> {
-            attendees.remove(position);
-            attendeeDB.removeAttendeeFromEvent(attendee, eventId);
-            notifyDataSetChanged();
+            // create a ConfirmDeleteDialog to ask user for confirmation when deleting attendees
+            ConfirmDeleteDialog confirmDeleteDialog = new ConfirmDeleteDialog();
+            confirmDeleteDialog.setOnDeleteClickListener(() -> {
+                attendees.remove(position);
+                if (context instanceof AdminActivity) {
+                    // removes attendee from all events if the delete button is being clicked from AdminActivity
+                    attendeeDB.removeAttendee(attendee);
+                } else {
+                    // removes attendee from specified event if button is being clicked from AdminEventViewerActivity
+                    attendeeDB.removeAttendeeFromEvent(attendee, eventId);
+                }
+                notifyDataSetChanged();
+            });
+            confirmDeleteDialog.show(((AppCompatActivity) context).getSupportFragmentManager(), "CONFIRM DELETE DIALOG");
         });
     }
 }

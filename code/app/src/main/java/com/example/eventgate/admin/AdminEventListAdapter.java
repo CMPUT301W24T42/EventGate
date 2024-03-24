@@ -10,7 +10,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.eventgate.ConfirmDeleteDialog;
 import com.example.eventgate.event.Event;
 import com.example.eventgate.R;
 import com.example.eventgate.event.EventDB;
@@ -66,11 +68,17 @@ public class AdminEventListAdapter extends ArrayAdapter<Event> {
 
         eventName.setText(event.getEventName());
 
-        // this removes events from the app and database once the admin clicks on the delete button
+        // asks admin to confirm deletion and them deletes event from list and from database
         adminDelEventButton.setOnClickListener(v -> {
-            events.remove(position);
-            eventDB.removeEvent(event);
-            notifyDataSetChanged();
+            // create dialog to confirm deletion
+            ConfirmDeleteDialog confirmDeleteDialog = new ConfirmDeleteDialog();
+            confirmDeleteDialog.setOnDeleteClickListener(() -> {
+                // delete event from event list and from firebase
+                events.remove(position);
+                eventDB.removeEvent(event);
+                notifyDataSetChanged();
+            });
+            confirmDeleteDialog.show(((AppCompatActivity) context).getSupportFragmentManager(), "CONFIRM DELETE DIALOG");
         });
 
         return convertView;
