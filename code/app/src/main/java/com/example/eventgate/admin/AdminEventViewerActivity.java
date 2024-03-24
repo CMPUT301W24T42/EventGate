@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
@@ -18,6 +19,8 @@ import com.example.eventgate.attendee.Attendee;
 import com.example.eventgate.attendee.PosterPagerAdapter;
 import com.example.eventgate.event.EventDB;
 import com.example.eventgate.organizer.OrganizerAlert;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -25,6 +28,10 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.zxing.common.StringUtils;
 
 import org.w3c.dom.Text;
 
@@ -76,6 +83,14 @@ public class AdminEventViewerActivity extends AppCompatActivity {
      * this is a list of image urls for the posters
      */
     List<String> posterImageUrls = new ArrayList<>();
+    /**
+     * this is a reference to the posters subcollection of this specific event
+     */
+    CollectionReference postersRef;
+    /**
+     * tag for logging
+     */
+    final String TAG = "AdminEventViewerActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +107,8 @@ public class AdminEventViewerActivity extends AppCompatActivity {
             eventDetails = "null";
         }
 
+        postersRef = MainActivity.db.getEventsRef().document(eventId).collection("posters");
+
         // sends admin back to the main menu
         backButton = findViewById(R.id.event_back_button);
         backButton.setOnClickListener(v -> finish());
@@ -100,7 +117,7 @@ public class AdminEventViewerActivity extends AppCompatActivity {
         setupViewPager();
 
         // display posters
-        displayEventPosters(eventId);
+        displayEventPosters();
 
         // deletes an event poster
         deleteButton = findViewById(R.id.delete_poster_button);
@@ -174,13 +191,9 @@ public class AdminEventViewerActivity extends AppCompatActivity {
     }
 
     /**
-     * queries current event in firestore for all its poster paths, then use paths to find
-     * stored posters in firebase db, then display for attendee
-     * @param eventId event's unique id
+     * gets image urls from firestore and displays images in viewpager
      */
-    private void displayEventPosters(String eventId) {
-        CollectionReference postersRef = MainActivity.db.getEventsRef().document(eventId).collection("posters");
-
+    private void displayEventPosters() {
         postersRef
                 .get()
                 .addOnCompleteListener(task -> {
@@ -191,7 +204,7 @@ public class AdminEventViewerActivity extends AppCompatActivity {
                             posterPagerAdapter.notifyDataSetChanged();
                         }
                     } else {
-                        Log.d("AdminEventViewerActivity", "get failed with ", task.getException());
+                        Log.d(TAG, "get failed with ", task.getException());
                     }
                 });
     }
@@ -211,12 +224,54 @@ public class AdminEventViewerActivity extends AppCompatActivity {
     private void deleteEventPoster() {
         // remove the poster from the viewpager
         int currentPoster = viewPager.getCurrentItem();
+        String imageUrl = posterImageUrls.get(currentPoster);
         posterPagerAdapter.removePoster(currentPoster);
         viewPager.setAdapter(posterPagerAdapter);
 
         // remove poster from firebase database
+        deletePosterFromFirestore(imageUrl);
 
         // remove poster from firebase storage
+        deletePosterFromCloudStorage(imageUrl);
+    }
+
+    /**
+     * this deletes the event poster from firestore
+     * @param imageUrl the url of the image to be deleted
+     */
+    private void deletePosterFromFirestore(String imageUrl) {
+        postersRef.whereEqualTo("url", imageUrl).get().addOnSuccessListener(queryDocumentSnapshots -> {
+            for (QueryDocumentSnapshot snapshot : queryDocumentSnapshots) {
+                snapshot.getReference().delete()
+                        .addOnSuccessListener(unused -> {
+                            Log.d(TAG, "Event poster successfully deleted from Firestore");
+                        })
+                        .addOnFailureListener(e -> {
+                            Log.d(TAG, "Error deleting event poster from Firestore", e);
+                        });
+            }
+        });
+    }
+
+    /**
+     * this deletes the event poster from firebase cloud storage
+     * @param imageUrl the url of the image to be deleted
+     */
+    private void deletePosterFromCloudStorage(String imageUrl) {
+        // get the name of the image from the url of the image
+        String imageName = imageUrl.substring(imageUrl.indexOf("images%2F") + 9, imageUrl.indexOf(".jpg?"));
+
+        // get reference to the image in firebase cloud storage and delete it
+        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+        StorageReference fileReference = storageRef.child("images/" + imageName + ".jpg");
+        Log.d(TAG, String.valueOf(fileReference));
+        fileReference.delete()
+                .addOnSuccessListener(unused -> {
+                    Log.d(TAG, "Event poster successfully deleted from Storage");
+                })
+                .addOnFailureListener(e -> {
+                    Log.d(TAG, "Error deleting event poster from Storage", e);
+                });
 
     }
 }
