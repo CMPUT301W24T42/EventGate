@@ -1,5 +1,6 @@
 package com.example.eventgate.admin;
 
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ArrayAdapter;
@@ -126,8 +127,12 @@ public class AdminEventViewerActivity extends AppCompatActivity {
         // deletes an event poster
         Button deleteButton = findViewById(R.id.delete_poster_button);
         deleteButton.setOnClickListener(v -> {
+            // get a title and message for the confirm delete dialog
+            Resources resources = getResources();
+            String title = String.format("%s %s?", resources.getString(R.string.delete_title), "this poster");
+            String message = String.format("%s %s", "This poster", resources.getString(R.string.delete_message));
             // create a dialog to confirm that the admin wants to delete the poster
-            ConfirmDeleteDialog confirmDeleteDialog = new ConfirmDeleteDialog();
+            ConfirmDeleteDialog confirmDeleteDialog = ConfirmDeleteDialog.newInstance(title, message);
             confirmDeleteDialog.setOnDeleteClickListener(() -> deleteEventPoster());
             confirmDeleteDialog.show(getSupportFragmentManager(), "CONFIRM DELETE POSTER");
         });

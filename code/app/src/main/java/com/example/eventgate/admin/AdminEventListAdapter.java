@@ -1,6 +1,7 @@
 package com.example.eventgate.admin;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,8 +71,12 @@ public class AdminEventListAdapter extends ArrayAdapter<Event> {
 
         // asks admin to confirm deletion and them deletes event from list and from database
         adminDelEventButton.setOnClickListener(v -> {
+            // get a title and message for the confirm delete dialog
+            Resources resources = context.getResources();
+            String title = String.format("%s %s?", resources.getString(R.string.delete_title), event.getEventName());
+            String message = String.format("%s %s", event.getEventName(), resources.getString(R.string.delete_message));
             // create dialog to confirm deletion
-            ConfirmDeleteDialog confirmDeleteDialog = new ConfirmDeleteDialog();
+            ConfirmDeleteDialog confirmDeleteDialog = ConfirmDeleteDialog.newInstance(title, message);
             confirmDeleteDialog.setOnDeleteClickListener(() -> {
                 // delete event from event list and from firebase
                 events.remove(position);

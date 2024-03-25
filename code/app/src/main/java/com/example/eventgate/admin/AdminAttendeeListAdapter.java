@@ -1,6 +1,7 @@
 package com.example.eventgate.admin;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -88,8 +89,12 @@ public class AdminAttendeeListAdapter extends ArrayAdapter<Attendee> {
     private void setDeleteClickListener(Button adminDeleteButton, int position, AttendeeDB attendeeDB, Attendee attendee) {
         // this removes attendees from the app and database once the admin clicks on the delete button
         adminDeleteButton.setOnClickListener(v -> {
+            // get a title and message for the confirm delete dialog
+            Resources resources = context.getResources();
+            String title = String.format("%s %s?", resources.getString(R.string.delete_title), attendee.getName());
+            String message = String.format("%s %s", attendee.getName(), resources.getString(R.string.delete_message));
             // create a ConfirmDeleteDialog to ask user for confirmation when deleting attendees
-            ConfirmDeleteDialog confirmDeleteDialog = new ConfirmDeleteDialog();
+            ConfirmDeleteDialog confirmDeleteDialog = ConfirmDeleteDialog.newInstance(title, message);
             confirmDeleteDialog.setOnDeleteClickListener(() -> {
                 attendees.remove(position);
                 if (context instanceof AdminActivity) {
