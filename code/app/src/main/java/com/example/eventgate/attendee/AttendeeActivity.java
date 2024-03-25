@@ -364,9 +364,10 @@ public class AttendeeActivity extends AppCompatActivity {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
             return;
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            return;
         }
-
-
     }
 
     /**
@@ -403,7 +404,6 @@ public class AttendeeActivity extends AppCompatActivity {
 
     /**
      * Queries firestore db for all events attendee is signed into
-     * @param id users Firebase Install ID
      */
     private void updateMyEvents() {
         FirebaseInstallations.getInstance().getId().addOnSuccessListener(id -> {

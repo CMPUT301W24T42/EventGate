@@ -23,10 +23,8 @@ public class AttendeeActivityTest {
 
     @Test
     public void testQRButtonClicked() {
-        try (ActivityScenario<AttendeeActivity> scenario = ActivityScenario.launch(AttendeeActivity.class)) {
-            // Click on the QR button
-            onView(withId(R.id.qr_button)).perform(click());
-        }
+        // Click on the QR button
+        onView(withId(R.id.qr_button)).perform(click());
     }
 
     @Test
