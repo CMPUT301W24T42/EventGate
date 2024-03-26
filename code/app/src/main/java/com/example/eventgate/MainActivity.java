@@ -5,11 +5,13 @@ import static androidx.core.content.ContentProviderCompat.requireContext;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -23,9 +25,13 @@ import android.widget.Toast;
 import com.example.eventgate.admin.AdminActivity;
 import com.example.eventgate.attendee.AttendeeActivity;
 import com.example.eventgate.organizer.OrganizerMainMenuActivity;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.installations.FirebaseInstallations;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
 
@@ -85,6 +91,16 @@ public class MainActivity extends AppCompatActivity {
         createMilestoneNotifChannel();
         // ask the user to permission to receive notifications from the app
         askNotificationPermission();
+
+        // store the installation id in shared preferences
+        FirebaseInstallations.getInstance().getId().addOnSuccessListener(s -> {
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+            if (!preferences.contains("FirebaseInstallationId")) {
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putString("FirebaseInstallationId", s);
+                editor.apply();
+            }
+        });
 
         attendeeButton = findViewById(R.id.attendee_button);
         organizerButton = findViewById(R.id.organizer_button);
