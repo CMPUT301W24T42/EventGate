@@ -285,6 +285,12 @@ public class AttendeeActivity extends AppCompatActivity {
         AlertDialog dialog = builder.create();
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.show();
+        registered_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                registeredEventDialog();
+            }
+        });
     }
 
     /**
