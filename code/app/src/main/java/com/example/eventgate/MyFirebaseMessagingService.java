@@ -164,7 +164,7 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         String deviceId = preferences.getString("FirebaseInstallationId", "null");
 
-        if (!shouldBeBuilt(channelId, deviceId, organizerId)) {
+        if (!shouldBeBuilt(title, channelId, deviceId, organizerId)) {
             return;
         }
         // if the user has enabled post notifications then the notification will be built
@@ -187,18 +187,24 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
     }
 
     /**
-     * used to determine if a notification should be built and shown to a user based on two conditions:
-     *      1. if it is an event alert, the user must not also be the organizer of the event
-     *      2. if it is a milestone alert, the user must be the organizer
+     * used to determine if a notification should be built and shown to a user based on three conditions:
+     *      1. if it is an alert for the deletion of an event, send the alert to all users associated with the event
+     *      2. if it is an event alert, the user must not also be the organizer of the event
+     *      3. if it is a milestone alert, the user must be the organizer
+     * @param title the title of the notification
      * @param channelId the notification channel that the notification will be sent through
      * @param organizerId the id of the organizer that the notification is associated with
      * @param deviceId the firebase installation id of the organizer associated with the notification
      * @return a completable future instance that will contain a boolean that is true if the notification
      *
      */
-    private boolean shouldBeBuilt(String channelId, String deviceId, String organizerId) {
+    private boolean shouldBeBuilt(String title, String channelId, String deviceId, String organizerId) {
+        // if it's an alert that an event has been cancelled, send it to all users related to the event
+        if (title.equals("Event Cancelled!")) {
+            return true;
+        }
         // only builds notification for milestones if the current device belongs to the organizer of the event
-        if (channelId.equals(MILESTONE_CHANNEL_ID) && !deviceId.equals(organizerId)) {
+        else if (channelId.equals(MILESTONE_CHANNEL_ID) && !deviceId.equals(organizerId)) {
             return false;
         }
         // prevents organizers from getting alerts for their own events

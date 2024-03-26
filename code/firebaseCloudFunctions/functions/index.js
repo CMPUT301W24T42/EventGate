@@ -76,3 +76,32 @@ exports.androidMilestoneAlert = functions.firestore.document("events/{eventId}")
             }
     }
 );
+
+exports.androidEventDelete = functions.firestore
+    .document("events/{docId}")
+    .onDelete((snap, context) => {
+        // Get the deleted document data
+        const deletedData = snap.data();
+        const eventId = deletedData.eventId;
+        const eventName = deletedData.name;
+        const organizerId = deletedData.organizer;
+        let body = `${eventName} has been cancelled.`;
+
+        const notificationPayload = {
+            topic: eventId,
+            notification: {
+                title: "Event Cancelled!",
+                body: body,
+            },
+            data: {
+                organizerId: organizerId,
+            },
+            android: {
+                notification: {
+                    channelId: "event_channel"
+                }
+            }
+        };
+
+        admin.messaging().send(notificationPayload);
+    });
