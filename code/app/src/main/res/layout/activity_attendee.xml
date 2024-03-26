@@ -137,7 +137,7 @@
         android:id="@+id/qr_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="96dp"
+        android:layout_marginBottom="128dp"
         android:backgroundTint="@color/green"
         android:text="Scan QR Code"
         android:textColor="@color/black"
@@ -150,18 +150,32 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <com.google.android.material.button.MaterialButton
+        android:id="@+id/attendee_registered_button"
+        android:layout_width="128dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:backgroundTint="@color/green"
+        android:ems="5"
+        android:text="Registered Events"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:cornerRadius="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/attendee_back_button"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="30dp"
-        android:layout_marginBottom="25dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="32dp"
         android:backgroundTint="@color/light_gray"
         android:ems="5"
         android:text="@string/back"
         android:textColor="@color/black"
         android:textSize="18sp"
-        app:cornerRadius="0dp"
+        app:cornerRadius="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-    </com.google.android.material.button.MaterialButton>
+        app:layout_constraintEnd_toEndOf="parent"></com.google.android.material.button.MaterialButton>
 </androidx.constraintlayout.widget.ConstraintLayout>

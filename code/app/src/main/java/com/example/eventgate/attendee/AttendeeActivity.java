@@ -5,8 +5,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -61,6 +63,7 @@ public class AttendeeActivity extends AppCompatActivity {
     ArrayAdapter<Event> eventAdapter;
     Button qr_button;
     Button back_button;
+    Button registered_button;
 
     private final ActivityResultLauncher<Intent> qrLauncher =
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
@@ -163,7 +166,7 @@ public class AttendeeActivity extends AppCompatActivity {
 
 
         qr_button = findViewById(R.id.qr_button);
-
+        registered_button = findViewById(R.id.attendee_registered_button);
         back_button = findViewById(R.id.attendee_back_button);
 
         qr_button.setOnClickListener(new View.OnClickListener() {
@@ -181,7 +184,12 @@ public class AttendeeActivity extends AppCompatActivity {
             }
         });
 
-
+        registered_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                registeredEventDialog();
+            }
+        });
     }
 
     /**
@@ -420,9 +428,55 @@ public class AttendeeActivity extends AppCompatActivity {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 
+    /**
+     * Popup dialog for editing user settings when gear icon clicked
+     */
+    private void registeredEventDialog() {
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View customView = inflater.inflate(R.layout.attendee_registered_dialog, null);
 
+        AlertDialog.Builder builder = new AlertDialog.Builder(AttendeeActivity.this);
+        builder.setView(customView);
 
+        AlertDialog alertDialog = builder.create();
+        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
+        ArrayList<Event> eventRegisteredDataList = new ArrayList<>();
+        ListView eventRegisteredList = customView.findViewById(R.id.event_registered_list);
+        ArrayAdapter<Event> eventRegisteredAdapter = new AttendeeEventListAdapter(this,
+                eventRegisteredDataList);
+        eventRegisteredList.setAdapter(eventRegisteredAdapter);
+        updateMyRegisteredEvents(eventRegisteredDataList, eventRegisteredAdapter);
 
+        eventRegisteredList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Event clickedEvent = eventRegisteredDataList.get(position);
+                Intent intent = new Intent(AttendeeActivity.this, AttendeeEventViewer.class);
+                intent.putExtra("EventID", clickedEvent.getEventId());
+                intent.putExtra("EventName", clickedEvent.getEventName());
+                intent.putExtra("alerts", clickedEvent.getAlerts());
+                startActivity(intent);
+            }
+        });
+
+        alertDialog.show();
+    }
+
+    /**
+     * Update a user's registered events
+     * @param dataList The list to append events to
+     * @param adapter The adapter to update
+     */
+    private void updateMyRegisteredEvents(ArrayList<Event> dataList, ArrayAdapter<Event> adapter) {
+        FirebaseInstallations.getInstance().getId().addOnSuccessListener(id -> {
+            CompletableFuture<ArrayList<Event>> attendeeEvents = new EventDB().getRegisteredEvents(id);
+            attendeeEvents.thenAccept(r -> {
+                dataList.clear();
+                dataList.addAll(r);
+                adapter.notifyDataSetChanged();
+            });
+        });
+    }
 
 }

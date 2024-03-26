@@ -197,6 +197,40 @@ public class EventDB {
     }
 
     /**
+     * Get a list of events that a user is registered for, given their firebase installation id
+     * @param deviceId attendee's firebase installation id
+     * @return CompleteableFuture of Arraylist of Events
+     * */
+    public CompletableFuture<ArrayList<Event>> getRegisteredEvents(String deviceId) {
+        Log.d("ID", deviceId);
+        CompletableFuture<ArrayList<Event>> futureEvents = new CompletableFuture<>();
+        ArrayList<Event> events = new ArrayList<>();
+        db.collection("attendees").whereEqualTo("deviceId", deviceId).get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (queryDocumentSnapshots.isEmpty()) {  // If there is no matching deviceId, simply return
+                        return;
+                    }
+                    DocumentSnapshot attendee = queryDocumentSnapshots.getDocuments().get(0);
+                    ArrayList<String> attendeeEvents = (ArrayList<String>) attendee.get("registeredEvents");
+
+                    if (attendeeEvents.size() == 0) {  // If it's empty, simply return
+                        return;
+                    }
+                    attendeeEvents.removeIf(String::isEmpty);
+                    db.collection("events").whereIn(FieldPath.documentId(), attendeeEvents).get().addOnSuccessListener(queryResults -> {
+                        for (QueryDocumentSnapshot queryResult: queryResults) {
+                            String eventName = queryResult.getString("name");
+                            Event event = new Event(eventName);
+                            event.setEventId(queryResult.getId());
+                            events.add(event);
+                        }
+                        futureEvents.complete(events);
+                    });
+                });
+        return futureEvents;
+    }
+
+    /**
      * retrieves event details
      * @param eventID the id of the event
      * @return event details
