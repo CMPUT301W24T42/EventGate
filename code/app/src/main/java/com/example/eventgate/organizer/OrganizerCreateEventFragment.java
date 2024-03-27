@@ -115,8 +115,6 @@ public class OrganizerCreateEventFragment extends DialogFragment {
                 }
 
 
-
-
                 // If the Description QR code has not been generated, then an event must be created
                 if (!descriptionQRCodeGenerated) {
                     // Create an Event object
@@ -150,7 +148,6 @@ public class OrganizerCreateEventFragment extends DialogFragment {
                     Toast.makeText(getActivity(), "Please enter an Event name. Every QR Code must be associated with an Event name.", Toast.LENGTH_SHORT).show();
                     return; // Exit the method
                 }
-
 
 
                 // Create an Event object

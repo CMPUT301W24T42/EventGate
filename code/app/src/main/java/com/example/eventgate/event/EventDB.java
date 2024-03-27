@@ -9,6 +9,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FieldPath;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.ByteArrayOutputStream;
@@ -143,6 +144,9 @@ public class EventDB {
                         updates.put("events", attendeeEvents);
                         db.collection("attendees").document(attendee.getId()).update(updates);
 
+                        // Increment check-in number
+                        incrementCheckInNumber(attendee.getId(), eventId);
+
                         // subscribe attendee to the events topic so they can receive notifications
                         MainActivity.db.getMessagingService().addUserToTopic(eventId);
 
@@ -160,6 +164,21 @@ public class EventDB {
             }
         });
         return futureResult;
+    }
+
+    /**
+     * Increments the check-in number for the attendee for a specific event
+     * @param attendeeId The ID of the attendee
+     * @param eventId The ID of the event
+     */
+    private void incrementCheckInNumber(String attendeeId, String eventId) {
+        // Construct the field name based on the event ID
+        String fieldName = "eventCheckInNumber." + eventId;
+        // Use Firestore's FieldValue.increment to atomically increment the check-in number for the event
+        db.collection("attendees").document(attendeeId)
+                .update(fieldName, FieldValue.increment(1))
+                .addOnSuccessListener(aVoid -> Log.d(TAG, "Check-in number for event incremented successfully"))
+                .addOnFailureListener(e -> Log.e(TAG, "Error incrementing check-in number for event", e));
     }
 
     /**

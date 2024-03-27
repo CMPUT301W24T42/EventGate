@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -30,6 +31,8 @@ import com.example.eventgate.event.EventDB;
 import com.example.eventgate.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.installations.FirebaseInstallations;
 
 import java.io.UnsupportedEncodingException;
@@ -412,6 +415,7 @@ public class AttendeeActivity extends AppCompatActivity {
                 eventDataList.clear();
                 eventDataList.addAll(r);
                 eventAdapter.notifyDataSetChanged();
+
             });
         });
     }
@@ -419,10 +423,5 @@ public class AttendeeActivity extends AppCompatActivity {
     private void showToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
-
-
-
-
-
 
 }
