@@ -37,19 +37,7 @@ public class Attendee {
         this.name = name;
     }
 
-    public String getDeviceId() {
-        return deviceId;
-    }
-
-    public void setDeviceId(String deviceId) {
-        this.deviceId = deviceId;
-    }
-
     public String getAttendeeId() {
         return attendeeId;
-    }
-
-    public void setAttendeeId(String attendeeId) {
-        this.attendeeId = attendeeId;
     }
 }

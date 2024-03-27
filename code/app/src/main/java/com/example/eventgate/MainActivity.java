@@ -5,6 +5,7 @@ import static androidx.core.content.ContentProviderCompat.requireContext;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
@@ -23,13 +24,30 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.eventgate.admin.AdminActivity;
+import com.example.eventgate.attendee.Attendee;
 import com.example.eventgate.attendee.AttendeeActivity;
+import com.example.eventgate.attendee.AttendeeDB;
+import com.example.eventgate.attendee.AttendeeEventListAdapter;
 import com.example.eventgate.organizer.OrganizerMainMenuActivity;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.installations.FirebaseInstallations;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
+
+import org.checkerframework.checker.units.qual.A;
+
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * This is the activity for the app's main menu.
@@ -60,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
      * a tag for logging
      */
     public static final String TAG = "Firebase Auth";
+    public Attendee attendee;
     /**
      * this is the launcher that requests permission to receive notifications
      */
@@ -120,6 +139,36 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
+        // get deviceId
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String deviceId = preferences.getString("FirebaseInstallationId", "null");
+
+        // get reference to attendees collection
+        CollectionReference attendeesRef = db.getAttendeesRef();
+
+        if (!deviceId.equals("null")) {
+            // if user is an existing user, get their info from the attendees collection in the database,
+            //      otherwise, create a new attendee profile
+            attendeesRef
+                    .whereEqualTo("deviceId", deviceId)
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            // no existing attendee profile with this deviceId, then create a new attendee profile
+                            if (task.getResult().isEmpty()) {
+                               createNewAttendee(attendeesRef, deviceId);
+                            }
+                            else {  // existing user, then get attendee info
+                                List<DocumentSnapshot> documents =  task.getResult().getDocuments();
+                                for (DocumentSnapshot doc : documents) {
+                                    attendee = new Attendee(doc.getString("name"), deviceId, doc.getId());
+                                }
+                            }
+                        }
+                    });
+        }
+
+
         db.setMessagingService(new MyFirebaseMessagingService());
 
         mAuth = db.getmAuth();
@@ -132,7 +181,6 @@ public class MainActivity extends AppCompatActivity {
             FirebaseUser currentUser = mAuth.getCurrentUser();
             db.setUser(currentUser);
             updateUI(currentUser, adminButton);
-            // TODO: check for admin permission and update ui accordingly
         }
 
     }
@@ -230,5 +278,23 @@ public class MainActivity extends AppCompatActivity {
                 adminButton.setVisibility(View.VISIBLE);
             }
         });
+    }
+
+    /**
+     * this creates a new attendee profile and stores the info in the attendees collection in the database
+     * @param attendeesRef a reference to the attendees collection
+     * @param deviceId the firebase installation id of the current user
+     */
+    private void createNewAttendee(CollectionReference attendeesRef, String deviceId) {
+        String attendeeId = attendeesRef.document().getId();
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("deviceId", deviceId);
+        // set an attendee's name to their id by default until the user enters it later in user settings
+        data.put("name", attendeeId);
+        attendeesRef.document(attendeeId).set(data)
+                .addOnSuccessListener(unused ->
+                        Log.d("Firebase Firestore", "Attendee has been added successfully!"))
+                .addOnFailureListener(e -> Log.d(TAG, "Event could not be added!" + e));
+        attendee = new Attendee(attendeeId, deviceId, attendeeId);
     }
 }
