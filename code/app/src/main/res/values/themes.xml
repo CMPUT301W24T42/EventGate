@@ -6,4 +6,15 @@
     </style>
 
     <style name="Theme.EventGate" parent="Base.Theme.EventGate" />
+
+    <style name="GreenButtonStyle" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@color/green</item>
+        <item name="cornerRadius">15dp</item>
+
+    </style>
+    <style name="YellowButtonStyle" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@color/red</item>
+        <item name="cornerRadius">15dp</item>
+
+    </style>
 </resources>
