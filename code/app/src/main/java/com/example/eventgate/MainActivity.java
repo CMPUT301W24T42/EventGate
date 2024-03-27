@@ -5,7 +5,6 @@ import static androidx.core.content.ContentProviderCompat.requireContext;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
@@ -19,19 +18,16 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.eventgate.admin.AdminActivity;
 import com.example.eventgate.attendee.AttendeeActivity;
 import com.example.eventgate.organizer.OrganizerMainMenuActivity;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.installations.FirebaseInstallations;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
 
@@ -133,8 +129,9 @@ public class MainActivity extends AppCompatActivity {
             signInUser();
         }
         else {
-//            updateUI(currentUser);
-            db.setUser(mAuth.getCurrentUser());
+            FirebaseUser currentUser = mAuth.getCurrentUser();
+            db.setUser(currentUser);
+            updateUI(currentUser, adminButton);
             // TODO: check for admin permission and update ui accordingly
         }
 
@@ -150,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
                         // Sign in success, update the UI
                         Log.d(TAG, "signInAnonymously:success");
                         FirebaseUser user = mAuth.getCurrentUser();
-//                            updateUI(user);
+                        updateUI(user, adminButton);
                         db.setUser(user);
                     } else {
                         // If sign in fails, display a message to the user.
@@ -216,5 +213,22 @@ public class MainActivity extends AppCompatActivity {
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }
+    }
+
+    /**
+     * makes the administrator button visible if the user's uid is in the admins collection in the database
+     * @param user the current user of the app
+     * @param adminButton the button that will be made visible
+     */
+    private void updateUI(FirebaseUser user, Button adminButton) {
+        String uUid = user.getUid();
+        DocumentReference doc = db.getAdminsRef().document(uUid);
+        doc.get().addOnCompleteListener(task -> {
+            DocumentSnapshot document = task.getResult();
+            // if a document exists with the user's firebase authentication uuid as the name
+            if (document.exists()) {
+                adminButton.setVisibility(View.VISIBLE);
+            }
+        });
     }
 }
