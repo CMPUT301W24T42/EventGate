@@ -48,22 +48,21 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
     public MyFirebaseMessagingService() {
         this.fcm = MainActivity.db.getFcm();
         this.fcmTokensRef = MainActivity.db.getFcmTokensRef();
-        fcm.getToken()
-                .addOnCompleteListener(task -> {
-                    if (!task.isSuccessful()) {
-                        Log.w(TAG, "Fetching FCM registration token failed", task.getException());
-                        return;
-                    }
-
-                    // Get FCM registration token
-                    String token = task.getResult();
-                    sendTokenToFirebase(token);
-
-                    // Log
-                    String msg = "Your token is " + token;
-                    Log.d(TAG, msg);
-                });
-//        eventListener();
+//        fcm.getToken()
+//                .addOnCompleteListener(task -> {
+//                    if (!task.isSuccessful()) {
+//                        Log.w(TAG, "Fetching FCM registration token failed", task.getException());
+//                        return;
+//                    }
+//
+//                    // Get FCM registration token
+//                    String token = task.getResult();
+//                    sendTokenToFirebase(token);
+//
+//                    // Log
+//                    String msg = "Your token is " + token;
+//                    Log.d(TAG, msg);
+//                });
     }
 
     /**

@@ -39,6 +39,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.installations.FirebaseInstallations;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -48,6 +49,7 @@ import org.checkerframework.checker.units.qual.A;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This is the activity for the app's main menu.
@@ -78,7 +80,10 @@ public class MainActivity extends AppCompatActivity {
      * a tag for logging
      */
     public static final String TAG = "Firebase Auth";
-    public Attendee attendee;
+    /**
+     * this is an instance of Attendee which holds the current user's info
+     */
+    public static Attendee attendee;
     /**
      * this is the launcher that requests permission to receive notifications
      */
@@ -108,13 +113,20 @@ public class MainActivity extends AppCompatActivity {
         askNotificationPermission();
 
         // store the installation id in shared preferences
-        FirebaseInstallations.getInstance().getId().addOnSuccessListener(s -> {
+        FirebaseInstallations.getInstance().getId().addOnSuccessListener(deviceId -> {
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
             if (!preferences.contains("FirebaseInstallationId")) {
                 SharedPreferences.Editor editor = preferences.edit();
-                editor.putString("FirebaseInstallationId", s);
+                editor.putString("FirebaseInstallationId", deviceId);
                 editor.apply();
             }
+            // if there's no attendee info, create a new attendee
+            CollectionReference attendeesRef = db.getAttendeesRef();
+            attendeesRef.document(deviceId).get().addOnCompleteListener(task -> {
+                if (task.isSuccessful() && !task.getResult().exists()) {
+                    createNewAttendee(db.getAttendeesRef(), deviceId);
+                }
+            });
         });
 
         attendeeButton = findViewById(R.id.attendee_button);
@@ -139,39 +151,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        // get deviceId
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String deviceId = preferences.getString("FirebaseInstallationId", "null");
-
-        // get reference to attendees collection
-        CollectionReference attendeesRef = db.getAttendeesRef();
-
-        if (!deviceId.equals("null")) {
-            // if user is an existing user, get their info from the attendees collection in the database,
-            //      otherwise, create a new attendee profile
-            attendeesRef
-                    .whereEqualTo("deviceId", deviceId)
-                    .get()
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            // no existing attendee profile with this deviceId, then create a new attendee profile
-                            if (task.getResult().isEmpty()) {
-                               createNewAttendee(attendeesRef, deviceId);
-                            }
-                            else {  // existing user, then get attendee info
-                                List<DocumentSnapshot> documents =  task.getResult().getDocuments();
-                                for (DocumentSnapshot doc : documents) {
-                                    attendee = new Attendee(doc.getString("name"), deviceId, doc.getId());
-                                }
-                            }
-                        }
-                    });
-        }
-
+        mAuth = db.getmAuth();
 
         db.setMessagingService(new MyFirebaseMessagingService());
-
-        mAuth = db.getmAuth();
 
         // Check if user is signed in (non-null) and update UI accordingly.
         if (mAuth.getCurrentUser() == null) {
@@ -291,10 +273,18 @@ public class MainActivity extends AppCompatActivity {
         data.put("deviceId", deviceId);
         // set an attendee's name to their id by default until the user enters it later in user settings
         data.put("name", attendeeId);
+        data.put("uUid", db.getUser().getUid());
         attendeesRef.document(attendeeId).set(data)
-                .addOnSuccessListener(unused ->
-                        Log.d("Firebase Firestore", "Attendee has been added successfully!"))
-                .addOnFailureListener(e -> Log.d(TAG, "Event could not be added!" + e));
-        attendee = new Attendee(attendeeId, deviceId, attendeeId);
+                .addOnSuccessListener(unused -> {
+                    // store info in shared preferences
+                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+                    preferences.edit()
+                            .putString("attendeeName", attendeeId)
+                            .putString("attendeeId", attendeeId)
+                            .apply();
+                    Log.d("Firebase Firestore", "Attendee has been added successfully!");
+                })
+                .addOnFailureListener(e -> Log.d("Firebase Firestore", "Attendee could not be added!" + e));
     }
+
 }

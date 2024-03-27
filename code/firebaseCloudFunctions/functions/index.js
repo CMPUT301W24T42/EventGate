@@ -105,3 +105,50 @@ exports.androidEventDelete = functions.firestore
 
         admin.messaging().send(notificationPayload);
     });
+
+exports.removeUserFromTopic = functions.firestore
+    .document("events/{eventId}")
+    .onUpdate(async (change, context) => {
+          const beforeData = change.before.data();
+          const afterData = change.after.data();
+          const eventId = change.after.data().eventId;
+
+          // Check if the attendees array has been changed, in the case that an admin deletes an attendee
+          //    from an event
+          if (beforeData.attendees.length > afterData.attendees.length) {
+              // Determine which attendee was removed
+              const removedAttendee = beforeData.attendees.find(attendee => !afterData.attendees.includes(attendee));
+
+              const fcmTokensRef = admin.firestore().collection('fcmTokens');
+              const query = fcmTokensRef.doc(removedAttendee);
+              const snapshot = await query.get();
+
+              const attendeesRef = admin.firestore().collection('attendees');
+              const attendeeQuery = attendeesRef.doc(removedAttendee);
+              const snap = await attendeeQuery.get();
+
+              if (snap.exists) {
+              // get the registration token and unsubscribe the user from the event's topic so that they
+              //    no longer receive notifications from the event that they were removed from
+                  const data = snap.data();
+                  const uUid = data.uUid;
+
+                  // Query the fcmTokens collection to find the document with the same uUid as removedAttendee
+                  const fcmTokensRef = admin.firestore().collection('fcmTokens');
+                  const query = fcmTokensRef.doc(uUid);
+                  const snapshot = await query.get();
+                  if (snapshot.exists) {
+                        const data = snapshot.data();
+                        const token = snapshot.registrationToken;
+                        try {
+                              // Unsubscribe token from topic
+                              await admin.messaging().unsubscribeFromTopic(token, eventId);
+                              console.log(`Token ${token} unsubscribed from topic.`);
+                          } catch (error) {
+                              console.error(`Error unsubscribing token ${token}:`, error);
+                          }
+                  }
+
+              }
+          }
+    });
