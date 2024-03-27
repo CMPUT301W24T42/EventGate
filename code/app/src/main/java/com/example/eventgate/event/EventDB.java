@@ -134,6 +134,8 @@ public class EventDB {
                         if (event.equals(eventId)) {
                             alreadyExists = true;
                             futureResult.complete(2);
+                            // Increment check-in number
+                            incrementCheckInNumber(attendee.getId(), eventId);
                             break;
                         }
                     }
