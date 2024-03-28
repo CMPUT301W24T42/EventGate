@@ -51,7 +51,7 @@ public class AttendeeListAdapter extends ArrayAdapter<String> {
 
         String attendee = attendees.get(position);
 
-        TextView eventName = convertView.findViewById(R.id.event_name);
+        TextView eventName = convertView.findViewById(R.id.list_item_name);
 
         eventName.setText(attendee);
 

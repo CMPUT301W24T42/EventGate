@@ -1,6 +1,7 @@
 package com.example.eventgate.admin;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +11,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.eventgate.ConfirmDeleteDialog;
 import com.example.eventgate.event.Event;
 import com.example.eventgate.R;
 import com.example.eventgate.event.EventDB;
@@ -55,22 +58,32 @@ public class AdminEventListAdapter extends ArrayAdapter<Event> {
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.admin_events_list, parent, false);
+            convertView = LayoutInflater.from(context).inflate(R.layout.admin_list_item, parent, false);
         }
 
         Event event = events.get(position);
         EventDB eventDB = new EventDB();
 
-        TextView eventName = convertView.findViewById(R.id.event_name);
-        Button adminDelEventButton = convertView.findViewById(R.id.del_event_button);
+        TextView eventName = convertView.findViewById(R.id.list_item_name);
+        Button adminDelEventButton = convertView.findViewById(R.id.delete_button);
 
         eventName.setText(event.getEventName());
 
-        // this removes events from the app and database once the admin clicks on the delete button
+        // asks admin to confirm deletion and them deletes event from list and from database
         adminDelEventButton.setOnClickListener(v -> {
-            events.remove(position);
-            eventDB.removeEvent(event);
-            notifyDataSetChanged();
+            // get a title and message for the confirm delete dialog
+            Resources resources = context.getResources();
+            String title = String.format("%s %s?", resources.getString(R.string.delete_title), event.getEventName());
+            String message = String.format("%s %s", event.getEventName(), resources.getString(R.string.delete_message));
+            // create dialog to confirm deletion
+            ConfirmDeleteDialog confirmDeleteDialog = ConfirmDeleteDialog.newInstance(title, message);
+            confirmDeleteDialog.setOnDeleteClickListener(() -> {
+                // delete event from event list and from firebase
+                events.remove(position);
+                eventDB.removeEvent(event);
+                notifyDataSetChanged();
+            });
+            confirmDeleteDialog.show(((AppCompatActivity) context).getSupportFragmentManager(), "CONFIRM DELETE EVENT");
         });
 
         return convertView;
