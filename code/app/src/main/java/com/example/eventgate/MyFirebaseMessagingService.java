@@ -59,12 +59,14 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
     public void sendTokenToFirebase(String token) {
         HashMap<String, String> data = new HashMap<>();
         data.put("registrationToken", token);
-        String userId = MainActivity.db.getUser().getUid();
-        fcmTokensRef
-                .document(userId)
-                .set(data)
-                .addOnSuccessListener(unused -> Log.d(TAG, "Token has been sent successfully!"))
-                .addOnFailureListener(e -> Log.d(TAG, "Token could not be sent!" + e));
+        if (MainActivity.db.getUser() != null) {
+            String userId = MainActivity.db.getUser().getUid();
+            fcmTokensRef
+                    .document(userId)
+                    .set(data)
+                    .addOnSuccessListener(unused -> Log.d(TAG, "Token has been sent successfully!"))
+                    .addOnFailureListener(e -> Log.d(TAG, "Token could not be sent!" + e));
+        }
     }
 
     /**

@@ -23,10 +23,8 @@ public class AttendeeActivityTest {
 
     @Test
     public void testQRButtonClicked() {
-        try (ActivityScenario<AttendeeActivity> scenario = ActivityScenario.launch(AttendeeActivity.class)) {
-            // Click on the QR button
-            onView(withId(R.id.qr_button)).perform(click());
-        }
+        // Click on the QR button
+        onView(withId(R.id.qr_button)).perform(click());
     }
 
     @Test
@@ -39,6 +37,12 @@ public class AttendeeActivityTest {
     public void testSettingsButtonOpensDialog() {
         onView(withId(R.id.settings_button)).perform(click());
         onView(withText("Save")).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void testRegisteredEventsDialog() {
+        onView(withId(R.id.attendee_registered_button)).perform(click());
+        onView(withText("My Registered Events")).check(matches(isDisplayed()));
     }
 
     @Test
