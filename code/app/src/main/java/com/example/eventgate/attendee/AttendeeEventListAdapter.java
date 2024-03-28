@@ -52,7 +52,7 @@ public class AttendeeEventListAdapter extends ArrayAdapter<Event> {
 
         Event event = events.get(position);
 
-        TextView eventName = convertView.findViewById(R.id.event_name);
+        TextView eventName = convertView.findViewById(R.id.list_item_name);
 
         eventName.setText(event.getEventName());
 

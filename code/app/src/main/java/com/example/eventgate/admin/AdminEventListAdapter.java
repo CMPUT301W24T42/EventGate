@@ -55,14 +55,14 @@ public class AdminEventListAdapter extends ArrayAdapter<Event> {
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.admin_events_list, parent, false);
+            convertView = LayoutInflater.from(context).inflate(R.layout.admin_list_item, parent, false);
         }
 
         Event event = events.get(position);
         EventDB eventDB = new EventDB();
 
-        TextView eventName = convertView.findViewById(R.id.event_name);
-        Button adminDelEventButton = convertView.findViewById(R.id.del_event_button);
+        TextView eventName = convertView.findViewById(R.id.list_item_name);
+        Button adminDelEventButton = convertView.findViewById(R.id.delete_button);
 
         eventName.setText(event.getEventName());
 
