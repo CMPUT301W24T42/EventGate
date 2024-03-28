@@ -197,6 +197,7 @@ public class EventDB {
     }
 
     /**
+     * signed-up
      * Get a list of events that a user is registered for, given their firebase installation id
      * @param deviceId attendee's firebase installation id
      * @return CompleteableFuture of Arraylist of Events
@@ -261,7 +262,7 @@ public class EventDB {
                 });
         return future;
     }
-
+  
     /**
      * retrieves event details
      * @param eventID the id of the event
