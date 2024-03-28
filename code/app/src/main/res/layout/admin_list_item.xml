@@ -13,6 +13,10 @@
         android:textSize="22sp"
         android:textColor="@color/black"
         android:textAlignment="center"
+        android:paddingHorizontal="20dp"
+        android:paddingEnd="55dp"
+        android:maxLines="1"
+        android:ellipsize="end"
         android:gravity="center">
     </TextView>
 

@@ -29,6 +29,9 @@
             android:text="@string/event_name"
             android:textAlignment="center"
             android:textColor="@color/black"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:paddingHorizontal="20dp"
             android:textSize="22sp">
         </TextView>
 
@@ -44,7 +47,10 @@
             android:text="event details"
             android:textSize="18sp"
             android:paddingHorizontal="10dp"
-            android:layout_height="80dp" />
+            android:layout_marginTop="8dp"
+            android:ellipsize="end"
+            android:maxLines="4"
+            android:layout_height="85dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/delete_poster_button"
@@ -52,7 +58,7 @@
             android:layout_height="50dp"
             android:text="Delete poster"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="10dp"
             android:backgroundTint="@color/red"
             android:textColor="@color/black"
             android:textSize="18sp"
