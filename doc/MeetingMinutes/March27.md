@@ -9,6 +9,9 @@ Date: March 27, 2024
 - Jason Zhai
 
 ## Discussion:
+
+
+## To Dos:
 - For the last few days before the deadline, make sure to be almost done to have time to fine tune everything
 - Demo is in 2 weeks
 - For the Demo, we must all be there for the entire lab
