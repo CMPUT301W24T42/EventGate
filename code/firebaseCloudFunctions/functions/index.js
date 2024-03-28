@@ -119,10 +119,6 @@ exports.removeUserFromTopic = functions.firestore
               // Determine which attendee was removed
               const removedAttendee = beforeData.attendees.find(attendee => !afterData.attendees.includes(attendee));
 
-              const fcmTokensRef = admin.firestore().collection('fcmTokens');
-              const query = fcmTokensRef.doc(removedAttendee);
-              const snapshot = await query.get();
-
               const attendeesRef = admin.firestore().collection('attendees');
               const attendeeQuery = attendeesRef.doc(removedAttendee);
               const snap = await attendeeQuery.get();
@@ -139,7 +135,7 @@ exports.removeUserFromTopic = functions.firestore
                   const snapshot = await query.get();
                   if (snapshot.exists) {
                         const data = snapshot.data();
-                        const token = snapshot.registrationToken;
+                        const token = data.registrationToken;
                         try {
                               // Unsubscribe token from topic
                               await admin.messaging().unsubscribeFromTopic(token, eventId);

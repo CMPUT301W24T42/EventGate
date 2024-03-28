@@ -84,16 +84,6 @@ public class MainActivity extends AppCompatActivity {
      * this is an instance of Attendee which holds the current user's info
      */
     public static Attendee attendee;
-    /**
-     * this is the launcher that requests permission to receive notifications
-     */
-    private final ActivityResultLauncher<String> requestPermissionLauncher =
-            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
-                if (!isGranted) {
-                    // display a message confirming that user has chosen not to receive notifications
-                    Toast.makeText(this, "EventGate will not send notifications", Toast.LENGTH_SHORT).show();
-                }
-            });
 
     /**
      * Called when the activity is starting.
@@ -122,9 +112,10 @@ public class MainActivity extends AppCompatActivity {
             }
             // if there's no attendee info, create a new attendee
             CollectionReference attendeesRef = db.getAttendeesRef();
-            attendeesRef.document(deviceId).get().addOnCompleteListener(task -> {
-                if (task.isSuccessful() && !task.getResult().exists()) {
-                    createNewAttendee(db.getAttendeesRef(), deviceId);
+            attendeesRef.whereEqualTo("deviceId", deviceId).get().addOnCompleteListener(task -> {
+                if (task.isSuccessful() && task.getResult().isEmpty()) {
+                    AttendeeDB attendeeDB = new AttendeeDB();
+                    attendeeDB.createNewAttendee(db.getAttendeesRef(), deviceId, preferences);
                 }
             });
         });
@@ -252,6 +243,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void updateUI(FirebaseUser user, Button adminButton) {
         String uUid = user.getUid();
+        Log.d("UUID", uUid);
         DocumentReference doc = db.getAdminsRef().document(uUid);
         doc.get().addOnCompleteListener(task -> {
             DocumentSnapshot document = task.getResult();
@@ -260,31 +252,6 @@ public class MainActivity extends AppCompatActivity {
                 adminButton.setVisibility(View.VISIBLE);
             }
         });
-    }
-
-    /**
-     * this creates a new attendee profile and stores the info in the attendees collection in the database
-     * @param attendeesRef a reference to the attendees collection
-     * @param deviceId the firebase installation id of the current user
-     */
-    private void createNewAttendee(CollectionReference attendeesRef, String deviceId) {
-        String attendeeId = attendeesRef.document().getId();
-        HashMap<String, Object> data = new HashMap<>();
-        data.put("deviceId", deviceId);
-        // set an attendee's name to their id by default until the user enters it later in user settings
-        data.put("name", attendeeId);
-        data.put("uUid", db.getUser().getUid());
-        attendeesRef.document(attendeeId).set(data)
-                .addOnSuccessListener(unused -> {
-                    // store info in shared preferences
-                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
-                    preferences.edit()
-                            .putString("attendeeName", attendeeId)
-                            .putString("attendeeId", attendeeId)
-                            .apply();
-                    Log.d("Firebase Firestore", "Attendee has been added successfully!");
-                })
-                .addOnFailureListener(e -> Log.d("Firebase Firestore", "Attendee could not be added!" + e));
     }
 
 }

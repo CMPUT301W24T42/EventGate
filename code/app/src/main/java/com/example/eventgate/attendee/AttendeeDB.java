@@ -1,5 +1,7 @@
 package com.example.eventgate.attendee;
 
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -15,6 +17,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * This is used to add, remove, and retrieve attendee data from the database
@@ -39,6 +42,31 @@ public class AttendeeDB {
     public AttendeeDB() {
         db = MainActivity.db.getDB();
         collection = MainActivity.db.getAttendeesRef();
+    }
+
+    /**
+     * this creates a new attendee profile and stores the info in the attendees collection in the database
+     * @param attendeesRef a reference to the attendees collection
+     * @param deviceId the firebase installation id of the current user
+     */
+    public void createNewAttendee(CollectionReference attendeesRef, String deviceId, SharedPreferences preferences) {
+        String attendeeId = attendeesRef.document().getId();
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("deviceId", deviceId);
+        // set an attendee's name to their id by default until the user enters it later in user settings
+        data.put("name", attendeeId);
+        data.put("uUid", MainActivity.db.getUser().getUid());
+        data.put("events", new ArrayList<Integer>());
+        attendeesRef.document(attendeeId).set(data)
+                .addOnSuccessListener(unused -> {
+                    // store info in shared preferences
+                    preferences.edit()
+                            .putString("attendeeName", attendeeId)
+                            .putString("attendeeId", attendeeId)
+                            .apply();
+                    Log.d("Firebase Firestore", "Attendee has been added successfully!");
+                })
+                .addOnFailureListener(e -> Log.d("Firebase Firestore", "Attendee could not be added!" + e));
     }
 
     /**
