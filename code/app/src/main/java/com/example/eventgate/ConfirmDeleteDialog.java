@@ -26,8 +26,6 @@ public class ConfirmDeleteDialog extends DialogFragment {
      * this is a listener for the delete button click listener
      */
     private OnDeleteClickListener mListener;
-    private TextView titleTextView;
-    private TextView messageTextView;
 
     /**
      * sets up a listener to be notified when the delete button is clicked in the ConfirmDeleteDialog
@@ -54,8 +52,8 @@ public class ConfirmDeleteDialog extends DialogFragment {
         String message = getArguments().getString("message", "");
 
         // find textviews and buttons
-        titleTextView = view.findViewById(R.id.confirm_title);
-        messageTextView = view.findViewById(R.id.confirm_message);
+        TextView titleTextView = view.findViewById(R.id.confirm_title);
+        TextView messageTextView = view.findViewById(R.id.confirm_message);
         Button cancelButton = view.findViewById(R.id.confirm_cancel_button);
         Button deleteButton = view.findViewById(R.id.delete_button);
 

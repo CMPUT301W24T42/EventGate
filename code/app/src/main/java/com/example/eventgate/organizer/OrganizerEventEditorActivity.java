@@ -17,7 +17,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.eventgate.MainActivity;
 import com.example.eventgate.R;
-import com.example.eventgate.event.Event;
 import com.example.eventgate.event.EventDB;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -28,12 +27,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
-import com.google.firebase.installations.FirebaseInstallations;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 

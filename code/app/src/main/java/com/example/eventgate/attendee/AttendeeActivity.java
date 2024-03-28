@@ -28,7 +28,6 @@ import com.example.eventgate.MainActivity;
 import com.example.eventgate.event.Event;
 import com.example.eventgate.event.EventDB;
 import com.example.eventgate.R;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.installations.FirebaseInstallations;
 

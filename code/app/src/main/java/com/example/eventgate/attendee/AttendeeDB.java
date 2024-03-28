@@ -1,21 +1,14 @@
 package com.example.eventgate.attendee;
 
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-
 import com.example.eventgate.MainActivity;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
-import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -24,13 +17,9 @@ import java.util.HashMap;
  */
 public class AttendeeDB {
     /**
-     * An instance of the Firebase Firestore database
-     */
-    private FirebaseFirestore db;
-    /**
      * The collection for the attendees collection in the database
      */
-    private CollectionReference collection;
+    private final CollectionReference collection;
     /**
      * The TAG for logging
      */
@@ -40,7 +29,6 @@ public class AttendeeDB {
      * Constructs a new AttendeeDB
      */
     public AttendeeDB() {
-        db = MainActivity.db.getDB();
         collection = MainActivity.db.getAttendeesRef();
     }
 

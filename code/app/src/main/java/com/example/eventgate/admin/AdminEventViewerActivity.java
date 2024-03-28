@@ -8,7 +8,6 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
@@ -20,9 +19,6 @@ import com.example.eventgate.attendee.PosterPagerAdapter;
 import com.example.eventgate.event.EventDB;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -100,15 +96,13 @@ public class AdminEventViewerActivity extends AppCompatActivity {
             // get/set event details
             EventDB eventDB = new EventDB();
             CompletableFuture<String> eventDetailsFuture = eventDB.getEventDetailsDB(eventId);
-            eventDetailsFuture.thenAccept(eventDetails -> {
-                runOnUiThread(() -> {
-                    if (eventDetails != null) {
-                        detailsTextview.setText(eventDetails);
-                    } else {
-                        detailsTextview.setText(String.format("Details not found for event ID: %s", eventId));
-                    }
-                });
-            }).exceptionally(e -> {
+            eventDetailsFuture.thenAccept(eventDetails -> runOnUiThread(() -> {
+                if (eventDetails != null) {
+                    detailsTextview.setText(eventDetails);
+                } else {
+                    detailsTextview.setText(String.format("Details not found for event ID: %s", eventId));
+                }
+            })).exceptionally(e -> {
                 e.printStackTrace();
                 runOnUiThread(() -> detailsTextview.setText("Failed to load event details."));
                 return null;
@@ -174,31 +168,28 @@ public class AdminEventViewerActivity extends AppCompatActivity {
      */
     private void updateAttendeesList(DocumentReference eventRef, CollectionReference attendeesRef) {
         // add/update the list of attendees attending this specific event
-        eventRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-                if (error != null) {
-                    Log.e("Firestore", error.toString());
-                    return;
-                }
-                if (value != null) {
-                    attendeeDataList.clear();
-                    ArrayList<String> attendeeIds = (ArrayList<String>) value.get("attendees");
-                    // there are attendees for the event
-                    if (attendeeIds != null) {
-                        for (String attendeeId : attendeeIds) {
-                            attendeesRef
-                                    .document(attendeeId).get().addOnSuccessListener(documentSnapshot -> {
-                                        Attendee attendee = new Attendee(documentSnapshot.getString("name"),
-                                                documentSnapshot.getString("deviceId"),
-                                                documentSnapshot.getId());
-                                        attendeeDataList.add(attendee);
-                                        attendeeAdapter.notifyDataSetChanged();
-                                    });
-
-                        }
+        eventRef.addSnapshotListener((value, error) -> {
+            if (error != null) {
+                Log.e("Firestore", error.toString());
+                return;
+            }
+            if (value != null) {
+                attendeeDataList.clear();
+                ArrayList<String> attendeeIds = (ArrayList<String>) value.get("attendees");
+                // there are attendees for the event
+                if (attendeeIds != null) {
+                    for (String attendeeId : attendeeIds) {
+                        attendeesRef
+                                .document(attendeeId).get().addOnSuccessListener(documentSnapshot -> {
+                                    Attendee attendee = new Attendee(documentSnapshot.getString("name"),
+                                            documentSnapshot.getString("deviceId"),
+                                            documentSnapshot.getId());
+                                    attendeeDataList.add(attendee);
+                                    attendeeAdapter.notifyDataSetChanged();
+                                });
 
                     }
+
                 }
             }
         });
@@ -275,12 +266,8 @@ public class AdminEventViewerActivity extends AppCompatActivity {
         postersRef.whereEqualTo("url", imageUrl).get().addOnSuccessListener(queryDocumentSnapshots -> {
             for (QueryDocumentSnapshot snapshot : queryDocumentSnapshots) {
                 snapshot.getReference().delete()
-                        .addOnSuccessListener(unused -> {
-                            Log.d(TAG, "Event poster successfully deleted from Firestore");
-                        })
-                        .addOnFailureListener(e -> {
-                            Log.d(TAG, "Error deleting event poster from Firestore", e);
-                        });
+                        .addOnSuccessListener(unused -> Log.d(TAG, "Event poster successfully deleted from Firestore"))
+                        .addOnFailureListener(e -> Log.d(TAG, "Error deleting event poster from Firestore", e));
             }
         });
     }
@@ -298,12 +285,8 @@ public class AdminEventViewerActivity extends AppCompatActivity {
         StorageReference fileReference = storageRef.child("images/" + imageName + ".jpg");
         Log.d(TAG, String.valueOf(fileReference));
         fileReference.delete()
-                .addOnSuccessListener(unused -> {
-                    Log.d(TAG, "Event poster successfully deleted from Storage");
-                })
-                .addOnFailureListener(e -> {
-                    Log.d(TAG, "Error deleting event poster from Storage", e);
-                });
+                .addOnSuccessListener(unused -> Log.d(TAG, "Event poster successfully deleted from Storage"))
+                .addOnFailureListener(e -> Log.d(TAG, "Error deleting event poster from Storage", e));
 
     }
 

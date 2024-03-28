@@ -1,17 +1,10 @@
 package com.example.eventgate;
 
-import static androidx.core.content.ContentProviderCompat.requireContext;
-
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -27,29 +20,15 @@ import com.example.eventgate.admin.AdminActivity;
 import com.example.eventgate.attendee.Attendee;
 import com.example.eventgate.attendee.AttendeeActivity;
 import com.example.eventgate.attendee.AttendeeDB;
-import com.example.eventgate.attendee.AttendeeEventListAdapter;
 import com.example.eventgate.organizer.OrganizerMainMenuActivity;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.installations.FirebaseInstallations;
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.FirebaseMessagingService;
 
-import org.checkerframework.checker.units.qual.A;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * This is the activity for the app's main menu.
