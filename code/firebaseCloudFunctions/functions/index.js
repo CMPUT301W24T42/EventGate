@@ -35,18 +35,28 @@ exports.androidEventAlert = functions.firestore.document("alerts/{docId}").onCre
 exports.androidMilestoneAlert = functions.firestore.document("events/{eventId}").onUpdate(
     async (change, context) => {
             const data = change.after.data();
+            const eventName = data.name;
+            const eventId = data.eventId;
+            const organizerId = data.organizer;
 
             const attendeeCount = data.attendees.length;
 
             const milestones = [1, 5, 10, 25, 50, 100];
             const currentMilestones = data.milestones;
 
+            // remove milestone if attendeeCount has dropped lower than the last milestone
+            if (currentMilestones.length !== 0) {
+                const lastMilestone = currentMilestones[currentMilestones.length -1];
+                if (attendeeCount < lastMilestone) {
+                    await admin.firestore().collection("events").doc(eventId).update({
+                        milestones: admin.firestore.FieldValue.arrayRemove(lastMilestone)
+                    });
+                    console.log("Milestones have been updated.");
+                }
+            }
+
             // Check if attendee count reached a milestone
             if (milestones.includes(attendeeCount) && !currentMilestones.includes(attendeeCount)) {
-                const eventName = data.name;
-                const eventId = data.eventId;
-                const organizerId = data.organizer;
-
                 // Determine the syntax of the message
                 let attendeeString = (attendeeCount === 1) ? "attendee" : "attendees";
                 let body = `${eventName} has reached ${attendeeCount} ${attendeeString}.`;
