@@ -66,6 +66,10 @@ public class AdminEventViewerActivity extends AppCompatActivity {
      */
     CollectionReference postersRef;
     /**
+     * this is the button for deleting posters
+     */
+    Button deleteButton;
+    /**
      * tag for logging
      */
     final String TAG = "AdminEventViewerActivity";
@@ -118,14 +122,8 @@ public class AdminEventViewerActivity extends AppCompatActivity {
         Button backButton = findViewById(R.id.event_back_button);
         backButton.setOnClickListener(v -> finish());
 
-        // set up viewpager
-        setupViewPager();
-
-        // display posters
-        displayEventPosters();
-
         // deletes an event poster
-        Button deleteButton = findViewById(R.id.delete_poster_button);
+        deleteButton = findViewById(R.id.delete_poster_button);
         deleteButton.setOnClickListener(v -> {
             // get a title and message for the confirm delete dialog
             Resources resources = getResources();
@@ -136,6 +134,12 @@ public class AdminEventViewerActivity extends AppCompatActivity {
             confirmDeleteDialog.setOnDeleteClickListener(() -> deleteEventPoster());
             confirmDeleteDialog.show(getSupportFragmentManager(), "CONFIRM DELETE POSTER");
         });
+
+        // set up viewpager
+        setupViewPager();
+
+        // display posters
+        displayEventPosters();
 
         // create the attendee list and set adapter
         createAttendeeList();
@@ -207,16 +211,30 @@ public class AdminEventViewerActivity extends AppCompatActivity {
         postersRef
                 .get()
                 .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
+                    if (task.isSuccessful() && !task.getResult().isEmpty()) {
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             String imageUrl = document.getString("url");
                             posterImageUrls.add(imageUrl);
                             posterPagerAdapter.notifyDataSetChanged();
                         }
+                        if (!posterImageUrls.isEmpty()) {
+                            enableButton();
+                        }
                     } else {
                         Log.d(TAG, "get failed with ", task.getException());
                     }
                 });
+    }
+
+    /**
+     * callback method called by the system when the activity enters the "resumed" state
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (posterImageUrls.isEmpty()) {
+            disableButton();
+        }
     }
 
     /**
@@ -237,6 +255,10 @@ public class AdminEventViewerActivity extends AppCompatActivity {
         String imageUrl = posterImageUrls.get(currentPoster);
         posterPagerAdapter.removePoster(currentPoster);
         viewPager.setAdapter(posterPagerAdapter);
+
+        if (posterImageUrls.isEmpty()) {
+            disableButton();
+        }
 
         // remove poster from firebase database
         deletePosterFromFirestore(imageUrl);
@@ -283,5 +305,17 @@ public class AdminEventViewerActivity extends AppCompatActivity {
                     Log.d(TAG, "Error deleting event poster from Storage", e);
                 });
 
+    }
+
+    private void enableButton() {
+            deleteButton.setClickable(true);
+            deleteButton.setBackgroundColor(getResources().getColor(R.color.red));
+            deleteButton.setTextColor(getResources().getColor(R.color.black));
+    }
+
+    private void disableButton() {
+        deleteButton.setClickable(false);
+        deleteButton.setBackgroundColor(getResources().getColor(R.color.light_gray));
+        deleteButton.setTextColor(getResources().getColor(R.color.dark_gray));
     }
 }
