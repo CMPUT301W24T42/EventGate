@@ -109,42 +109,62 @@ exports.androidEventDelete = functions.firestore
 exports.removeUserFromTopic = functions.firestore
     .document("events/{eventId}")
     .onUpdate(async (change, context) => {
-          const beforeData = change.before.data();
-          const afterData = change.after.data();
-          const eventId = change.after.data().eventId;
+        const beforeData = change.before.data();
+        const afterData = change.after.data();
+        const eventId = change.after.data().eventId;
+        const eventName = change.after.data().name;
+        const organizerId = change.after.data().organizer;
 
-          // Check if the attendees array has been changed, in the case that an admin deletes an attendee
-          //    from an event
-          if (beforeData.attendees.length > afterData.attendees.length) {
-              // Determine which attendee was removed
-              const removedAttendee = beforeData.attendees.find(attendee => !afterData.attendees.includes(attendee));
+        // Check if the attendees array has been changed, in the case that an admin deletes an attendee
+        //    from an event
+        if (beforeData.attendees.length > afterData.attendees.length) {
+            // Determine which attendee was removed
+            const removedAttendee = beforeData.attendees.find(attendee => !afterData.attendees.includes(attendee));
 
-              const attendeesRef = admin.firestore().collection('attendees');
-              const attendeeQuery = attendeesRef.doc(removedAttendee);
-              const snap = await attendeeQuery.get();
+            const attendeesRef = admin.firestore().collection('attendees');
+            const attendeeQuery = attendeesRef.doc(removedAttendee);
+            const snap = await attendeeQuery.get();
 
-              if (snap.exists) {
-              // get the registration token and unsubscribe the user from the event's topic so that they
-              //    no longer receive notifications from the event that they were removed from
-                  const data = snap.data();
-                  const uUid = data.uUid;
+            if (snap.exists) {
+                // get the registration token and unsubscribe the user from the event's topic so that they
+                //    no longer receive notifications from the event that they were removed from
+                const data = snap.data();
+                const uUid = data.uUid;
 
-                  // Query the fcmTokens collection to find the document with the same uUid as removedAttendee
-                  const fcmTokensRef = admin.firestore().collection('fcmTokens');
-                  const query = fcmTokensRef.doc(uUid);
-                  const snapshot = await query.get();
-                  if (snapshot.exists) {
-                        const data = snapshot.data();
-                        const token = data.registrationToken;
-                        try {
-                              // Unsubscribe token from topic
-                              await admin.messaging().unsubscribeFromTopic(token, eventId);
-                              console.log(`Token ${token} unsubscribed from topic.`);
-                          } catch (error) {
-                              console.error(`Error unsubscribing token ${token}:`, error);
-                          }
-                  }
+                // Query the fcmTokens collection to find the document with the same uUid as removedAttendee
+                const fcmTokensRef = admin.firestore().collection('fcmTokens');
+                const query = fcmTokensRef.doc(uUid);
+                const snapshot = await query.get();
+                if (snapshot.exists) {
+                    const data = snapshot.data();
+                    const token = data.registrationToken;
+                    try {
+                        // Unsubscribe token from topic
+                        await admin.messaging().unsubscribeFromTopic(token, eventId);
+                        console.log(`Token ${token} unsubscribed from topic.`);
+                    } catch (error) {
+                        console.error(`Error unsubscribing token ${token}:`, error);
+                    }
 
-              }
-          }
+                    const notificationPayload = {
+                        notification: {
+                            title: "Attendance Revoked!",
+                            body: `Your attendance at ${eventName} has been cancelled.`,
+                        },
+                        data: {
+                            organizerId: organizerId,
+                        },
+                    };
+
+                    admin.messaging().sendToDevice(token, notificationPayload)
+                      .then((response) => {
+                        console.log('Successfully sent message:', response);
+                      })
+                      .catch((error) => {
+                        console.log('Error sending message:', error);
+                      });
+                }
+
+            }
+        }
     });

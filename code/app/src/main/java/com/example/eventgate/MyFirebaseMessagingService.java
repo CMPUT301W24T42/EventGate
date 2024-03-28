@@ -15,6 +15,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.RemoteMessage;
 
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.Random;
 
 /**
@@ -48,21 +49,6 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
     public MyFirebaseMessagingService() {
         this.fcm = MainActivity.db.getFcm();
         this.fcmTokensRef = MainActivity.db.getFcmTokensRef();
-//        fcm.getToken()
-//                .addOnCompleteListener(task -> {
-//                    if (!task.isSuccessful()) {
-//                        Log.w(TAG, "Fetching FCM registration token failed", task.getException());
-//                        return;
-//                    }
-//
-//                    // Get FCM registration token
-//                    String token = task.getResult();
-//                    sendTokenToFirebase(token);
-//
-//                    // Log
-//                    String msg = "Your token is " + token;
-//                    Log.d(TAG, msg);
-//                });
     }
 
     /**
@@ -112,23 +98,6 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
     }
 
     /**
-     * this unsubscribes a user from a topic so they stop receiving notifications from the
-     * associated event
-     *
-     * @param eventId the id of the event that the user will be unsubscribed from
-     */
-    public void removeUserFromTopic(String eventId) {
-        fcm.unsubscribeFromTopic(eventId)
-                .addOnCompleteListener(task -> {
-                    String msg = "Unsubscribed";
-                    if (!task.isSuccessful()) {
-                        msg = "Unsubscribe failed";
-                    }
-                    Log.d(TAG, msg);
-                });
-    }
-
-    /**
      * creates notifications when messaging service receives a message
      *
      * @param message Remote message that has been received.
@@ -143,6 +112,9 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
         String title = notification.getTitle();
         String body = notification.getBody();
         String channelId = notification.getChannelId();
+        if (!Objects.equals(channelId, MILESTONE_CHANNEL_ID) || !Objects.equals(channelId, EVENT_CHANNEL_ID)) {
+            channelId = EVENT_CHANNEL_ID;
+        }
         String organizerId = message.getData().get("organizerId");
         // create and show the notification to the user
         createNotification(title, body, channelId, organizerId);
@@ -199,7 +171,7 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
      */
     private boolean shouldBeBuilt(String title, String channelId, String deviceId, String organizerId) {
         // if it's an alert that an event has been cancelled, send it to all users related to the event
-        if (title.equals("Event Cancelled!")) {
+        if (title.equals("Event Cancelled!") || title.equals("Attendance Revoked!")) {
             return true;
         }
         // only builds notification for milestones if the current device belongs to the organizer of the event
