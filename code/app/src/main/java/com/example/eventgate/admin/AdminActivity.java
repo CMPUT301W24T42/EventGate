@@ -64,12 +64,14 @@ public class AdminActivity extends AppCompatActivity {
 
         // snapshot listener that adds/updates all the events from the database
         collection.addSnapshotListener((queryDocumentSnapshots, error) -> {
-            for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
-            {
-                Event event = new Event((String) doc.getData().get("name"));
-                event.setEventId(doc.getId());
-                eventDataList.add(event);
-                eventAdapter.notifyDataSetChanged();
+            if (queryDocumentSnapshots != null) {
+                for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
+                {
+                    Event event = new Event((String) doc.getData().get("name"));
+                    event.setEventId(doc.getId());
+                    eventDataList.add(event);
+                    eventAdapter.notifyDataSetChanged();
+                }
             }
         });
 
