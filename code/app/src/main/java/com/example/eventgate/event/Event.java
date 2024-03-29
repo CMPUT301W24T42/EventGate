@@ -1,11 +1,9 @@
 package com.example.eventgate.event;
 
 import android.graphics.Bitmap;
-import android.os.Parcelable;
 
 import com.example.eventgate.organizer.OrganizerAlert;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
