@@ -41,7 +41,7 @@ public class AttendeeActivityTest {
 
     @Test
     public void testRegisteredEventsDialog() {
-        onView(withId(R.id.attendee_registered_button)).perform(click());
+        onView(withId(R.id.registeredEventsButton)).perform(click());
         onView(withText("My Registered Events")).check(matches(isDisplayed()));
     }
 
