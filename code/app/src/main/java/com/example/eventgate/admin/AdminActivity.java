@@ -111,25 +111,29 @@ public class AdminActivity extends AppCompatActivity {
     private void createDBListeners(CollectionReference eventsRef, CollectionReference attendeesRef) {
         // snapshot listener that adds/updates all the events from the database
         eventsRef.addSnapshotListener((queryDocumentSnapshots, error) -> {
-            eventDataList.clear();
-            for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
-            {
-                Event event = new Event((String) doc.getData().get("name"));
-                event.setEventId(doc.getId());
-                eventDataList.add(event);
-                eventAdapter.notifyDataSetChanged();
+            if (queryDocumentSnapshots != null) {
+                eventDataList.clear();
+                for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
+                {
+                    Event event = new Event((String) doc.getData().get("name"));
+                    event.setEventId(doc.getId());
+                    eventDataList.add(event);
+                    eventAdapter.notifyDataSetChanged();
+                }
             }
         });
 
         // snapshot listener that adds/updates all the attendees/users from the database
         attendeesRef.addSnapshotListener((queryDocumentSnapshots, error) -> {
-            attendeeDataList.clear();
-            for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
-            {
-                Attendee attendee = new Attendee((String) doc.getData().get("name"),
-                        (String) doc.getData().get("deviceId"), (String) doc.getData().get("attendeeId"));
-                attendeeDataList.add(attendee);
-                attendeeAdapter.notifyDataSetChanged();
+            if (queryDocumentSnapshots !=  null) {
+                attendeeDataList.clear();
+                for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
+                {
+                    Attendee attendee = new Attendee((String) doc.getData().get("name"),
+                            (String) doc.getData().get("deviceId"), (String) doc.getData().get("attendeeId"));
+                    attendeeDataList.add(attendee);
+                    attendeeAdapter.notifyDataSetChanged();
+                }
             }
         });
     }

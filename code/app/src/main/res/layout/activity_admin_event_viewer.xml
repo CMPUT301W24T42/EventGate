@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/light_blue"
     tools:context=".admin.AdminActivity"
-    android:id="@+id/admin_activity_layout">
+    android:id="@+id/admin_event_viewer_layout">
 
     <LinearLayout
         android:id="@+id/event_layout"
@@ -100,7 +100,7 @@
     </LinearLayout>
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/event_back_button"
+        android:id="@+id/admin_event_viewer_back_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="30dp"

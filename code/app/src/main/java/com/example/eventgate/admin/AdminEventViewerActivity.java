@@ -113,7 +113,7 @@ public class AdminEventViewerActivity extends AppCompatActivity {
         postersRef = MainActivity.db.getEventsRef().document(eventId).collection("posters");
 
         // sends admin back to the main menu
-        Button backButton = findViewById(R.id.event_back_button);
+        Button backButton = findViewById(R.id.admin_event_viewer_back_button);
         backButton.setOnClickListener(v -> finish());
 
         // deletes an event poster
