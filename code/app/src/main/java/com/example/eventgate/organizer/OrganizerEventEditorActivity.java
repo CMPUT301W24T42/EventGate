@@ -106,8 +106,8 @@ public class OrganizerEventEditorActivity extends AppCompatActivity implements C
                                                     // Check if eventId exists in the map
                                                     Object checkInCountObject = eventCheckInNumberMap.get(eventId);
 
-                                                    if (checkInCountObject instanceof Integer) {
-                                                        Integer checkInCount = (Integer) checkInCountObject;
+                                                    if (checkInCountObject instanceof Number) {
+                                                        int checkInCount = ((Number) checkInCountObject).intValue();
                                                         String checkInCountString = Integer.toString(checkInCount);
                                                         attendeeDataList.add(attendeeName + " - Check-ins: " + checkInCountString);
                                                     } else {
