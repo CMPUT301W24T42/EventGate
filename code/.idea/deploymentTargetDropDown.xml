@@ -11,13 +11,7 @@
       <entry key="AttendeeActivityTest">
         <State />
       </entry>
-      <entry key="MainActivityTest">
-        <State />
-      </entry>
-      <entry key="Tests in 'com.example.eventgate'">
-        <State />
-      </entry>
-      <entry key="app">
+      <entry key="AttendeeEventViewerTest">
         <State>
           <targetSelectedWithDropDown>
             <Target>
@@ -30,7 +24,26 @@
               </deviceKey>
             </Target>
           </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-03-30T19:58:41.871495Z" />
+          <timeTargetWasSelectedWithDropDown value="2024-03-30T20:40:09.185756Z" />
+        </State>
+      </entry>
+      <entry key="Tests in 'com.example.eventgate'">
+        <State />
+      </entry>
+      <entry key="app">
+        <State>
+          <targetSelectedWithDropDown>
+            <Target>
+              <type value="QUICK_BOOT_TARGET" />
+              <deviceKey>
+                <Key>
+                  <type value="VIRTUAL_DEVICE_PATH" />
+                  <value value="$USER_HOME$/.android/avd/Pixel_6_API_34.avd" />
+                </Key>
+              </deviceKey>
+            </Target>
+          </targetSelectedWithDropDown>
+          <timeTargetWasSelectedWithDropDown value="2024-03-30T20:46:11.816119Z" />
         </State>
       </entry>
     </value>

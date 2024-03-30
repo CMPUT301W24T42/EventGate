@@ -33,7 +33,7 @@ public class AdminEventViewerActivityTest {
         // Activity requires data from previous activity, so create an intent and put test data
         Intent intent = new Intent(ApplicationProvider.getApplicationContext(), AdminEventViewerActivity.class);
         // Add data to the intent
-        intent.putExtra("eventId", "lzBe9WmFzRZ9CcpC2R1C");
+        intent.putExtra("eventId", "apH6WntRW7mG4W6j9zXO");
         intent.putExtra("name", "AdminEventViewerActivityTest Event");
 
         // Launch activity with the intent

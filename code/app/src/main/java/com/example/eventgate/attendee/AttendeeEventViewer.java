@@ -57,7 +57,6 @@ public class AttendeeEventViewer extends AppCompatActivity {
         setContentView(R.layout.activity_attendee_event_viewer);
 
 
-
         //extract event info
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
