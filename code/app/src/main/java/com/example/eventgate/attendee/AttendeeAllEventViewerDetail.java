@@ -26,6 +26,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.installations.FirebaseInstallations;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +45,8 @@ public class AttendeeAllEventViewerDetail extends AppCompatActivity {
     private ListView alertsList;
     private ArrayAdapter<OrganizerAlert> alertsAdapter;
     Button back_button, viewAttendeesButton;
+    private String userId;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +54,10 @@ public class AttendeeAllEventViewerDetail extends AppCompatActivity {
         setContentView(R.layout.activity_attendee_event_viewer_detailed);
 
 
+        FirebaseInstallations.getInstance().getId().addOnSuccessListener(id -> {
+             userId = id;
+
+        });
 
         //extract event info
         Bundle extras = getIntent().getExtras();
@@ -65,7 +72,27 @@ public class AttendeeAllEventViewerDetail extends AppCompatActivity {
         alertsAdapter = new AlertListAdapter(this, alertsDataList);
         alertsList.setAdapter(alertsAdapter);
 
-        isAttendeeRegistered();
+        //this checks whether to grey out signup button
+        isAttendeeRegistered(userId);
+
+        Button signupButton = findViewById(R.id.signupButton);
+
+
+        //signing up will need 2 functions since registered events are stored under attendees and events
+
+        signupButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EventDB eventDB = new EventDB();
+
+                eventDB.registerAttendee(AttendeeAllEventViewerDetail.this, userId,eventID);
+
+                eventDB.registerAttendee2(userId,eventID);
+
+                isAttendeeRegistered(userId);
+
+            }
+        });
 
 
 
@@ -142,27 +169,32 @@ public class AttendeeAllEventViewerDetail extends AppCompatActivity {
 
     }
 
-    private void isAttendeeRegistered() {
-        FirebaseUser currentUser = MainActivity.db.getmAuth().getCurrentUser();
-        if (currentUser == null) {
+    private void isAttendeeRegistered(String userId) {
 
-            return;
-        }
-        String userId = currentUser.getUid();
-        EventDB eventDB = new EventDB();
 
-        eventDB.isAttendeeSignedUp(userId, eventID).thenAccept(isRegistered -> {
-            runOnUiThread(() -> {
-                Button signupButton = findViewById(R.id.signupButton);
-                if (isRegistered) {
-                    signupButton.setText("Already signed up");
-                    signupButton.setBackgroundColor(getResources().getColor(android.R.color.holo_red_dark));
-                    signupButton.setEnabled(false);
-                }
+        //getting fid must be asyncrhoinous, otherwise will be null
+        FirebaseInstallations.getInstance().getId().addOnSuccessListener(id -> {
+            String userId2 = id;
+            EventDB eventDB = new EventDB();
+
+            eventDB.isAttendeeSignedUp(userId2, eventID).thenAccept(isRegistered -> {
+                runOnUiThread(() -> {
+                    Button signupButton = findViewById(R.id.signupButton);
+                    if (isRegistered) {
+                        signupButton.setText("Already signed up");
+                        signupButton.setBackgroundColor(getResources().getColor(android.R.color.holo_red_dark));
+                        signupButton.setEnabled(false);
+                    } else {
+
+                    }
+                });
+            }).exceptionally(exception -> {
+                Log.e("YourActivity", "Error checking event registration status", exception);
+                return null;
             });
-        }).exceptionally(exception -> {
-            Log.e("YourActivity", "Error checking event registration status", exception);
-            return null;
+        }).addOnFailureListener(e -> {
+
+            Log.e("YourActivity", "Failed to get Firebase Installation ID", e);
         });
     }
 
