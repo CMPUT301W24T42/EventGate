@@ -11,6 +11,7 @@ import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertTrue;
 
+import androidx.test.espresso.action.ViewActions;
 import androidx.test.espresso.intent.Intents;
 import androidx.test.espresso.intent.rule.IntentsTestRule;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
@@ -26,6 +27,11 @@ public class AdminActivityTest {
     public ActivityScenarioRule<AdminActivity> activityRule =
             new ActivityScenarioRule<>(AdminActivity.class);
 
+    @Before
+    public void loadData() throws InterruptedException {
+        Thread.sleep(1000); // allow time for the firebase data to load in
+    }
+
     @Test
     public void testBackButton() {
         onView(withId(R.id.admin_back_button)).perform(click());
@@ -33,15 +39,15 @@ public class AdminActivityTest {
         activityRule.getScenario().onActivity(activity -> assertTrue(activity.isFinishing()));
     }
 
-//    @Test
-//    public void testEventsListView() {
-//        // click on the first item in the events list view
-//        onData(anything())
-//                .inAdapterView(withId(R.id.event_list)) // Replace R.id.list_view with the actual ID of your ListView
-//                .atPosition(0) // Index of the item to click (0 for the first item)
-//                .perform(click());
-//
-//        // check that it starts the AdminEventViewerActivity
-//        onView(withId(R.id.admin_event_viewer_layout)).check(matches(isDisplayed()));
-//    }
+    @Test
+    public void testEventsListView() {
+        // click on the first item in the events list view
+        onData(anything())
+                .inAdapterView(withId(R.id.event_list))
+                .atPosition(0)
+                .perform(click());
+
+        // check that it starts the AdminEventViewerActivity
+        onView(withId(R.id.admin_event_viewer_layout)).check(matches(isDisplayed()));
+    }
 }
