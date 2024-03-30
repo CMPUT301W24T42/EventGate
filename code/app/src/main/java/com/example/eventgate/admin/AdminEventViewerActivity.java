@@ -199,22 +199,25 @@ public class AdminEventViewerActivity extends AppCompatActivity {
      * gets image urls from firestore and displays images in viewpager
      */
     private void displayEventPosters() {
-        postersRef
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful() && !task.getResult().isEmpty()) {
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            String imageUrl = document.getString("url");
-                            posterImageUrls.add(imageUrl);
-                            posterPagerAdapter.notifyDataSetChanged();
+        if (postersRef != null) {  // if event has posters stored in database
+            postersRef
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                String imageUrl = document.getString("url");
+                                posterImageUrls.add(imageUrl);
+                                posterPagerAdapter.notifyDataSetChanged();
+                            }
+                            if (!posterImageUrls.isEmpty()) {
+                                enableButton();
+                            }
+                        } else {
+                            Log.d(TAG, "get failed with ", task.getException());
                         }
-                        if (!posterImageUrls.isEmpty()) {
-                            enableButton();
-                        }
-                    } else {
-                        Log.d(TAG, "get failed with ", task.getException());
-                    }
-                });
+                    });
+        }
+
     }
 
     /**

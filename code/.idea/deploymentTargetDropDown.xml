@@ -5,10 +5,16 @@
       <entry key="AdminActivityTest">
         <State />
       </entry>
+      <entry key="AdminEventViewerActivityTest">
+        <State />
+      </entry>
       <entry key="AttendeeActivityTest">
         <State />
       </entry>
       <entry key="MainActivityTest">
+        <State />
+      </entry>
+      <entry key="Tests in 'com.example.eventgate'">
         <State />
       </entry>
       <entry key="app">
@@ -24,7 +30,7 @@
               </deviceKey>
             </Target>
           </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-03-29T23:46:49.659801Z" />
+          <timeTargetWasSelectedWithDropDown value="2024-03-30T19:58:41.871495Z" />
         </State>
       </entry>
     </value>
