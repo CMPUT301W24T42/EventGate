@@ -96,10 +96,35 @@ public class OrganizerEventEditorActivity extends AppCompatActivity implements C
                             for (String attendeeId : attendeeIds) {
                                 FirebaseFirestore.getInstance().collection("attendees")
                                         .document(attendeeId).get().addOnSuccessListener(documentSnapshot -> {
-                                            attendeeDataList.add(documentSnapshot.getString("name"));
-                                            // If it's the last element, notify the array adapter
-                                            if (attendeeId.equals(attendeeIds.get(attendeeIds.size() - 1))) {
-                                                attendeeAdapter.notifyDataSetChanged();
+                                            if (documentSnapshot.exists()) {
+                                                // Retrieve name and check in count
+                                                String attendeeName = documentSnapshot.getString("name");
+                                                Object eventCheckInNumberMapObject = documentSnapshot.get("eventCheckInNumber");
+
+                                                if (eventCheckInNumberMapObject instanceof Map) {
+                                                    Map<?, ?> eventCheckInNumberMap = (Map<?, ?>) eventCheckInNumberMapObject;
+                                                    // Check if eventId exists in the map
+                                                    Object checkInCountObject = eventCheckInNumberMap.get(eventId);
+
+                                                    if (checkInCountObject instanceof Integer) {
+                                                        Integer checkInCount = (Integer) checkInCountObject;
+                                                        String checkInCountString = Integer.toString(checkInCount);
+                                                        attendeeDataList.add(attendeeName + " - Check-ins: " + checkInCountString);
+                                                    } else {
+                                                        attendeeDataList.add(attendeeName + " - Check-ins: 0");
+                                                    }
+
+                                                } else {
+                                                    Log.d("Firestore", "eventCheckInNumber is not a Map");
+                                                }
+
+                                                // If it's the last element, notify the array adapter
+                                                if (attendeeId.equals(attendeeIds.get(attendeeIds.size() - 1))) {
+                                                    attendeeAdapter.notifyDataSetChanged();
+                                                }
+
+                                            } else {
+                                                Log.d("Firestore", "Document does not exist");
                                             }
                                         });
                             }
