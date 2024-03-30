@@ -27,7 +27,7 @@
     <string name="alert_title">Alert Title</string>
     <string name="realtime_attendance">Realtime Attendance:</string>
     <string name="hashtag">#</string>
-    <string name="attendees_list">List of attendees</string>
+    <string name="attendees_list">List of Attendees</string>
     <string name="notification_info">EventGate would like to send you notifications. Enabling
         notifications keep you informed about event updates and milestones that your events have
         reached. Notifications can be always be managed in settings at a later time.</string>
