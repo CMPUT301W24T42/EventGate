@@ -35,4 +35,11 @@
     <string name="ok_button">OK</string>
     <string name="dont_ask_again">Don\'t ask again</string>
     <string name="attendee_info">Attendee Info</string>
+    <string name="attendance_limit">Attendance Limit</string>
+    <string name="event_details">Event Details</string>
+    <string name="edit_qr">Edit QR</string>
+    <string name="qr_codes">QR Codes</string>
+    <string name="check_in_qr_code">Check-In QR Code</string>
+    <string name="event_details_qr_code">Event Details QR Code</string>
+    <string name="share_qr">Share QR</string>
 </resources>

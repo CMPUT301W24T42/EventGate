@@ -75,7 +75,6 @@ public class OrganizerCreateEventFragment extends DialogFragment {
         this.qrCodeListener = listener;
     }
 
-
     /**
      * Called to create the dialog shown in this fragment.
      *
@@ -98,14 +97,13 @@ public class OrganizerCreateEventFragment extends DialogFragment {
         Button generateDescriptionQRButton = view.findViewById(R.id.generateDescriptionQRButton);
 
         EditText eventDetailsEditText = view.findViewById(R.id.eventDetailsEdittext);
-
+        EditText organizerLimitAttendance = view.findViewById(R.id.organizerLimitAttendance);
 
         // This QR Code is for attendees to check in to the event
         generateQRButton.setOnClickListener(v -> {
             // Only generate one QR Code
             if (!qRCodeGenerated) {
                 eventName = organizerCreateEventName.getText().toString().trim();
-
 
                 // Check if the eventName is empty or null
                 if (eventName.isEmpty()) {
@@ -114,12 +112,10 @@ public class OrganizerCreateEventFragment extends DialogFragment {
                     return; // Exit the method
                 }
 
-
                 // If the Description QR code has not been generated, then an event must be created
                 if (!descriptionQRCodeGenerated) {
                     // Create an Event object
                     eventAdded = new Event(eventName);
-
                 }
 
                 if (qrCodeListener != null) {
@@ -171,6 +167,9 @@ public class OrganizerCreateEventFragment extends DialogFragment {
 
                 descriptionQRCode.setImageBitmap(descriptionQRBitmap);
                 descriptionQRCodeGenerated = true;
+
+                EventDB eventDB = new EventDB();
+                eventDB.addDescriptionQR(eventAdded, descriptionQRBitmap);
             }
         });
 

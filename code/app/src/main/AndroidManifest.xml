@@ -20,6 +20,9 @@
         android:theme="@style/Theme.EventGate"
         tools:targetApi="31">
         <activity
+            android:name=".organizer.OrganizerEditQR"
+            android:exported="false" />
+        <activity
             android:name=".organizer.OrganizerViewAttendeeActivity"
             android:exported="false" />
 

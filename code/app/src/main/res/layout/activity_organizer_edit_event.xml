@@ -53,34 +53,34 @@
                 android:id="@+id/realtime_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="22dp"
-                android:text="@string/realtime_attendance"
-                android:textSize="18dp"
-                android:textColor="@color/black"
+                android:gravity="center"
                 android:paddingStart="15dp"
                 android:paddingEnd="8dp"
-                android:gravity="center" />
+                android:text="@string/realtime_attendance"
+                android:textColor="@color/black"
+                android:textSize="18dp" />
+
             <TextView
                 android:id="@+id/attendance_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="22dp"
                 android:layout_toRightOf="@+id/realtime_text_view"
+                android:gravity="center"
                 android:text="@string/hashtag"
-                android:textSize="18dp"
                 android:textColor="@color/black"
-                android:gravity="center" />
+                android:textSize="18dp" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_below="@id/realtime_text_view"
+                android:gravity="center"
                 android:paddingHorizontal="15dp"
                 android:text="@string/attendees_list"
-                android:textSize="24dp"
+                android:textAlignment="center"
                 android:textColor="@color/black"
-                android:gravity="center"
-                android:textAlignment="center"/>
+                android:textSize="24dp" />
         </RelativeLayout>
-
 
 
         <ListView
@@ -91,32 +91,35 @@
             android:choiceMode="singleChoice" />
 
 
-
     </LinearLayout>
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <LinearLayout
         android:id="@+id/buttonContainer"
+        android:layout_width="411dp"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/OrganizerEditBackButton">
+        app:layout_constraintBottom_toTopOf="@+id/OrganizerEditBackButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/eventContainer">
 
         <Button
             android:id="@+id/button_create_alert"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
             android:layout_weight="1"
-            android:text="Create Alert"
-            android:layout_marginEnd="8dp" />
+            android:text="Create Alert" />
 
         <Button
             android:id="@+id/button_upload_poster"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
             android:layout_weight="1"
-            android:text="Upload Poster"
-            android:layout_marginStart="8dp" />
+            android:text="Upload Poster" />
 
     </LinearLayout>
 
@@ -124,16 +127,32 @@
         android:id="@+id/OrganizerEditBackButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="30dp"
         android:layout_marginBottom="25dp"
         android:backgroundTint="@color/light_gray"
-        android:ems="5"
+        android:ems="6"
         android:text="@string/back"
         android:textColor="@color/black"
         android:textSize="18sp"
         app:cornerRadius="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-    </com.google.android.material.button.MaterialButton>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/OrganizerEditQRButton"
+        app:layout_constraintTop_toBottomOf="@+id/buttonContainer" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/OrganizerEditQRButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/light_gray"
+        android:ems="6"
+        android:text="@string/edit_qr"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:cornerRadius="0dp"
+        app:layout_constraintEnd_toStartOf="@+id/OrganizerEditBackButton"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonContainer" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

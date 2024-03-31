@@ -65,7 +65,7 @@ public class EventDB {
     public Bitmap AddOrganizerEvent(Event event, String deviceId) {
         String eventId = collection.document().getId();
         event.setEventId(eventId);
-        // add the organizer to eventid topic so that thet can receive alerts for event milestones
+        // add the organizer to eventid topic so that they can receive alerts for event milestones
         MyFirebaseMessagingService messagingService = MainActivity.db.getMessagingService();
         messagingService.addUserToTopic(eventId);
 
@@ -425,5 +425,9 @@ public class EventDB {
         return futureEvents;
     }
 
+    public void addDescriptionQR(Event event, Bitmap descriptionQRBitmap) {
+        String eventId = event.getEventId();
+
+    }
 
 }
