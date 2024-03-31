@@ -42,4 +42,5 @@
     <string name="check_in_qr_code">Check-In QR Code</string>
     <string name="event_details_qr_code">Event Details QR Code</string>
     <string name="share_qr">Share QR</string>
+    <string name="organizer_view_qr_codes">QR Codes</string>
 </resources>

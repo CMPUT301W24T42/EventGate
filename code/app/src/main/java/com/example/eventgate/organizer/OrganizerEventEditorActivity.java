@@ -150,6 +150,7 @@ public class OrganizerEventEditorActivity extends AppCompatActivity implements C
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(OrganizerEventEditorActivity.this, OrganizerEditQR.class);
+                intent.putExtra("eventId", eventId);
                 startActivity(intent);
             }
         });
