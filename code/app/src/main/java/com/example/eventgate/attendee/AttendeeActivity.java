@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -34,8 +35,15 @@ import com.example.eventgate.organizer.AttendeeListAdapter;
 import com.example.eventgate.organizer.EventListAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FieldPath;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.installations.FirebaseInstallations;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -50,6 +58,8 @@ import android.graphics.Paint;
 //https://www.baeldung.com/sha-256-hashing-java
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -71,6 +81,8 @@ public class AttendeeActivity extends AppCompatActivity {
     ArrayList<Event> allEventsDataList;
     ArrayAdapter<Event> allEventsAdapter;
     ListView allEventsList;
+    Boolean deterministicProfileRemoved = false;
+    //tracker for removing deterministic profile
 
 
 
@@ -104,6 +116,10 @@ public class AttendeeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_attendee);
 
 
+        //get saved user preferences
+        SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
+        deterministicProfileRemoved = prefs.getBoolean("DeterministicProfileRemoved", false);
+
 
         //some handling for attendees on start
 
@@ -116,18 +132,16 @@ public class AttendeeActivity extends AppCompatActivity {
         textView.setText(spannableString);*/
 
 
-        //generate user profile pic
-        if (hashBytes == null) {
-            generateHash();
-            createBitmap2();
-            ImageButton imageButton = findViewById(R.id.profile_image);
-            imageButton.setImageBitmap(profileBitmap);
-        }
 
+        //generate user profile pic
+        updateProfilePicture();
+
+        //show profile pic
+        retrieveAndSetUserImage();
 
         //check if first time opening attendee section, save attendee to db if so
-        SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
-        boolean isFirstTimeOpening = prefs.getBoolean("isFirstTime", true);
+       /* SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
+        boolean isFirstTimeOpening = prefs.getBoolean("isFirstTime", true);*/
         //this is all placeholder for now, im not exactly sure how we're going to handle saved user info w/ firebase auth yet
         /*if (isFirstTimeOpening) {
             user_settings_dialog();
@@ -288,6 +302,30 @@ public class AttendeeActivity extends AppCompatActivity {
 
     }*/
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateProfilePicture();
+    }
+
+    /**
+     * runs all functions for setting deterministic profile
+     * run at all times, unless pic removed
+     */
+    private void updateProfilePicture(){
+        //generate user profile pic
+        if (!deterministicProfileRemoved) {
+            if (hashBytes == null || profileBitmap == null) {
+                generateHash();
+                createBitmap2();
+                ImageButton imageButton = findViewById(R.id.profile_image);
+                imageButton.setImageBitmap(profileBitmap);
+            }
+        }
+        return;
+    }
+
+
     //uses attendeelistadapter
     private void viewAllEventsDialog2() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -345,24 +383,111 @@ public class AttendeeActivity extends AppCompatActivity {
      *                    (various data can be attached to Intent "extras").
      */
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_IMAGE && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            Uri imageUri = data.getData();
 
-        if (requestCode == PICK_IMAGE && resultCode == RESULT_OK) {
-            if (data == null) {
-
-                return;
-            }
-            try {
-                ImageButton imageButton = findViewById(R.id.profile_image);
-                Uri imageUri = data.getData();
-                imageButton.setImageURI(imageUri);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            FirebaseInstallations.getInstance().getId().addOnSuccessListener(id -> {
+                uploadImageToFirebase(imageUri, id);
+            }).addOnFailureListener(e -> {
+                Log.e("FirebaseInstallations", "Failed to retrieve ID", e);
+                Toast.makeText(getApplicationContext(), "Failed to retrieve user ID.", Toast.LENGTH_SHORT).show();
+            });
         }
     }
 
+    private void uploadImageToFirebase(Uri imageUri, String userId) {
+        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+        StorageReference fileReference = storageRef.child("images/" + userId + ".jpg");
+
+        Log.d("UploadImage", "Uploading image to Firebase Storage. Path: " + fileReference.getPath());
+
+        fileReference.putFile(imageUri)
+                .addOnSuccessListener(taskSnapshot -> fileReference.getDownloadUrl().addOnSuccessListener(uri -> {
+                    String downloadUrl = uri.toString();
+                    saveImageReferenceInFirestore(downloadUrl, userId);
+
+
+                    Log.d("UploadImage", "Image uploaded to Firebase Storage at path: " + fileReference.getPath());
+
+                    Toast.makeText(getApplicationContext(), "Upload successful", Toast.LENGTH_SHORT).show();
+                }))
+                .addOnFailureListener(e -> {
+                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Log.e("UploadImage", "Failed to upload image to Firebase Storage.", e);
+                });
+    }
+
+    private void saveImageReferenceInFirestore(String downloadUrl, String userId) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        Map<String, Object> profilePicture = new HashMap<>();
+        profilePicture.put("profilePicturePath", downloadUrl);
+
+        db.collection("attendees").document(userId)
+                .set(profilePicture, SetOptions.merge())
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("Firestore", "Profile picture path successfully written!");
+                    // show image after uploading
+                    fetchImagePathAndSetImageButton(userId, findViewById(R.id.profile_image));
+                })
+                .addOnFailureListener(e -> Log.w("Firestore", "Error writing document", e));
+    }
+
+    private void fetchImagePathAndSetImageButton(String userId, ImageButton imageButton) {
+        String pathToSearch = "attendees/" + userId + "/profilePicturePath"; // Adjusted path
+        Log.d("FetchImage", "Searching for image path at: " + pathToSearch);
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("attendees").document(userId).get().addOnSuccessListener(documentSnapshot -> {
+            String imagePath = documentSnapshot.getString("profilePicturePath"); // Updated key
+            if (imagePath != null && !imagePath.isEmpty()) {
+                Log.d("FetchImage", "Image path found: " + imagePath);
+
+                // starts sequence of downloading and showing profile pic
+                downloadImageAndSetImageButton(imagePath, imageButton);
+
+
+                Log.d("FetchImage", "Image stored in Firestore at path: " + pathToSearch);
+            } else {
+                Log.d("FetchImage", "No image path found for user: " + userId);
+            }
+        }).addOnFailureListener(e -> {
+            Log.e("FetchImage", "Error fetching image path: " + e.getMessage());
+            Toast.makeText(getApplicationContext(), "Error fetching image path: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        });
+    }
+
+    private void downloadImageAndSetImageButton(String imagePath, ImageButton imageButton) {
+        StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(imagePath);
+
+        // temporary file for the downloaded image
+        File localFile;
+        try {
+            localFile = File.createTempFile("profileImage", "jpg");
+        } catch (IOException e) {
+            Log.e("Storage", "Error creating temporary file", e);
+            return;
+        }
+
+        storageRef.getFile(localFile).addOnSuccessListener(taskSnapshot -> {
+            Bitmap bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
+            imageButton.setImageBitmap(bitmap);
+        }).addOnFailureListener(exception -> {
+            Log.e("Storage", "Error downloading image", exception);
+        });
+    }
+
+    //main controller for profile pics
+    public void retrieveAndSetUserImage() {
+        FirebaseInstallations.getInstance().getId().addOnSuccessListener(installId -> {
+            String userId = installId;
+            ImageButton imageButton = findViewById(R.id.profile_image);
+            fetchImagePathAndSetImageButton(userId, imageButton);
+        }).addOnFailureListener(e -> {
+            Log.e("FirebaseInstallations", "Error retrieving Firebase Install ID", e);
+        });
+    }
 
 
     /**
@@ -431,7 +556,36 @@ public class AttendeeActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 //remove current profile picture
                 ImageButton imageButton = findViewById(R.id.profile_image);
-                imageButton.setImageDrawable(null);
+                imageButton.setImageResource(R.drawable.profile_picture);
+                // Save that deterministic profile pic has been removed to sharedpref
+                getSharedPreferences("MyAppPrefs", MODE_PRIVATE).edit()
+                        .putBoolean("DeterministicProfileRemoved", true)
+                        .apply();
+
+                // Clear the profile picture path in Firestore db
+                FirebaseInstallations.getInstance().getId().addOnSuccessListener(installId -> {
+                    String userId = installId;
+                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+                    db.collection("attendees").document(userId)
+                            .update("profilePicturePath", null)
+                            .addOnSuccessListener(aVoid -> {
+                                Log.d("RemoveProfilePic", "Profile picture removed successfully!");
+                                Toast.makeText(getApplicationContext(), "Profile picture removed successfully!", Toast.LENGTH_SHORT).show();
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.e("RemoveProfilePic", "Error removing profile picture", e);
+
+                            });
+                }).addOnFailureListener(e -> {
+                    Log.e("FirebaseInstallations", "Error retrieving Firebase Install ID", e);
+
+                });
+
+                // Save that deterministic profile pic has been removed to shared preferences
+                getSharedPreferences("MyAppPrefs", MODE_PRIVATE).edit()
+                        .putBoolean("DeterministicProfileRemoved", true)
+                        .apply();
+
             }
         });
 
