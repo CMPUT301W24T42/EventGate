@@ -31,6 +31,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/users_title" />
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Images"/>
 
     </com.google.android.material.tabs.TabLayout>
 
@@ -52,10 +56,12 @@
             android:layout_gravity="bottom|right"
             android:layout_marginEnd="30dp"
             android:layout_marginBottom="25dp"
-            android:backgroundTint="@color/light_gray"
+            android:backgroundTint="@color/green"
             android:ems="4"
             android:text="@string/back"
             android:textColor="@color/black"
+            android:elevation="5dp"
+            android:stateListAnimator="@null"
             android:textSize="20sp"
             android:paddingVertical="10dp"
             app:cornerRadius="10dp">

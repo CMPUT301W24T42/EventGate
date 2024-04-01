@@ -28,12 +28,13 @@ public class AdminViewPagerAdapter extends FragmentStateAdapter {
         switch (position) {
             case 0: return new EventsFragment();
             case 1: return new AttendeesFragment();
+            case 2: return new ImagesFragment();
             default: return new EventsFragment();
         }
     }
 
     @Override
     public int getItemCount() {
-        return 2;
+        return 3;
     }
 }
