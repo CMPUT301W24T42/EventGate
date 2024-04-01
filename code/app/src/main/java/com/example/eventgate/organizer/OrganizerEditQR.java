@@ -56,7 +56,7 @@ public class OrganizerEditQR extends AppCompatActivity {
         eventId = getIntent().getStringExtra("eventId");
         eventName = getIntent().getStringExtra("eventName");
 
-        // Accessing Firestore and retrieving the QR code data
+        // Accessing Firestore and retrieving the QR code data if they have already been generated
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         assert eventId != null;
         db.collection("events").document(eventId).get()
@@ -86,10 +86,34 @@ public class OrganizerEditQR extends AppCompatActivity {
                             checkInQRCode.setImageBitmap(eventQRBitmap);
                             checkInQRGenerated = true;
                         }
+
+                        // Now the same with the other QR Code
+                        String descriptionQRCodeDataString = documentSnapshot.getString("descriptionQRCode");
+
+                        // Parse the string representation back into an array of integers
+                        if (descriptionQRCodeDataString != null && !descriptionQRCodeDataString.isEmpty()) {
+                            String[] descriptionQRCodeArray = descriptionQRCodeDataString.substring(1, descriptionQRCodeDataString.length() - 1).split(", ");
+                            int[] descriptionQRCodeIntArray = new int[descriptionQRCodeArray.length];
+                            for (int i = 0; i < descriptionQRCodeArray.length; i++) {
+                                descriptionQRCodeIntArray[i] = Integer.parseInt(descriptionQRCodeArray[i]);
+                            }
+
+                            // Convert the array of integers to a byte array
+                            byte[] descriptionQRCodeByteArray = new byte[descriptionQRCodeIntArray.length];
+                            for (int i = 0; i < descriptionQRCodeIntArray.length; i++) {
+                                descriptionQRCodeByteArray[i] = (byte) descriptionQRCodeIntArray[i];
+                            }
+
+                            // Decode the byte array into a Bitmap
+                            Bitmap descriptionQRBitmap = BitmapFactory.decodeByteArray(descriptionQRCodeByteArray, 0, descriptionQRCodeByteArray.length);
+
+                            // Set the Bitmap to the ImageView
+                            descriptionQRCode.setImageBitmap(descriptionQRBitmap);
+                            descriptionQRGenerated = true;
+                        }
                     }
                 })
                 .addOnFailureListener(e -> {
-                    // Handle failures
                 });
 
 
@@ -118,8 +142,18 @@ public class OrganizerEditQR extends AppCompatActivity {
                     byteArrayAsList.add((int) b);
                 }
 
+                // Store the QR code string in Firestore
+                FirebaseFirestore.getInstance().collection("events").document(eventId)
+                        .update("checkInQRCode", byteArrayAsList.toString())
+                        .addOnSuccessListener(aVoid -> {
+                            // Update successful
+                            checkInQRGenerated = true;
+                        })
+                        .addOnFailureListener(e -> {
+                        });
+
+                // Update ImageView
                 checkInQRCode.setImageBitmap(eventQRBitmap);
-                checkInQRGenerated = true;
             }
         });
 
@@ -148,8 +182,18 @@ public class OrganizerEditQR extends AppCompatActivity {
                     byteArrayAsList.add((int) b);
                 }
 
+                // Store the QR code string in Firestore
+                FirebaseFirestore.getInstance().collection("events").document(eventId)
+                        .update("descriptionQRCode", byteArrayAsList.toString())
+                        .addOnSuccessListener(aVoid -> {
+                            // Update successful
+                            descriptionQRGenerated = true;
+                        })
+                        .addOnFailureListener(e -> {
+                        });
+
+                // Update ImageView
                 descriptionQRCode.setImageBitmap(descriptionQRBitmap);
-                descriptionQRGenerated = true;
             }
         });
 
