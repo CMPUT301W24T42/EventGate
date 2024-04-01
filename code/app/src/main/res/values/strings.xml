@@ -48,4 +48,6 @@
     <string name="generate_check_in_qr_edit">Generate QR</string>
     <string name="reuse_existing_qr">Reuse Existing QR</string>
     <string name="generate_detail_qr">Generate Detail QR</string>
+    <string name="select_check_in_qr_code">Select Check-In QR Code</string>
+    <string name="reuse_qr">Reuse QR</string>
 </resources>
