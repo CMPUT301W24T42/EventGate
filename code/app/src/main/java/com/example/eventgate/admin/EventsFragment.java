@@ -19,6 +19,9 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 
+/**
+ *  this is a fragment to show a list of events
+ */
 public class EventsFragment extends Fragment {
     /**
      * This is an array list that holds events

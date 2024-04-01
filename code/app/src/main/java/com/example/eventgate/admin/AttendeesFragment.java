@@ -18,6 +18,9 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 
+/**
+ * this is a fragment to show a list of users/attendees
+ */
 public class AttendeesFragment extends Fragment {
     /**
      * this is an array list that holds attendees

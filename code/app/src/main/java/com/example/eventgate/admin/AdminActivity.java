@@ -9,13 +9,25 @@ import android.widget.Button;
 import com.example.eventgate.R;
 import com.google.android.material.tabs.TabLayout;
 
+// citations
+// https://www.youtube.com/watch?v=LXl7D57fgOQ Elements of the following layout design,
+// (activity_admin) is from Codes Easy, Youtube, "How to Implement TabLayout in your Android App", 2023-01-23
 /**
  * This is the activity for the administrator main menu.
  * It allows the administrator to view and delete any events or users
  */
 public class AdminActivity extends AppCompatActivity {
+    /**
+     * holds the tabLayout
+     */
     TabLayout tabLayout;
+    /**
+     * holds the viewpager used to swipe between tabs
+     */
     ViewPager2 viewPager2;
+    /**
+     * the adapter for the viewpager
+     */
     AdminViewPagerAdapter viewPager2Adapter;
 
     /**
@@ -29,10 +41,13 @@ public class AdminActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin);
 
+        // get layout references
         tabLayout = findViewById(R.id.admin_tab_layout);
         viewPager2 = findViewById(R.id.admin_viewpager);
+        // create and set adapter
         viewPager2Adapter = new AdminViewPagerAdapter(this);
         viewPager2.setAdapter(viewPager2Adapter);
+        // set up the tabLayout
         setUpTabLayout();
 
         // sends admin back to the main menu
@@ -40,7 +55,9 @@ public class AdminActivity extends AppCompatActivity {
         adminActivityBackButton.setOnClickListener(v -> finish());
     }
 
-
+    /**
+     * this handles the logic for selecting tabs in the tabLayout
+     */
     private void setUpTabLayout() {
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
