@@ -62,7 +62,7 @@ public class EventDB {
      * @param event         The event object containing details of the event.
      * @param deviceId      The organizer's firebase installation id
      */
-    public Bitmap AddOrganizerEvent(Event event, String deviceId) {
+    public void AddOrganizerEvent(Event event, String deviceId) {
         String eventId = collection.document().getId();
         event.setEventId(eventId);
         // add the organizer to eventid topic so that they can receive alerts for event milestones
@@ -70,39 +70,40 @@ public class EventDB {
         messagingService.addUserToTopic(eventId);
 
         // Create Check in QR Code
-        MultiFormatWriter writer = new MultiFormatWriter();
-
-        try {
-            BitMatrix matrix = writer.encode(eventId, BarcodeFormat.QR_CODE, 400, 400);
-            BarcodeEncoder encoder = new BarcodeEncoder();
-            eventQRBitmap = encoder.createBitmap(matrix);
-
-        } catch (WriterException e) {
-            e.printStackTrace();
-        }
-
-        event.setEventQRBitmap(eventQRBitmap);
+//        MultiFormatWriter writer = new MultiFormatWriter();
+//
+//        try {
+//            BitMatrix matrix = writer.encode(eventId, BarcodeFormat.QR_CODE, 400, 400);
+//            BarcodeEncoder encoder = new BarcodeEncoder();
+//            eventQRBitmap = encoder.createBitmap(matrix);
+//
+//        } catch (WriterException e) {
+//            e.printStackTrace();
+//        }
+//
+//        event.setEventQRBitmap(eventQRBitmap);
 
         // Convert bitmap to byte array
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        eventQRBitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-        byte[] byteArray = baos.toByteArray();
-
-        // Convert byte array to list of integers
-        List<Integer> byteArrayAsList = new ArrayList<>();
-        for (byte b : byteArray) {
-            byteArrayAsList.add((int) b);
-        }
+//        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//        eventQRBitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+//        byte[] byteArray = baos.toByteArray();
+//
+//        // Convert byte array to list of integers
+//        List<Integer> byteArrayAsList = new ArrayList<>();
+//        for (byte b : byteArray) {
+//            byteArrayAsList.add((int) b);
+//        }
 
         HashMap<String, Object> data = new HashMap<>();
         data.put("eventId", event.getEventId());
         data.put("name", event.getEventName());
         data.put("description", event.getEventDescription());
-        data.put("checkInQRCode", byteArrayAsList.toString());
+//        data.put("checkInQRCode", byteArrayAsList.toString());
         data.put("organizer", deviceId); // Set organizer field to firebase installation id
         data.put("attendees", new ArrayList<String>()); // Set attendees field to blank
         data.put("eventDetails", event.getEventDetails());
         data.put("milestones", new ArrayList<Integer>());
+        data.put("attendanceLimit", event.getEventAttendanceLimit());
         System.out.println(event.getEventDetails());
         System.out.println(event.getEventId());
 
@@ -112,7 +113,7 @@ public class EventDB {
                 .addOnSuccessListener(unused -> Log.d(TAG, "Event has been added successfully!"))
                 .addOnFailureListener(e -> Log.d(TAG, "Event could not be added!" + e));
 
-        return eventQRBitmap;
+//        return eventQRBitmap;
     }
 
     /**
@@ -424,10 +425,4 @@ public class EventDB {
                 });
         return futureEvents;
     }
-
-    public void addDescriptionQR(Event event, Bitmap descriptionQRBitmap) {
-        String eventId = event.getEventId();
-
-    }
-
 }

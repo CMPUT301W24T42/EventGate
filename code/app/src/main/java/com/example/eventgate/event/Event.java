@@ -41,6 +41,7 @@ public class Event {
      * Holds the details of the event
      */
     private String eventDetails;
+    private Integer eventAttendanceLimit;
 
     /**
      * Constructs an Event
@@ -135,5 +136,10 @@ public class Event {
      */
     public ArrayList<OrganizerAlert> getAlerts() {
         return alerts;
+    }
+
+    public Integer getEventAttendanceLimit() { return eventAttendanceLimit; }
+    public void setEventAttendanceLimit(Integer attendanceLimit) {
+        this.eventAttendanceLimit = attendanceLimit;
     }
 }

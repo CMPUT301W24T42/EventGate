@@ -16,7 +16,7 @@
         android:layout_marginStart="30dp"
         android:layout_marginTop="30dp"
         android:layout_marginEnd="30dp"
-        android:layout_marginBottom="87dp"
+        android:layout_marginBottom="46dp"
         android:background="@drawable/list_rounded_corners"
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/OrganizerEditQRBackButton"
@@ -54,6 +54,40 @@
             android:contentDescription="@string/qrcode"
             android:scaleType="fitCenter" />
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/generateCheckInQRButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/light_gray"
+                android:ems="11"
+                android:text="@string/generate_check_in_qr_edit"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                app:cornerRadius="0dp" />
+
+            <Space
+                android:layout_width="8dp"
+                android:layout_height="wrap_content" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/ReuseQR"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/light_gray"
+                android:ems="11"
+                android:text="@string/reuse_existing_qr"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                app:cornerRadius="0dp" />
+
+        </LinearLayout>
+
         <TextView
             android:id="@+id/DescriptionQRCode"
             android:layout_width="match_parent"
@@ -73,6 +107,21 @@
             android:contentDescription="@string/qrcode"
             android:scaleType="fitCenter" />
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/generateDescriptionQRButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:backgroundTint="@color/light_gray"
+            android:ems="11"
+            android:text="@string/generate_detail_qr"
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            app:cornerRadius="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/organizerCreateEventName" />
+
     </LinearLayout>
 
     <com.google.android.material.button.MaterialButton
@@ -88,7 +137,6 @@
         app:cornerRadius="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/OrganizerEditQRShareButton"
         app:layout_constraintTop_toBottomOf="@+id/eventContainer" />
 
@@ -104,7 +152,6 @@
         app:cornerRadius="0dp"
         app:layout_constraintBaseline_toBaselineOf="@+id/OrganizerEditQRBackButton"
         app:layout_constraintEnd_toStartOf="@+id/OrganizerEditQRBackButton"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
 
 

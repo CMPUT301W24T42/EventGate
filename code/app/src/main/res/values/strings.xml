@@ -43,4 +43,9 @@
     <string name="event_details_qr_code">Event Details QR Code</string>
     <string name="share_qr">Share QR</string>
     <string name="organizer_view_qr_codes">QR Codes</string>
+    <string name="generate_qr_code_edit">Generate QR Code</string>
+    <string name="generate_qr">Generate QR</string>
+    <string name="generate_check_in_qr_edit">Generate QR</string>
+    <string name="reuse_existing_qr">Reuse Existing QR</string>
+    <string name="generate_detail_qr">Generate Detail QR</string>
 </resources>
