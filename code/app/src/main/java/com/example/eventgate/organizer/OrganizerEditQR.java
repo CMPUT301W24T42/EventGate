@@ -27,8 +27,11 @@ import java.util.List;
 
 public class OrganizerEditQR extends AppCompatActivity {
     private Bitmap eventQRBitmap;
+    private Bitmap descriptionQRBitmap;
     private Boolean checkInQRGenerated = false;
+    private Boolean descriptionQRGenerated = false;
     private String eventId;
+    private String eventName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +54,7 @@ public class OrganizerEditQR extends AppCompatActivity {
         Button backButton = findViewById(R.id.OrganizerEditQRBackButton);
 
         eventId = getIntent().getStringExtra("eventId");
-
+        eventName = getIntent().getStringExtra("eventName");
 
         // Accessing Firestore and retrieving the QR code data
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -81,6 +84,7 @@ public class OrganizerEditQR extends AppCompatActivity {
 
                             // Set the Bitmap to the ImageView
                             checkInQRCode.setImageBitmap(eventQRBitmap);
+                            checkInQRGenerated = true;
                         }
                     }
                 })
@@ -116,6 +120,36 @@ public class OrganizerEditQR extends AppCompatActivity {
 
                 checkInQRCode.setImageBitmap(eventQRBitmap);
                 checkInQRGenerated = true;
+            }
+        });
+
+        generateDescriptionQRButton.setOnClickListener(v -> {
+            if (!descriptionQRGenerated) {
+                // Create Description QR Code
+                MultiFormatWriter writer = new MultiFormatWriter();
+
+                try {
+                    BitMatrix matrix = writer.encode(eventName, BarcodeFormat.QR_CODE, 400, 400);
+                    BarcodeEncoder encoder = new BarcodeEncoder();
+                    descriptionQRBitmap = encoder.createBitmap(matrix);
+
+                } catch (WriterException e) {
+                    e.printStackTrace();
+                }
+
+                // Convert bitmap to byte array
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                descriptionQRBitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+                byte[] byteArray = baos.toByteArray();
+
+                // Convert byte array to list of integers
+                List<Integer> byteArrayAsList = new ArrayList<>();
+                for (byte b : byteArray) {
+                    byteArrayAsList.add((int) b);
+                }
+
+                descriptionQRCode.setImageBitmap(descriptionQRBitmap);
+                descriptionQRGenerated = true;
             }
         });
 
