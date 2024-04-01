@@ -37,14 +37,6 @@ public class OrganizerCreateEventFragment extends DialogFragment {
     }
 
     /**
-     * Sets the event added listener for this fragment.
-     *
-     * @param listener      The listener to be set.
-     */
-    public void setOnEventAddedListener(OnEventAddedListener listener) {
-    }
-
-    /**
      * Called to create the dialog shown in this fragment.
      *
      * @param savedInstanceState If the fragment is being re-created from a previous saved state, this is the state.

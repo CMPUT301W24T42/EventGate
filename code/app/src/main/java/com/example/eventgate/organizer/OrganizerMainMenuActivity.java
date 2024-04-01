@@ -75,7 +75,6 @@ public class OrganizerMainMenuActivity extends AppCompatActivity implements Orga
      * Callback method to handle the addition of a new event.
      *
      * @param event The event to be added.
-     * @return Bitmap containing QR code for the added event.
      */
     @Override
     public void onEventAdded(Event event) {
@@ -84,9 +83,7 @@ public class OrganizerMainMenuActivity extends AppCompatActivity implements Orga
 
         // Save event and check-in QR code data to Firebase using EventDB
         EventDB eventDB = new EventDB();
-        FirebaseInstallations.getInstance().getId().addOnSuccessListener(id -> {
-            eventDB.AddOrganizerEvent(event, id);
-        });
+        FirebaseInstallations.getInstance().getId().addOnSuccessListener(id -> eventDB.AddOrganizerEvent(event, id));
     }
 
     /**
