@@ -189,6 +189,18 @@ public class OrganizerCreateEventFragment extends DialogFragment {
                 try {
                     // Convert attendance limit to an integer
                     int limit = Integer.parseInt(attendanceLimit);
+
+                    if (limit != Float.parseFloat(attendanceLimit)) {
+                        Toast.makeText(getActivity(), "Attendance limit must be an integer.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    if (limit < 0) {
+                        // Show a toast message indicating that attendance limit must be a positive integer
+                        Toast.makeText(getActivity(), "Attendance limit must be a positive integer.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
                     eventAdded.setEventAttendanceLimit(limit);
                 } catch (NumberFormatException e) {
                     // Handle invalid input for attendance limit (non-numeric input)

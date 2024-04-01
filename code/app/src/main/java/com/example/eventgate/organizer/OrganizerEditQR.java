@@ -32,7 +32,14 @@ public class OrganizerEditQR extends AppCompatActivity {
         ImageView checkInQRCode = findViewById(R.id.organizerEditCheckInQRCode);
         ImageView descriptionQRCode = findViewById(R.id.organizerEditDescriptionQRCode);
 
+        Button generateCheckInQRCodeButton = findViewById(R.id.generateCheckInQRButton);
+        Button reuseQRButton = findViewById(R.id.ReuseQR);
+        Button generateDescriptionQRButton = findViewById(R.id.generateDescriptionQRButton);
+        Button shareQRCode = findViewById(R.id.OrganizerEditQRShareButton);
         Button backButton = findViewById(R.id.OrganizerEditQRBackButton);
+
+
+
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -41,38 +48,39 @@ public class OrganizerEditQR extends AppCompatActivity {
         });
 
         // Accessing Firestore and retrieving the QR code data
-//        FirebaseFirestore db = FirebaseFirestore.getInstance();
-//        String eventId = getIntent().getStringExtra("eventId");
-//        assert eventId != null;
-//        db.collection("events").document(eventId).get()
-//                .addOnSuccessListener(documentSnapshot -> {
-//                    if (documentSnapshot.exists()) {
-//                        // Retrieve the QR code data as a string from Firestore
-//                        String qrCodeDataString = documentSnapshot.getString("checkInQRCode");
-//
-//                        // Parse the string representation back into an array of integers
-//                        assert qrCodeDataString != null;
-//                        String[] qrCodeArray = qrCodeDataString.substring(1, qrCodeDataString.length() - 1).split(", ");
-//                        int[] qrCodeIntArray = new int[qrCodeArray.length];
-//                        for (int i = 0; i < qrCodeArray.length; i++) {
-//                            qrCodeIntArray[i] = Integer.parseInt(qrCodeArray[i]);
-//                        }
-//
-//                        // Convert the array of integers to a byte array
-//                        byte[] qrCodeByteArray = new byte[qrCodeIntArray.length];
-//                        for (int i = 0; i < qrCodeIntArray.length; i++) {
-//                            qrCodeByteArray[i] = (byte) qrCodeIntArray[i];
-//                        }
-//
-//                        // Decode the byte array into a Bitmap
-//                        Bitmap eventQRBitmap = BitmapFactory.decodeByteArray(qrCodeByteArray, 0, qrCodeByteArray.length);
-//
-//                        // Set the Bitmap to the ImageView
-//                        checkInQRCode.setImageBitmap(eventQRBitmap);
-//                    }
-//                })
-//                .addOnFailureListener(e -> {
-//                    // Handle failures
-//                });
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String eventId = getIntent().getStringExtra("eventId");
+        assert eventId != null;
+        db.collection("events").document(eventId).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        // Retrieve the QR code data as a string from Firestore
+                        String qrCodeDataString = documentSnapshot.getString("checkInQRCode");
+
+                        // Parse the string representation back into an array of integers
+                        if (qrCodeDataString != null && !qrCodeDataString.isEmpty()) {
+                            String[] qrCodeArray = qrCodeDataString.substring(1, qrCodeDataString.length() - 1).split(", ");
+                            int[] qrCodeIntArray = new int[qrCodeArray.length];
+                            for (int i = 0; i < qrCodeArray.length; i++) {
+                                qrCodeIntArray[i] = Integer.parseInt(qrCodeArray[i]);
+                            }
+
+                            // Convert the array of integers to a byte array
+                            byte[] qrCodeByteArray = new byte[qrCodeIntArray.length];
+                            for (int i = 0; i < qrCodeIntArray.length; i++) {
+                                qrCodeByteArray[i] = (byte) qrCodeIntArray[i];
+                            }
+
+                            // Decode the byte array into a Bitmap
+                            Bitmap eventQRBitmap = BitmapFactory.decodeByteArray(qrCodeByteArray, 0, qrCodeByteArray.length);
+
+                            // Set the Bitmap to the ImageView
+                            checkInQRCode.setImageBitmap(eventQRBitmap);
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    // Handle failures
+                });
     }
 }
