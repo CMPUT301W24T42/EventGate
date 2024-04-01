@@ -16,6 +16,7 @@ import android.widget.GridView;
 import com.example.eventgate.MainActivity;
 import com.example.eventgate.R;
 import com.example.eventgate.event.Event;
+import com.example.eventgate.organizer.CreateAlertFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
@@ -63,8 +64,8 @@ public class ImagesFragment extends Fragment {
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             String imageUrl = document.getString("url");
                             imageList.add(imageUrl);
-                            gridViewAdapter.notifyDataSetChanged();
                         }
+                        gridViewAdapter.notifyDataSetChanged();
                     }
                 });
             }
@@ -72,7 +73,12 @@ public class ImagesFragment extends Fragment {
 
         // set on item click listener
         gridView.setOnItemClickListener((parent, view1, position, id) -> {
-
+            ImagePopUpDialog fragment = new ImagePopUpDialog();
+            // create a bundle so we can access the eventId in the dialog fragment
+            Bundle args = new Bundle();
+            args.putString("imageUrl", imageList.get(position));
+            fragment.setArguments(args);
+            fragment.show(getActivity().getSupportFragmentManager(), "IMAGE POPUP");
         });
 
         return view;
