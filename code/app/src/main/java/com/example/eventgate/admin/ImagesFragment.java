@@ -26,8 +26,19 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
+// citations
+// https://www.youtube.com/watch?v=aRgSrJO40z8&t=690s Elements of the following layout design,
+//      (fragment_images) is from Foxandroid, Youtube, "How to Implement GridView in Android Studio
+//      || GridView || Android Studio Tutorial", 2021-04-27
+/**
+ * a fragment used to display images in a gridview
+ */
 public class ImagesFragment extends Fragment {
+    /**
+     * the list of images to be displayed
+     */
     ArrayList<String> imageList;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -39,13 +50,16 @@ public class ImagesFragment extends Fragment {
         AdminGridViewAdapter gridViewAdapter = new AdminGridViewAdapter(getContext(), imageList);
         gridView.setAdapter(gridViewAdapter);
 
+        // snapshot listener to add/update event posters from the database
         CollectionReference eventsRef = MainActivity.db.getEventsRef();
         eventsRef.addSnapshotListener((queryDocumentSnapshots, error) -> {
             for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
             {
+                // get posters collection for each event document
                 CollectionReference postersRef = eventsRef.document(doc.getId()).collection("posters");
                 postersRef.get().addOnCompleteListener(task -> {
                     if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                        // add urls from posters collection
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             String imageUrl = document.getString("url");
                             imageList.add(imageUrl);

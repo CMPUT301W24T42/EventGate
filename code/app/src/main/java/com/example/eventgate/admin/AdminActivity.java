@@ -11,7 +11,7 @@ import com.google.android.material.tabs.TabLayout;
 
 // citations
 // https://www.youtube.com/watch?v=LXl7D57fgOQ Elements of the following layout design,
-// (activity_admin) is from Codes Easy, Youtube, "How to Implement TabLayout in your Android App", 2023-01-23
+//      (activity_admin) is from Codes Easy, Youtube, "How to Implement TabLayout in your Android App", 2023-01-23
 /**
  * This is the activity for the administrator main menu.
  * It allows the administrator to view and delete any events or users

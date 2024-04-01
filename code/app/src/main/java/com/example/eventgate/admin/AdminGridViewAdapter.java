@@ -13,10 +13,24 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+/**
+ * an adapter for displaying images in a grid view
+ */
 public class AdminGridViewAdapter extends BaseAdapter {
+    /**
+     * holds the context
+     */
     Context context;
+    /**
+     * a list of images urls to be displayed
+     */
     ArrayList<String> imageList;
 
+    /**
+     * constructs a new AdminGridViewAdapter
+     * @param context the context
+     * @param imageList the list of images to be displayed
+     */
     public AdminGridViewAdapter(Context context, ArrayList<String> imageList) {
         this.context = context;
         this.imageList = imageList;
