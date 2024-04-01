@@ -15,8 +15,20 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.eventgate.R;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.journeyapps.barcodescanner.BarcodeEncoder;
+
+import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 public class OrganizerEditQR extends AppCompatActivity {
+    private Bitmap eventQRBitmap;
+    private Boolean checkInQRGenerated = false;
+    private String eventId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,18 +50,11 @@ public class OrganizerEditQR extends AppCompatActivity {
         Button shareQRCode = findViewById(R.id.OrganizerEditQRShareButton);
         Button backButton = findViewById(R.id.OrganizerEditQRBackButton);
 
+        eventId = getIntent().getStringExtra("eventId");
 
-
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
 
         // Accessing Firestore and retrieving the QR code data
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        String eventId = getIntent().getStringExtra("eventId");
         assert eventId != null;
         db.collection("events").document(eventId).get()
                 .addOnSuccessListener(documentSnapshot -> {
@@ -82,5 +87,43 @@ public class OrganizerEditQR extends AppCompatActivity {
                 .addOnFailureListener(e -> {
                     // Handle failures
                 });
+
+
+        generateCheckInQRCodeButton.setOnClickListener(v -> {
+            if (!checkInQRGenerated) {
+                // Create Check in QR Code
+                MultiFormatWriter writer = new MultiFormatWriter();
+
+                try {
+                    BitMatrix matrix = writer.encode(eventId, BarcodeFormat.QR_CODE, 400, 400);
+                    BarcodeEncoder encoder = new BarcodeEncoder();
+                    eventQRBitmap = encoder.createBitmap(matrix);
+
+                } catch (WriterException e) {
+                    e.printStackTrace();
+                }
+
+                // Convert bitmap to byte array
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                eventQRBitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+                byte[] byteArray = baos.toByteArray();
+
+                // Convert byte array to list of integers
+                List<Integer> byteArrayAsList = new ArrayList<>();
+                for (byte b : byteArray) {
+                    byteArrayAsList.add((int) b);
+                }
+
+                checkInQRCode.setImageBitmap(eventQRBitmap);
+                checkInQRGenerated = true;
+            }
+        });
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 }
