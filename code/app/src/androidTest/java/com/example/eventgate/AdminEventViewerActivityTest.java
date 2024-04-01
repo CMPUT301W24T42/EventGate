@@ -9,20 +9,13 @@ import android.content.Intent;
 
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.core.app.ApplicationProvider;
-import androidx.test.ext.junit.rules.ActivityScenarioRule;
 
-import com.example.eventgate.admin.AdminActivity;
 import com.example.eventgate.admin.AdminEventViewerActivity;
 
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 
 public class AdminEventViewerActivityTest {
-//    @Rule
-//    public ActivityScenarioRule<AdminEventViewerActivity> activityRule =
-//            new ActivityScenarioRule<>(AdminEventViewerActivity.class);
-
     @Before
     public void loadData() throws InterruptedException {
         Thread.sleep(1000);  // wait for any data to load in

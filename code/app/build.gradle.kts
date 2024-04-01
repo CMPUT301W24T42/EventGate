@@ -52,7 +52,7 @@ dependencies {
 
     androidTestImplementation("androidx.test.espresso:espresso-intents:3.5.1")
 
-    androidTestImplementation("androidx.fragment:fragment-testing:1.4.0")
+    debugImplementation("androidx.fragment:fragment-testing:1.6.2")
     implementation("com.journeyapps:zxing-android-embedded:4.1.0")
     implementation("com.google.zxing:core:3.3.3")
     implementation("com.google.firebase:firebase-storage:20.3.0")
