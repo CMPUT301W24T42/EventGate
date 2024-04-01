@@ -1,6 +1,5 @@
 package com.example.eventgate.event;
 
-import android.graphics.Bitmap;
 import android.util.Log;
 
 import com.example.eventgate.MyFirebaseMessagingService;
@@ -12,7 +11,6 @@ import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,13 +20,9 @@ import androidx.annotation.NonNull;
 import com.example.eventgate.MainActivity;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.MultiFormatWriter;
-import com.google.zxing.WriterException;
-import com.google.zxing.common.BitMatrix;
-import com.journeyapps.barcodescanner.BarcodeEncoder;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+
 
 /**
  * This is used to add, remove, and retrieve event data from the database
@@ -46,7 +40,6 @@ public class EventDB {
      * The TAG for logging
      */
     final String TAG = "EventDB";
-    private Bitmap eventQRBitmap;
 
     /**
      * Constructs a new EventDB
@@ -65,40 +58,15 @@ public class EventDB {
     public void AddOrganizerEvent(Event event, String deviceId) {
         String eventId = collection.document().getId();
         event.setEventId(eventId);
+
         // add the organizer to eventid topic so that they can receive alerts for event milestones
         MyFirebaseMessagingService messagingService = MainActivity.db.getMessagingService();
         messagingService.addUserToTopic(eventId);
-
-        // Create Check in QR Code
-//        MultiFormatWriter writer = new MultiFormatWriter();
-//
-//        try {
-//            BitMatrix matrix = writer.encode(eventId, BarcodeFormat.QR_CODE, 400, 400);
-//            BarcodeEncoder encoder = new BarcodeEncoder();
-//            eventQRBitmap = encoder.createBitmap(matrix);
-//
-//        } catch (WriterException e) {
-//            e.printStackTrace();
-//        }
-//
-//        event.setEventQRBitmap(eventQRBitmap);
-
-        // Convert bitmap to byte array
-//        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//        eventQRBitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-//        byte[] byteArray = baos.toByteArray();
-//
-//        // Convert byte array to list of integers
-//        List<Integer> byteArrayAsList = new ArrayList<>();
-//        for (byte b : byteArray) {
-//            byteArrayAsList.add((int) b);
-//        }
 
         HashMap<String, Object> data = new HashMap<>();
         data.put("eventId", event.getEventId());
         data.put("name", event.getEventName());
         data.put("description", event.getEventDescription());
-//        data.put("checkInQRCode", byteArrayAsList.toString());
         data.put("organizer", deviceId); // Set organizer field to firebase installation id
         data.put("attendees", new ArrayList<String>()); // Set attendees field to blank
         data.put("eventDetails", event.getEventDetails());
@@ -112,8 +80,6 @@ public class EventDB {
                 .set(data)
                 .addOnSuccessListener(unused -> Log.d(TAG, "Event has been added successfully!"))
                 .addOnFailureListener(e -> Log.d(TAG, "Event could not be added!" + e));
-
-//        return eventQRBitmap;
     }
 
     /**

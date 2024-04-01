@@ -154,5 +154,4 @@
         app:layout_constraintEnd_toStartOf="@+id/OrganizerEditQRBackButton"
         app:layout_constraintStart_toStartOf="parent" />
 
-
 </androidx.constraintlayout.widget.ConstraintLayout>

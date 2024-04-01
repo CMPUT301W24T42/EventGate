@@ -180,7 +180,6 @@ public class OrganizerEventEditorActivity extends AppCompatActivity implements C
 
     }
 
-
     /**
      * begins process of uploading posters
      */

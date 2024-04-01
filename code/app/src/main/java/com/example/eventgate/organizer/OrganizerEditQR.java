@@ -1,3 +1,13 @@
+/*
+ * OrganizerEditQR.java
+ *
+ * This class is responsible for allowing organizers to edit QR codes associated with an event.
+ * It provides functionality to generate and display QR codes for event check-in and description.
+ * Organizers can also reuse existing QR codes if available and share existing qr codes.
+ *
+ * Citation:
+ */
+
 package com.example.eventgate.organizer;
 
 import android.graphics.Bitmap;
@@ -25,6 +35,10 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class provides functionality for organizers to edit QR codes associated with an event.
+ * Organizers can generate, display, and reuse QR codes for event check-in and description.
+ */
 public class OrganizerEditQR extends AppCompatActivity {
     private Bitmap eventQRBitmap;
     private Bitmap descriptionQRBitmap;
@@ -33,6 +47,12 @@ public class OrganizerEditQR extends AppCompatActivity {
     private String eventId;
     private String eventName;
 
+    /**
+     * Called when the activity is starting. Responsible for initializing the activity, views,
+     * and retrieving existing QR code data from Firestore if available.
+     *
+     * @param savedInstanceState a Bundle containing the activity's previously saved state, if any
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,7 +135,6 @@ public class OrganizerEditQR extends AppCompatActivity {
                 })
                 .addOnFailureListener(e -> {
                 });
-
 
         generateCheckInQRCodeButton.setOnClickListener(v -> {
             if (!checkInQRGenerated) {

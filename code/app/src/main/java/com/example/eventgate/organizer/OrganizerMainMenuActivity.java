@@ -16,6 +16,7 @@ import com.google.firebase.installations.FirebaseInstallations;
 import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 
+
 /**
  * Activity for the organizer's main menu.
  * Allows the organizer to view and manage events, including creating new events and editing existing ones.
@@ -28,8 +29,6 @@ public class OrganizerMainMenuActivity extends AppCompatActivity implements Orga
     ArrayList<Event> eventDataList;
     ListView eventList;
     ArrayAdapter<Event> eventAdapter;
-//    private Bitmap eventQRBitmap;
-
 
     /**
      * Called when the activity is starting.
@@ -54,7 +53,6 @@ public class OrganizerMainMenuActivity extends AppCompatActivity implements Orga
 
         createNewEventButton.setOnClickListener(v -> {
             OrganizerCreateEventFragment dialogFragment = new OrganizerCreateEventFragment();
-//            dialogFragment.setOnEventAddedListener(this, this);
             dialogFragment.show(getSupportFragmentManager(), "popup_dialog");
         });
 
@@ -88,21 +86,8 @@ public class OrganizerMainMenuActivity extends AppCompatActivity implements Orga
         EventDB eventDB = new EventDB();
         FirebaseInstallations.getInstance().getId().addOnSuccessListener(id -> {
             eventDB.AddOrganizerEvent(event, id);
-//            qrCodeListener.onQRCodeGenerated(eventQRBitmap);
         });
-//        return eventQRBitmap;
     }
-
-//    /**
-//     * Callback method invoked when a QR code bitmap is generated.
-//     *
-//     * @param qrBitmap The generated QR code bitmap.
-//     */
-//    @Override
-//    public void onQRCodeGenerated(Bitmap qrBitmap) {
-//        ImageView qRCodeImageView = findViewById(R.id.organizerCreateEventQRCode);
-//        qRCodeImageView.setImageBitmap(qrBitmap);
-//    }
 
     /**
      * Updates the list of organizer events by fetching data from Firebase.
