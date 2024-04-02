@@ -89,18 +89,24 @@ public class ImagesFragment extends Fragment implements ImagePopUpDialog.OnImage
         // set on item click listener
         gridView.setOnItemClickListener((parent, view1, position, id) -> {
             ImagePopUpDialog fragment = new ImagePopUpDialog();
-            // create a bundle so we can access the eventId in the dialog fragment
+            // create a bundle so we can access the eventId and position in the dialog fragment
             Bundle args = new Bundle();
             args.putString("imageUrl", imageList.get(position));
             args.putInt("position", position);
             fragment.setArguments(args);
+
             fragment.setOnImageDeleteListener(this); // Set listener
-            fragment.show(getActivity().getSupportFragmentManager(), "IMAGE POPUP");
+            fragment.show(getActivity().getSupportFragmentManager(), "IMAGE POPUP");  // show dialog
         });
+
 
         return view;
     }
 
+    /**
+     * delete the image from the list of images, from firestore, and from cloud storage
+     * @param position the position of the image in the gridview
+     */
     @Override
     public void onImageDelete(int position) {
         // get the image url and the event id associated with that image

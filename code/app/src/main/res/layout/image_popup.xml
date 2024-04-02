@@ -13,6 +13,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/image_popup_dismiss_button"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:backgroundTint="@color/black"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:layout_gravity="end"
+            android:layout_marginTop="13dp"
+            android:layout_marginEnd="10dp"
+            android:focusable="false"
+            app:icon="@android:drawable/ic_delete"
+            app:iconTint="@color/white"
+            app:iconGravity="textTop">
+        </com.google.android.material.button.MaterialButton>
+
         <ImageView
             android:id="@+id/popup_image_view"
             android:layout_width="wrap_content"
@@ -26,7 +42,7 @@
             android:layout_height="wrap_content"
             android:text="Delete this image? This action cannot be undone."
             android:textSize="22sp"
-            android:paddingBottom="20dp"
+            android:layout_marginBottom="20dp"
             android:paddingHorizontal="20dp"/>
 
         <com.google.android.material.button.MaterialButton
@@ -34,7 +50,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="30dp"
             android:backgroundTint="@color/red"
             android:ems="6"
             android:paddingVertical="15dp"

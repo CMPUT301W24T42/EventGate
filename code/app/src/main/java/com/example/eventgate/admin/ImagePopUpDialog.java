@@ -15,12 +15,20 @@ import androidx.fragment.app.DialogFragment;
 import com.example.eventgate.R;
 import com.squareup.picasso.Picasso;
 
+/**
+ * a dialog that allows the user to see an image fully, and delete the image
+ */
 public class ImagePopUpDialog extends DialogFragment {
-    // Define a listener interface
+    /**
+     * this is an interface for delete button clicks
+     */
     public interface OnImageDeleteListener {
         void onImageDelete(int position);
     }
 
+    /**
+     * this is a listener for a click on the delete button in the dialog
+     */
     private OnImageDeleteListener mListener;
 
     @NonNull
@@ -32,6 +40,7 @@ public class ImagePopUpDialog extends DialogFragment {
         // get layout references
         ImageView image = view.findViewById(R.id.popup_image_view);
         Button deleteButton = view.findViewById(R.id.image_delete_button);
+        Button dismissButton = view.findViewById(R.id.image_popup_dismiss_button);
 
         Bundle args = getArguments();
         String imageUrl;
@@ -46,6 +55,8 @@ public class ImagePopUpDialog extends DialogFragment {
                 throw new RuntimeException(e);
             }
         }
+
+        dismissButton.setOnClickListener(v -> dismiss());
 
         deleteButton.setOnClickListener(v -> {
             // Notify the listener that delete button is clicked
