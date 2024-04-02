@@ -19,6 +19,7 @@ import android.widget.ImageButton;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -35,6 +36,7 @@ import com.example.eventgate.organizer.AttendeeListAdapter;
 import com.example.eventgate.organizer.EventListAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
@@ -133,12 +135,19 @@ public class AttendeeActivity extends AppCompatActivity {
 
 
 
+
+
         //generate user profile pic
         updateProfilePicture();
 
         //show profile pic
         retrieveAndSetUserImage();
 
+        checkAndUpdateUserInfoIfNeeded();
+
+
+
+        fetchUserIdAndSetUpListener();
         //check if first time opening attendee section, save attendee to db if so
        /* SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
         boolean isFirstTimeOpening = prefs.getBoolean("isFirstTime", true);*/
@@ -494,7 +503,6 @@ public class AttendeeActivity extends AppCompatActivity {
      * Popup dialog for editing user settings when gear icon clicked
      */
     private void user_settings_dialog() {
-
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View customView = inflater.inflate(R.layout.user_settings_dialog, null);
 
@@ -502,32 +510,49 @@ public class AttendeeActivity extends AppCompatActivity {
         builder.setView(customView);
 
         EditText editTextName = customView.findViewById(R.id.edittext_name);
-        EditText editTextHomepage = customView.findViewById(R.id.edittext_homepage);
-        EditText editTextContactInfo = customView.findViewById(R.id.edittext_contact_info);
+        EditText editTextHomepage = customView.findViewById(R.id.edittext_user_homepage);
+        EditText editTextEmail = customView.findViewById(R.id.edittext_user_email);
+        EditText editTextPhone = customView.findViewById(R.id.edittextPhone);
         CheckBox checkboxGeolocation = customView.findViewById(R.id.checkbox_geolocation);
 
+        // Retrieve existing user info and populate fields
+        FirebaseInstallations.getInstance().getId().addOnSuccessListener(installId -> {
+            new EventDB().getUserInfo(installId).thenAccept(userInfo -> {
+                if (userInfo != null) {
+                    editTextName.setText(userInfo.getOrDefault("name", "").toString());
+                    editTextHomepage.setText(userInfo.getOrDefault("homepage", "").toString());
+                    editTextEmail.setText(userInfo.getOrDefault("email", "").toString());
+                    editTextPhone.setText(userInfo.getOrDefault("phoneNumber", "").toString());
+                }
+            }).exceptionally(e -> {
+                Log.e("AttendeeActivity", "Failed to fetch user info", e);
+                return null;
+            });
+        });
 
-        builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
+        builder.setPositiveButton("Save", (dialog, which) -> {
+            String name = editTextName.getText().toString();
+            String homepage = editTextHomepage.getText().toString();
+            String email = editTextEmail.getText().toString();
+            String phone = editTextPhone.getText().toString();
+            boolean isGeolocationEnabled = checkboxGeolocation.isChecked();
 
-                //maybe try to retrieve known user info if not first time opening
-                String name = editTextName.getText().toString();
-                String homepage = editTextHomepage.getText().toString();
-                String contactInfo = editTextContactInfo.getText().toString();
-                boolean isGeolocationEnabled = checkboxGeolocation.isChecked();
-
-                // Upload info to firebase
+            // must have name
+            if (!name.isEmpty()) {
+                FirebaseInstallations.getInstance().getId().addOnSuccessListener(installId -> {
+                    new EventDB().updateUserInfo(installId, name, phone, email, homepage, true)
+                            .thenRun(() -> Log.d("AttendeeActivity", "User info updated successfully"))
+                            .exceptionally(e -> {
+                                Log.e("AttendeeActivity", "Failed to update user info", e);
+                                return null;
+                            });
+                });
+            } else {
+                Toast.makeText(AttendeeActivity.this, "Name required.", Toast.LENGTH_SHORT).show();
             }
         });
 
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
 
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
@@ -581,7 +606,6 @@ public class AttendeeActivity extends AppCompatActivity {
 
                 });
 
-                // Save that deterministic profile pic has been removed to shared preferences
                 getSharedPreferences("MyAppPrefs", MODE_PRIVATE).edit()
                         .putBoolean("DeterministicProfileRemoved", true)
                         .apply();
@@ -606,8 +630,8 @@ public class AttendeeActivity extends AppCompatActivity {
 
 
         EditText editTextName = customView.findViewById(R.id.edittext_name);
-        EditText editTextHomepage = customView.findViewById(R.id.edittext_homepage);
-        EditText editTextContactInfo = customView.findViewById(R.id.edittext_contact_info);
+        EditText editTextHomepage = customView.findViewById(R.id.edittext_user_homepage);
+        EditText editTextEmail = customView.findViewById(R.id.edittext_user_email);
         CheckBox checkboxGeolocation = customView.findViewById(R.id.checkbox_geolocation);
 
 
@@ -617,8 +641,8 @@ public class AttendeeActivity extends AppCompatActivity {
 
                 //maybe try to retrieve known user info if not first time opening
                 String name = editTextName.getText().toString();
-                String homepage = editTextHomepage.getText().toString();
-                String contactInfo = editTextContactInfo.getText().toString();
+                String user_homepage = editTextHomepage.getText().toString();
+                String contactInfo = editTextEmail.getText().toString();
                 boolean isGeolocationEnabled = checkboxGeolocation.isChecked();
 
                 // Upload info to firebase
@@ -770,6 +794,79 @@ public class AttendeeActivity extends AppCompatActivity {
                 dataList.addAll(r);
                 adapter.notifyDataSetChanged();
             });
+        });
+    }
+
+    private void checkAndUpdateUserInfoIfNeeded() {
+        FirebaseInstallations.getInstance().getId().addOnSuccessListener(installId -> {
+            new EventDB().getUserInfoUpdateStatus(installId).thenAccept(hasUpdatedInfo -> {
+                // hasUpdatedInfo is null or false, show the dialog
+                if (hasUpdatedInfo == null || Boolean.FALSE.equals(hasUpdatedInfo)) {
+                    user_settings_dialog();
+                }
+            }).exceptionally(e -> {
+                Log.e("AttendeeActivity", "Error checking user info update status", e);
+                return null;
+            });
+        }).addOnFailureListener(e -> {
+            Log.e("AttendeeActivity", "Error getting Firebase Install ID", e);
+        });
+    }
+
+    /*private void updateUserInfoInView() {
+        FirebaseInstallations.getInstance().getId().addOnSuccessListener(installId -> {
+            new EventDB().getUserInfo(installId).thenAccept(userInfo -> {
+                if (userInfo != null) {
+
+                    TextView userNameTextView = findViewById(R.id.user_name);
+                    TextView userPhoneTextView = findViewById(R.id.user_phone);
+                    TextView userEmailTextView = findViewById(R.id.user_email);
+                    TextView userHomepageTextView = findViewById(R.id.user_homepage);
+                    runOnUiThread(() -> {
+                        userNameTextView.setText((String) userInfo.getOrDefault("name", "No Name"));
+                        userPhoneTextView.setText((String) userInfo.getOrDefault("phoneNumber", "No Phone Number"));
+                        userEmailTextView.setText((String) userInfo.getOrDefault("email", "No Email"));
+                        userHomepageTextView.setText((String) userInfo.getOrDefault("homepage", "No Homepage"));
+                    });
+                }
+            }).exceptionally(e -> {
+                Log.e("out", "Error updating user info view", e);
+                return null;
+            });
+        });
+    }*/
+
+    private void fetchUserIdAndSetUpListener() {
+        FirebaseInstallations.getInstance().getId().addOnSuccessListener(userId -> {
+            if (userId != null) {
+                setUpUserInfoListener(userId);
+            }
+        }).addOnFailureListener(e -> Log.e("out", "Error fetching fid", e));
+    }
+
+
+    private void setUpUserInfoListener(String userId) {
+        // Assuming EventDB.getUserInfo returns CompletableFuture<Map<String, Object>>
+        new EventDB().getUserInfo(userId).thenAccept(userInfo -> {
+            if (userInfo != null) {
+                updateUIWithUserInfo(userInfo);
+            }
+        }).exceptionally(e -> {
+            Log.e("AttendeeActivity", "Error fetching user info", e);
+            return null;
+        });
+    }
+
+    private void updateUIWithUserInfo(Map<String, Object> userInfo) {
+        TextView userNameTextView = findViewById(R.id.user_name);
+        TextView userPhoneTextView = findViewById(R.id.user_phone);
+        TextView userEmailTextView = findViewById(R.id.user_email);
+        TextView userHomepageTextView = findViewById(R.id.user_homepage);
+        runOnUiThread(() -> {
+            userNameTextView.setText((String) userInfo.getOrDefault("name", "No Name"));
+            userPhoneTextView.setText((String) userInfo.getOrDefault("phoneNumber", "No Phone Number"));
+            userEmailTextView.setText((String) userInfo.getOrDefault("email", "No Email"));
+            userHomepageTextView.setText((String) userInfo.getOrDefault("homepage", "No Homepage"));
         });
     }
 

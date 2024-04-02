@@ -460,5 +460,67 @@ public class EventDB {
         return futureEvents;
     }
 
+    public CompletableFuture<Void> updateUserInfo(String deviceId, String name, String phoneNumber, String email, String homepage, Boolean hasUpdatedInfo) {
+        CompletableFuture<Void> future = new CompletableFuture<>();
+        DocumentReference userAttributeDocRef = db.collection("attendees").document(deviceId);
+
+        Map<String, Object> attributes = new HashMap<>();
+        attributes.put("name", name);
+        attributes.put("phoneNumber", phoneNumber);
+        attributes.put("email", email);
+        attributes.put("homepage", homepage);
+        attributes.put("hasUpdatedInfo", hasUpdatedInfo);
+
+        userAttributeDocRef.set(attributes, SetOptions.merge())
+                .addOnSuccessListener(aVoid -> {
+                    future.complete(null);
+                })
+                .addOnFailureListener(e -> {
+                    future.completeExceptionally(e);
+                });
+
+        return future;
+    }
+
+    public CompletableFuture<Map<String, Object>> getUserInfo(String deviceId) {
+        CompletableFuture<Map<String, Object>> future = new CompletableFuture<>();
+        DocumentReference userDocRef = db.collection("attendees").document(deviceId);
+
+        userDocRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    future.complete(document.getData());
+                } else {
+                    future.completeExceptionally(new Exception("No such document."));
+                }
+            } else {
+                future.completeExceptionally(task.getException());
+            }
+        });
+
+        return future;
+    }
+
+    public CompletableFuture<Boolean> getUserInfoUpdateStatus(String deviceId) {
+        CompletableFuture<Boolean> future = new CompletableFuture<>();
+        DocumentReference userDocRef = db.collection("attendees").document(deviceId);
+
+        userDocRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    Boolean isActive = document.getBoolean("hasUpdatedInfo");
+                    future.complete(isActive);
+                } else {
+                    future.completeExceptionally(new Exception("No such document."));
+                }
+            } else {
+                future.completeExceptionally(task.getException());
+            }
+        });
+
+        return future;
+    }
 
 }
