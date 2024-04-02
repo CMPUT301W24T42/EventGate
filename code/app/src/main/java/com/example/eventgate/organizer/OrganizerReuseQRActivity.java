@@ -20,12 +20,23 @@ import com.google.firebase.installations.FirebaseInstallations;
 import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * This activity allows organizers to reuse existing QR codes for a new event.
+ * Organizers can select from a list of previous events and reuse their check-in QR code
+ * for the new event.
+ */
 public class OrganizerReuseQRActivity extends AppCompatActivity {
     private String newEventId;
     private ArrayAdapter<Event> eventAdapter;
     private ArrayList<Event> eventDataList;
     private String qrCodeDataString;
 
+    /**
+     * Called when the activity is starting. Responsible for initializing the activity, views,
+     * and retrieving existing event data from Firebase.
+     *
+     * @param savedInstanceState a Bundle containing the activity's previously saved state, if any
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,6 +94,7 @@ public class OrganizerReuseQRActivity extends AppCompatActivity {
 
     /**
      * Updates the list of organizer events by fetching data from Firebase.
+     * Filters out the new event from the list to prevent reusing its own QR code.
      */
     private void updateOrganizerEvents() {
         FirebaseInstallations.getInstance().getId().addOnSuccessListener(id -> {
