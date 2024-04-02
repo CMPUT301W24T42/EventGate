@@ -1,5 +1,8 @@
 package com.example.eventgate.admin;
 
+import static com.example.eventgate.admin.DeleteImageFromFirebase.deletePosterFromCloudStorage;
+import static com.example.eventgate.admin.DeleteImageFromFirebase.deletePosterFromFirestore;
+
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -34,11 +37,19 @@ import java.util.ArrayList;
 /**
  * a fragment used to display images in a gridview
  */
-public class ImagesFragment extends Fragment {
+public class ImagesFragment extends Fragment implements ImagePopUpDialog.OnImageDeleteListener {
     /**
      * the list of images to be displayed
      */
     ArrayList<String> imageList;
+    /**
+     * adapter for displaying images in gridview
+     */
+    AdminGridViewAdapter gridViewAdapter;
+    /**
+     * a list of event ids associated with each image from the database
+     */
+    ArrayList<String> eventIdList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -48,12 +59,15 @@ public class ImagesFragment extends Fragment {
         // find layout references and set adapters
         GridView gridView = view.findViewById(R.id.image_grid_view);
         imageList = new ArrayList<>();
-        AdminGridViewAdapter gridViewAdapter = new AdminGridViewAdapter(getContext(), imageList);
+        gridViewAdapter = new AdminGridViewAdapter(getContext(), imageList);
         gridView.setAdapter(gridViewAdapter);
+        eventIdList = new ArrayList<>();
 
         // snapshot listener to add/update event posters from the database
         CollectionReference eventsRef = MainActivity.db.getEventsRef();
         eventsRef.addSnapshotListener((queryDocumentSnapshots, error) -> {
+            imageList.clear();
+            eventIdList.clear();
             for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
             {
                 // get posters collection for each event document
@@ -64,6 +78,7 @@ public class ImagesFragment extends Fragment {
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             String imageUrl = document.getString("url");
                             imageList.add(imageUrl);
+                            eventIdList.add(postersRef.getParent().getId());
                         }
                         gridViewAdapter.notifyDataSetChanged();
                     }
@@ -77,10 +92,29 @@ public class ImagesFragment extends Fragment {
             // create a bundle so we can access the eventId in the dialog fragment
             Bundle args = new Bundle();
             args.putString("imageUrl", imageList.get(position));
+            args.putInt("position", position);
             fragment.setArguments(args);
+            fragment.setOnImageDeleteListener(this); // Set listener
             fragment.show(getActivity().getSupportFragmentManager(), "IMAGE POPUP");
         });
 
         return view;
+    }
+
+    @Override
+    public void onImageDelete(int position) {
+        // get the image url and the event id associated with that image
+        String imageUrl = imageList.get(position);
+        String eventId = eventIdList.get(position);
+        // get a reference to the posters subcollection contained that poster
+        CollectionReference postersRef = MainActivity.db.getEventsRef().document(eventId).collection("posters");
+        // delete the poster from firestore and cloud storage
+        deletePosterFromFirestore(imageUrl, postersRef);
+        deletePosterFromCloudStorage(imageUrl);
+        // remove image url and event id from their respective lists
+        imageList.remove(position);
+        eventIdList.remove(position);
+
+        gridViewAdapter.notifyDataSetChanged();
     }
 }

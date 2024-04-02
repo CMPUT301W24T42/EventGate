@@ -21,18 +21,27 @@
             android:adjustViewBounds="true"
             android:layout_gravity="center_horizontal"/>
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Delete this image? This action cannot be undone."
+            android:textSize="22sp"
+            android:paddingBottom="20dp"
+            android:paddingHorizontal="20dp"/>
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/image_delete_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/red"
             android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="20dp"
+            android:backgroundTint="@color/red"
             android:ems="6"
             android:paddingVertical="15dp"
             android:text="@string/delete"
             android:textColor="@color/black"
             android:textSize="20sp"
-            android:layout_marginBottom="20dp"
+            android:textStyle="bold"
             app:cornerRadius="5dp"
             app:layout_constraintTop_toBottomOf="@+id/popup_image_view" />
 

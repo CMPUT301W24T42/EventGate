@@ -1,5 +1,8 @@
 package com.example.eventgate.admin;
 
+import static com.example.eventgate.admin.DeleteImageFromFirebase.deletePosterFromCloudStorage;
+import static com.example.eventgate.admin.DeleteImageFromFirebase.deletePosterFromFirestore;
+
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,8 +23,6 @@ import com.example.eventgate.event.EventDB;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -252,42 +253,10 @@ public class AdminEventViewerActivity extends AppCompatActivity {
         }
 
         // remove poster from firebase database
-        deletePosterFromFirestore(imageUrl);
+        deletePosterFromFirestore(imageUrl, postersRef);
 
         // remove poster from firebase storage
         deletePosterFromCloudStorage(imageUrl);
-    }
-
-    /**
-     * this deletes the event poster from firestore
-     * @param imageUrl the url of the image to be deleted
-     */
-    private void deletePosterFromFirestore(String imageUrl) {
-        postersRef.whereEqualTo("url", imageUrl).get().addOnSuccessListener(queryDocumentSnapshots -> {
-            for (QueryDocumentSnapshot snapshot : queryDocumentSnapshots) {
-                snapshot.getReference().delete()
-                        .addOnSuccessListener(unused -> Log.d(TAG, "Event poster successfully deleted from Firestore"))
-                        .addOnFailureListener(e -> Log.d(TAG, "Error deleting event poster from Firestore", e));
-            }
-        });
-    }
-
-    /**
-     * this deletes the event poster from firebase cloud storage
-     * @param imageUrl the url of the image to be deleted
-     */
-    private void deletePosterFromCloudStorage(String imageUrl) {
-        // get the name of the image from the url of the image
-        String imageName = imageUrl.substring(imageUrl.indexOf("images%2F") + 9, imageUrl.indexOf(".jpg?"));
-
-        // get reference to the image in firebase cloud storage and delete it
-        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
-        StorageReference fileReference = storageRef.child("images/" + imageName + ".jpg");
-        Log.d(TAG, String.valueOf(fileReference));
-        fileReference.delete()
-                .addOnSuccessListener(unused -> Log.d(TAG, "Event poster successfully deleted from Storage"))
-                .addOnFailureListener(e -> Log.d(TAG, "Error deleting event poster from Storage", e));
-
     }
 
     private void enableButton() {

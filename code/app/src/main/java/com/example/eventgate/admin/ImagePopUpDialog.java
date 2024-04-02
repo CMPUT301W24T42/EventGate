@@ -16,6 +16,13 @@ import com.example.eventgate.R;
 import com.squareup.picasso.Picasso;
 
 public class ImagePopUpDialog extends DialogFragment {
+    // Define a listener interface
+    public interface OnImageDeleteListener {
+        void onImageDelete(int position);
+    }
+
+    private OnImageDeleteListener mListener;
+
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -41,12 +48,22 @@ public class ImagePopUpDialog extends DialogFragment {
         }
 
         deleteButton.setOnClickListener(v -> {
-
+            // Notify the listener that delete button is clicked
+            mListener.onImageDelete(getArguments().getInt("position"));
+            dismiss();
         });
 
         // build the dialog
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setView(view); // Set the custom layout
         return builder.create();
+    }
+
+    /**
+     * setter method for OnImageDeleteListener
+     * @param listener the listener to be set
+     */
+    public void setOnImageDeleteListener(OnImageDeleteListener listener) {
+        mListener = listener;
     }
 }
