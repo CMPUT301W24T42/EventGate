@@ -24,11 +24,12 @@
 
         <TextView
             android:id="@+id/permission_info"
-            android:layout_width="375dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/bell_image"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="25dp"
+            android:paddingHorizontal="10dp"
             android:text="@string/notification_info"
             android:textAlignment="center"
             android:textSize="21sp">

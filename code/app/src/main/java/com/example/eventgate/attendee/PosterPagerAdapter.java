@@ -68,4 +68,9 @@ public class PosterPagerAdapter extends PagerAdapter {
     public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
         container.removeView((ImageView) object);
     }
+
+    public void removePoster(int position) {
+        imageUrls.remove(position);
+        notifyDataSetChanged();
+    }
 }

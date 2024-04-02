@@ -1,5 +1,6 @@
 package com.example.eventgate.event;
 
+import android.graphics.Bitmap;
 import androidx.annotation.NonNull;
 
 import com.example.eventgate.organizer.OrganizerAlert;
