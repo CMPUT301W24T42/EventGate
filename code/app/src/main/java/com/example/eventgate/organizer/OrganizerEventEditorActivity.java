@@ -17,7 +17,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.eventgate.MainActivity;
 import com.example.eventgate.R;
-import com.example.eventgate.event.Event;
 import com.example.eventgate.event.EventDB;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -28,12 +27,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
-import com.google.firebase.installations.FirebaseInstallations;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -44,7 +40,7 @@ import com.google.firebase.storage.StorageReference;
 public class OrganizerEventEditorActivity extends AppCompatActivity implements CreateAlertFragment.OnAlertCreatedListener {
 
     private TextView eventTitle;
-    private Button backButton, uploadPosterButton;
+    private Button backButton, uploadPosterButton, editQRButton;
     private Button createAlert;
     private String eventName;
     private String eventId;
@@ -100,10 +96,35 @@ public class OrganizerEventEditorActivity extends AppCompatActivity implements C
                             for (String attendeeId : attendeeIds) {
                                 FirebaseFirestore.getInstance().collection("attendees")
                                         .document(attendeeId).get().addOnSuccessListener(documentSnapshot -> {
-                                            attendeeDataList.add(documentSnapshot.getString("name"));
-                                            // If it's the last element, notify the array adapter
-                                            if (attendeeId.equals(attendeeIds.get(attendeeIds.size() - 1))) {
-                                                attendeeAdapter.notifyDataSetChanged();
+                                            if (documentSnapshot.exists()) {
+                                                // Retrieve name and check in count
+                                                String attendeeName = documentSnapshot.getString("name");
+                                                Object eventCheckInNumberMapObject = documentSnapshot.get("eventCheckInNumber");
+
+                                                if (eventCheckInNumberMapObject instanceof Map) {
+                                                    Map<?, ?> eventCheckInNumberMap = (Map<?, ?>) eventCheckInNumberMapObject;
+                                                    // Check if eventId exists in the map
+                                                    Object checkInCountObject = eventCheckInNumberMap.get(eventId);
+
+                                                    if (checkInCountObject instanceof Number) {
+                                                        int checkInCount = ((Number) checkInCountObject).intValue();
+                                                        String checkInCountString = Integer.toString(checkInCount);
+                                                        attendeeDataList.add(attendeeName + " - Check-ins: " + checkInCountString);
+                                                    } else {
+                                                        attendeeDataList.add(attendeeName + " - Check-ins: 0");
+                                                    }
+
+                                                } else {
+                                                    Log.d("Firestore", "eventCheckInNumber is not a Map");
+                                                }
+
+                                                // If it's the last element, notify the array adapter
+                                                if (attendeeId.equals(attendeeIds.get(attendeeIds.size() - 1))) {
+                                                    attendeeAdapter.notifyDataSetChanged();
+                                                }
+
+                                            } else {
+                                                Log.d("Firestore", "Document does not exist");
                                             }
                                         });
                             }
@@ -121,6 +142,17 @@ public class OrganizerEventEditorActivity extends AppCompatActivity implements C
             @Override
             public void onClick(View v) {
                 initiateImageUploadProcess();
+            }
+        });
+
+        editQRButton = findViewById(R.id.OrganizerEditQRButton);
+        editQRButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(OrganizerEventEditorActivity.this, OrganizerEditQR.class);
+                intent.putExtra("eventId", eventId);
+                intent.putExtra("eventName", eventName);
+                startActivity(intent);
             }
         });
 
@@ -147,7 +179,6 @@ public class OrganizerEventEditorActivity extends AppCompatActivity implements C
         });
 
     }
-
 
     /**
      * begins process of uploading posters

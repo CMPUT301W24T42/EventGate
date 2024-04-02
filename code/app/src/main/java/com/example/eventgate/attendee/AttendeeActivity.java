@@ -34,6 +34,8 @@ import com.example.eventgate.organizer.AttendeeListAdapter;
 import com.example.eventgate.organizer.EventListAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.installations.FirebaseInstallations;
 
 import java.io.UnsupportedEncodingException;
@@ -67,10 +69,6 @@ public class AttendeeActivity extends AppCompatActivity {
     Button qr_button;
     Button back_button;
     Button registered_button;
-
-    ArrayList<Event> allEventsDataList;
-    ArrayAdapter<Event> allEventsAdapter;
-    ListView allEventsList;
 
     ArrayList<Event> allEventsDataList;
     ArrayAdapter<Event> allEventsAdapter;
@@ -216,7 +214,7 @@ public class AttendeeActivity extends AppCompatActivity {
 
 
         //view all events dialogue
-        Button viewAllEventsButton = findViewById(R.id.allEventsButton);
+        viewAllEventsButton = findViewById(R.id.allEventsButton);
 
         viewAllEventsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -263,49 +261,6 @@ public class AttendeeActivity extends AppCompatActivity {
         dialog.show();
 
     }*/
-
-    //uses attendeelistadapter
-    private void viewAllEventsDialog2() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        LayoutInflater inflater = getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.dialog_attendeeviewallevents, null);
-
-        ArrayList<Event> allEvents = new ArrayList<>(); // For use in onItemClick
-        ArrayList<String> allAttendeeNamesList = new ArrayList<>(); // For display in ListView
-        ListView allEventsList = dialogView.findViewById(R.id.allEventsListview);
-        AttendeeListAdapter allAttendeesAdapter = new AttendeeListAdapter(this, allAttendeeNamesList);
-        allEventsList.setAdapter(allAttendeesAdapter);
-
-        FirebaseInstallations.getInstance().getId().addOnSuccessListener(id -> {
-            CompletableFuture<ArrayList<Event>> attendeeEvents = new EventDB().getAllEvents();
-            attendeeEvents.thenAccept(events -> {
-                allAttendeeNamesList.clear();
-                allEvents.clear(); // Clear to ensure it's in sync with allAttendeeNamesList
-                for(Event event : events) {
-                    allAttendeeNamesList.add(event.getEventName());
-                    allEvents.add(event); // Populate allEvents in sync with allAttendeeNamesList
-                }
-                allAttendeesAdapter.notifyDataSetChanged();
-            });
-        });
-
-        allEventsList.setOnItemClickListener((parent, view, position, id) -> {
-            Event clickedEvent = allEvents.get(position); // This should now be safe
-            Intent intent = new Intent(AttendeeActivity.this, AttendeeAllEventViewerDetail.class);
-            intent.putExtra("EventID", clickedEvent.getEventId());
-            intent.putExtra("EventName", clickedEvent.getEventName());
-            intent.putExtra("alerts", clickedEvent.getAlerts());
-            startActivity(intent);
-        });
-
-        builder.setView(dialogView);
-        AlertDialog dialog = builder.create();
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog.show();
-    }
-
-
-
 
     //prepares all events popup listview on button click
     //uses eventlistadapter, probably wont use this one
@@ -536,7 +491,6 @@ public class AttendeeActivity extends AppCompatActivity {
 
     /**
      * generates hash from firebase auth id for deterministic profile picture
-     * @param userId Firebase Install ID
      */
     //
     private void generateHash() {
@@ -570,7 +524,6 @@ public class AttendeeActivity extends AppCompatActivity {
 
     /**
      * Generates deterministic profile picture for attendee
-     * @param hashBytes hash from firebase auth id
      */
     //better version
     private void createBitmap2() {
@@ -610,6 +563,7 @@ public class AttendeeActivity extends AppCompatActivity {
                 eventDataList.clear();
                 eventDataList.addAll(r);
                 eventAdapter.notifyDataSetChanged();
+
             });
         });
     }
@@ -668,5 +622,4 @@ public class AttendeeActivity extends AppCompatActivity {
             });
         });
     }
-
 }

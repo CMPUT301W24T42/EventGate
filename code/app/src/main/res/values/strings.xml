@@ -27,11 +27,27 @@
     <string name="alert_title">Alert Title</string>
     <string name="realtime_attendance">Realtime Attendance:</string>
     <string name="hashtag">#</string>
-    <string name="attendees_list">List of attendees</string>
+    <string name="attendees_list">List of Attendees</string>
     <string name="notification_info">EventGate would like to send you notifications. Enabling
         notifications keep you informed about event updates and milestones that your events have
         reached. Notifications can be always be managed in settings at a later time.</string>
     <string name="no_thanks_button">No Thanks</string>
     <string name="ok_button">OK</string>
     <string name="dont_ask_again">Don\'t ask again</string>
+    <string name="attendee_info">Attendee Info</string>
+    <string name="attendance_limit">Attendance Limit</string>
+    <string name="event_details">Event Details</string>
+    <string name="edit_qr">Edit QR</string>
+    <string name="qr_codes">QR Codes</string>
+    <string name="check_in_qr_code">Check-In QR Code</string>
+    <string name="event_details_qr_code">Event Details QR Code</string>
+    <string name="share_qr">Share QR</string>
+    <string name="organizer_view_qr_codes">QR Codes</string>
+    <string name="generate_qr_code_edit">Generate QR Code</string>
+    <string name="generate_qr">Generate QR</string>
+    <string name="generate_check_in_qr_edit">Generate QR</string>
+    <string name="reuse_existing_qr">Reuse Existing QR</string>
+    <string name="generate_detail_qr">Generate Detail QR</string>
+    <string name="select_check_in_qr_code">Select Check-In QR Code</string>
+    <string name="reuse_qr">Reuse QR</string>
 </resources>

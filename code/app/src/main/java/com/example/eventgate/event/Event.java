@@ -1,12 +1,11 @@
 package com.example.eventgate.event;
 
-import android.graphics.Bitmap;
-import android.os.Parcelable;
+import androidx.annotation.NonNull;
 
 import com.example.eventgate.organizer.OrganizerAlert;
 
-import java.io.Serializable;
 import java.util.ArrayList;
+
 
 /**
  * this class represents an event
@@ -17,30 +16,31 @@ public class Event {
      * Holds the document id for the event
      */
     private String eventId;
+
     /**
      * Holds the name of the event
      */
     private String eventName;
+
     /**
      * Holds the event description
      */
     private String eventDescription;
-    /**
-     * Holds the Bitmap of the check in QR Code.
-     */
-    private Bitmap eventQRBitmap;
-    /**
-     * Holds the Bitmap of the event description QR Code.
-     */
-    private Bitmap descriptionQRBitmap;
+
     /**
      * list of alerts associated with the event
      */
     private ArrayList<OrganizerAlert> alerts;
+
     /**
      * Holds the details of the event
      */
     private String eventDetails;
+
+    /**
+     * Holds the attendance limit of the event
+     */
+    private Integer eventAttendanceLimit;
 
     /**
      * Constructs an Event
@@ -79,12 +79,6 @@ public class Event {
         this.eventName = eventName;
     }
 
-
-    /**
-     * this gets the id of the event
-     * @return the id of the event
-     */
-
     public String getEventDescription() { return eventDescription; }
   
     public void setEventDescription(String eventDescription) { this.eventDescription = eventDescription; }
@@ -106,34 +100,21 @@ public class Event {
     }
 
     /**
-     * this gets the bitmap for the event's QR code
-     * @return the QR's bitmap
-     */
-    public Bitmap getEventQRBitmap() {
-        return eventQRBitmap;
-    }
-
-    /**
-     * this sets the bitmap for the event's QR code
-     * @param eventQRBitmap the bitmap of the event's QR code
-     */
-    public void setEventQRBitmap(Bitmap eventQRBitmap) {
-        this.eventQRBitmap = eventQRBitmap;
-    }
-
-    public Bitmap getDescriptionQRBitmap() {
-        return descriptionQRBitmap;
-    }
-
-    public void setDescriptionQRBitmap(Bitmap descriptionQRBitmap) {
-        this.descriptionQRBitmap = descriptionQRBitmap;
-    }
-
-    /**
      * this is used to get the list of alerts associated with an event
      * @return a list of OrganizerAlert objects
      */
     public ArrayList<OrganizerAlert> getAlerts() {
         return alerts;
+    }
+
+    public Integer getEventAttendanceLimit() { return eventAttendanceLimit; }
+    public void setEventAttendanceLimit(Integer attendanceLimit) {
+        this.eventAttendanceLimit = attendanceLimit;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return eventName;
     }
 }
