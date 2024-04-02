@@ -13,17 +13,22 @@ package com.example.eventgate.organizer;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.eventgate.R;
+import com.google.firebase.database.collection.BuildConfig;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
@@ -32,6 +37,9 @@ import com.google.zxing.common.BitMatrix;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,8 +81,11 @@ public class OrganizerEditQR extends AppCompatActivity {
         Button shareQRCode = findViewById(R.id.OrganizerEditQRShareButton);
         Button backButton = findViewById(R.id.OrganizerEditQRBackButton);
 
-        eventId = getIntent().getStringExtra("eventId");
-        eventName = getIntent().getStringExtra("eventName");
+        Intent previousIntent = getIntent();
+        if (previousIntent != null) {
+            eventId = previousIntent.getStringExtra("eventId");
+            eventName = previousIntent.getStringExtra("eventName");
+        }
 
         // Accessing Firestore and retrieving the QR code data if they have already been generated
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -222,6 +233,59 @@ public class OrganizerEditQR extends AppCompatActivity {
             }
         });
 
+        shareQRCode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (eventQRBitmap != null) {
+                    // Save the bitmap to a file
+                    File qrCodeFile = saveBitmapToFile(eventQRBitmap);
+
+                    // Get the content URI using FileProvider
+                    Uri qrCodeImageUri = FileProvider.getUriForFile(
+                            OrganizerEditQR.this,
+                            BuildConfig.APPLICATION_ID + ".fileprovider",
+                            qrCodeFile);
+
+                    // Create an intent to share the QR code image
+                    Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                    shareIntent.setType("image/*"); // Set the MIME type to image
+                    shareIntent.putExtra(Intent.EXTRA_STREAM, qrCodeImageUri); // Set the URI of the QR code image as extra
+
+                    // Optionally, set a subject for the shared content
+                    shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Check-in QR Code");
+
+                    // Grant temporary permission to the content URI
+                    shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                    // Start the activity with the share intent
+                    startActivity(Intent.createChooser(shareIntent, "Share QR Code"));
+                }
+            }
+        });
+
         backButton.setOnClickListener(v -> finish());
+    }
+
+    private File saveBitmapToFile(Bitmap bitmap) {
+        // Create a directory to save the image
+        File directory = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "QRCodeImages");
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+
+        // Create a file to save the image
+        File file = new File(directory, "QRCodeImage.png");
+
+        try {
+            // Compress the bitmap to PNG format and save it to the file
+            FileOutputStream outputStream = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+            outputStream.flush();
+            outputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return file;
     }
 }
