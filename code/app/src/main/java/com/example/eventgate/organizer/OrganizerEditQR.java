@@ -14,7 +14,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
@@ -101,7 +100,7 @@ public class OrganizerEditQR extends AppCompatActivity {
                             }
 
                             // Decode the byte array into a Bitmap
-                            Bitmap eventQRBitmap = BitmapFactory.decodeByteArray(qrCodeByteArray, 0, qrCodeByteArray.length);
+                            eventQRBitmap = BitmapFactory.decodeByteArray(qrCodeByteArray, 0, qrCodeByteArray.length);
 
                             // Set the Bitmap to the ImageView
                             checkInQRCode.setImageBitmap(eventQRBitmap);
@@ -126,7 +125,7 @@ public class OrganizerEditQR extends AppCompatActivity {
                             }
 
                             // Decode the byte array into a Bitmap
-                            Bitmap descriptionQRBitmap = BitmapFactory.decodeByteArray(descriptionQRCodeByteArray, 0, descriptionQRCodeByteArray.length);
+                            descriptionQRBitmap = BitmapFactory.decodeByteArray(descriptionQRCodeByteArray, 0, descriptionQRCodeByteArray.length);
 
                             // Set the Bitmap to the ImageView
                             descriptionQRCode.setImageBitmap(descriptionQRBitmap);
@@ -177,13 +176,10 @@ public class OrganizerEditQR extends AppCompatActivity {
             }
         });
 
-        reuseQRButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(OrganizerEditQR.this, OrganizerReuseQRActivity.class);
-                intent.putExtra("eventId", eventId);
-                startActivity(intent);
-            }
+        reuseQRButton.setOnClickListener(v -> {
+            Intent intent = new Intent(OrganizerEditQR.this, OrganizerReuseQRActivity.class);
+            intent.putExtra("eventId", eventId);
+            startActivity(intent);
         });
 
         generateDescriptionQRButton.setOnClickListener(v -> {

@@ -1,5 +1,7 @@
 package com.example.eventgate.event;
 
+import androidx.annotation.NonNull;
+
 import com.example.eventgate.organizer.OrganizerAlert;
 
 import java.util.ArrayList;
@@ -108,5 +110,11 @@ public class Event {
     public Integer getEventAttendanceLimit() { return eventAttendanceLimit; }
     public void setEventAttendanceLimit(Integer attendanceLimit) {
         this.eventAttendanceLimit = attendanceLimit;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return eventName;
     }
 }

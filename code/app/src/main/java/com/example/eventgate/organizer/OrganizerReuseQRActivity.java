@@ -1,7 +1,9 @@
 package com.example.eventgate.organizer;
 
 import android.os.Bundle;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,9 +12,19 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.eventgate.R;
+import com.example.eventgate.event.Event;
+import com.example.eventgate.event.EventDB;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.installations.FirebaseInstallations;
+
+import java.util.ArrayList;
+import java.util.concurrent.CompletableFuture;
 
 public class OrganizerReuseQRActivity extends AppCompatActivity {
-    private String eventId;
+    private String newEventId;
+    private ArrayAdapter<Event> eventAdapter;
+    private ArrayList<Event> eventDataList;
+    private String qrCodeDataString;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,8 +40,65 @@ public class OrganizerReuseQRActivity extends AppCompatActivity {
         Button backButton = findViewById(R.id.OrganizerReuseQRBackButton);
         Button reuseQRContinueButton = findViewById(R.id.ReuseQRContinue);
 
-        eventId = getIntent().getStringExtra("eventId");
+        ListView eventListQRs = findViewById(R.id.ReuseQREvents);
+
+        newEventId = getIntent().getStringExtra("eventId");
+
+        eventDataList = new ArrayList<>();
+        eventAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, eventDataList);
+        eventListQRs.setAdapter(eventAdapter);
+
+        updateOrganizerEvents();
+
+        eventListQRs.setOnItemClickListener((parent, view, position, id) -> {
+            Event selectedEvent = eventDataList.get(position);
+            String selectedEventId = selectedEvent.getEventId();
+
+            // Get checkInQRCode from firestore
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            db.collection("events").document(selectedEventId).get().addOnSuccessListener(documentSnapshot -> {
+                if (documentSnapshot.exists()) {
+                    qrCodeDataString = documentSnapshot.getString("checkInQRCode");
+                }
+            });
+        });
+
+        reuseQRContinueButton.setOnClickListener(v -> {
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            // Update Firestore document for the new event with qrCodeDataString
+            if (qrCodeDataString != null) {
+                db.collection("events").document(newEventId).update("checkInQRCode", qrCodeDataString)
+                    .addOnSuccessListener(aVoid -> {
+                        // Successfully updated the document
+                    })
+                    .addOnFailureListener(e -> {
+                        // Failed to update the document
+                    });
+            }
+            finish();
+        });
 
         backButton.setOnClickListener(v -> finish());
+    }
+
+    /**
+     * Updates the list of organizer events by fetching data from Firebase.
+     */
+    private void updateOrganizerEvents() {
+        FirebaseInstallations.getInstance().getId().addOnSuccessListener(id -> {
+            CompletableFuture<ArrayList<Event>> organizerEvents = new EventDB().getOrganizerEvents(id);
+            organizerEvents.thenAccept(events -> {
+                eventDataList.clear();
+
+                // Filter out the new event based on its eventId
+                for (Event event : events) {
+                    if (!event.getEventId().equals(newEventId)) {
+                        eventDataList.add(event);
+                    }
+                }
+
+                eventAdapter.notifyDataSetChanged();
+            });
+        });
     }
 }
