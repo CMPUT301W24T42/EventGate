@@ -45,7 +45,6 @@ public class AttendeeDB {
         data.put("name", attendeeId);
         data.put("uUid", MainActivity.db.getUser().getUid());
         data.put("events", new ArrayList<Integer>());
-        data.put("hasUpdatedInfo", false);
         attendeesRef.document(attendeeId).set(data)
                 .addOnSuccessListener(unused -> {
                     // store info in shared preferences
