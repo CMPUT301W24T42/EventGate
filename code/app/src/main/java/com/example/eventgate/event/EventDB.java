@@ -1,9 +1,17 @@
 package com.example.eventgate.event;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.os.Build;
 import android.util.Log;
 
 import com.example.eventgate.MyFirebaseMessagingService;
 import com.example.eventgate.attendee.AttendeeDB;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.Priority;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
@@ -16,9 +24,11 @@ import java.util.HashMap;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 
 import com.example.eventgate.MainActivity;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -88,7 +98,9 @@ public class EventDB {
      * @param eventId event's unique id
      * @return 0 if successful, 1 if event not found, 2 if already checked-in
      * */
-    public CompletableFuture<Integer> checkInAttendee(String deviceId, String eventId) {
+    @RequiresApi(api = Build.VERSION_CODES.S)
+    @SuppressLint("MissingPermission")
+    public CompletableFuture<Integer> checkInAttendee(String deviceId, String eventId, Activity activity) {
         CompletableFuture<Integer> futureResult = new CompletableFuture<>();
         db.collection("events").document(eventId).get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
@@ -126,6 +138,31 @@ public class EventDB {
                         updates.put("attendees", eventAttendees);
                         db.collection("events").document(eventId).update(updates);
                         futureResult.complete(0);
+
+                        // If user has tracking enabled, save their location to the database
+                        if ((boolean) attendee.get("trackingEnabled")) {
+                            LocationRequest locationRequest = new LocationRequest.Builder(
+                                    Priority.PRIORITY_HIGH_ACCURACY,
+                                    0
+                            ).build();
+                            LocationCallback locationCallback = new LocationCallback() {
+                                @Override
+                                public void onLocationResult(LocationResult locationResult) {
+                                    super.onLocationResult(locationResult);
+                                    if (locationResult != null && locationResult.getLastLocation() != null) {
+                                        double latitude = locationResult.getLastLocation().getLatitude();
+                                        double longitude = locationResult.getLastLocation().getLongitude();
+                                        saveLocation(documentSnapshot, eventId, latitude, longitude);
+                                    }
+                                }
+                            };
+                            try {
+                                LocationServices.getFusedLocationProviderClient(activity).
+                                        requestLocationUpdates(locationRequest, locationCallback, null);
+                            } catch (Exception SecurityException) {
+                                Log.d("LOCATION", "SECURITY EXCEPTION");
+                            }
+                        }
                     }
                 });
             } else {
@@ -133,6 +170,15 @@ public class EventDB {
             }
         });
         return futureResult;
+    }
+
+    private void saveLocation(DocumentSnapshot docSnapshot, String eventId, double latitude, double longitude) {
+        HashMap<String, Object> updates = new HashMap<>();
+        ArrayList<GeoPoint> locations = (ArrayList<GeoPoint>) docSnapshot.get("locations");
+        GeoPoint location = new GeoPoint(latitude, longitude);
+        locations.add(location);
+        updates.put("locations", locations);
+        db.collection("events").document(eventId).update(updates);
     }
 
     /**

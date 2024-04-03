@@ -45,6 +45,7 @@ public class AttendeeDB {
         data.put("name", attendeeId);
         data.put("uUid", MainActivity.db.getUser().getUid());
         data.put("events", new ArrayList<Integer>());
+        data.put("trackingEnabled", false);
         attendeesRef.document(attendeeId).set(data)
                 .addOnSuccessListener(unused -> {
                     // store info in shared preferences
@@ -55,6 +56,27 @@ public class AttendeeDB {
                     Log.d("Firebase Firestore", "Attendee has been added successfully!");
                 })
                 .addOnFailureListener(e -> Log.d("Firebase Firestore", "Attendee could not be added!" + e));
+    }
+
+    /**
+     * this creates a new attendee profile and stores the info in the attendees collection in the database
+     * @param attendeesRef a reference to the attendees collection
+     * @param deviceId the firebase installation id of the current user
+     */
+    public void editAttendee(CollectionReference attendeesRef, String deviceId, String name, String homepage, Boolean tracking) {
+        attendeesRef.whereEqualTo("deviceId", deviceId).get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+            DocumentSnapshot attendee = queryDocumentSnapshots.getDocuments().get(0);
+            HashMap<String, Object> data = new HashMap<>();
+            data.put("name", name);
+            data.put("homepage", homepage);
+            data.put("trackingEnabled", tracking);
+            attendeesRef.document(attendee.getId()).update(data)
+                    .addOnSuccessListener(unused -> {
+                        Log.d("Firebase Firestore", "Attendee edited successfully!");
+                    })
+                    .addOnFailureListener(e -> Log.d("Firebase Firestore", "Attendee could not be added!" + e));
+        });
     }
 
     /**

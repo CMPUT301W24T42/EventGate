@@ -1,5 +1,8 @@
 package com.example.eventgate.attendee;
 
+import static com.example.eventgate.MainActivity.db;
+
+import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -25,8 +28,10 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.example.eventgate.MainActivity;
+import com.example.eventgate.attendee.AttendeeDB;
 import com.example.eventgate.event.Event;
 import com.example.eventgate.event.EventDB;
 import com.example.eventgate.R;
@@ -397,9 +402,17 @@ public class AttendeeActivity extends AppCompatActivity {
                 String name = editTextName.getText().toString();
                 String homepage = editTextHomepage.getText().toString();
                 String contactInfo = editTextContactInfo.getText().toString();
-                boolean isGeolocationEnabled = checkboxGeolocation.isChecked();
+                Boolean isGeolocationEnabled = checkboxGeolocation.isChecked();
 
-                // Upload info to firebase
+                if (isGeolocationEnabled) {
+                    ActivityCompat.requestPermissions(AttendeeActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1001);
+                }
+
+
+                FirebaseInstallations.getInstance().getId().addOnSuccessListener(deviceId -> {
+                    AttendeeDB attendeeDB = new AttendeeDB();
+                    attendeeDB.editAttendee(db.getAttendeesRef(), deviceId, name, homepage, isGeolocationEnabled);
+                });
             }
         });
 
@@ -497,7 +510,7 @@ public class AttendeeActivity extends AppCompatActivity {
     //
     private void generateHash() {
         try {
-            FirebaseUser currentUser = MainActivity.db.getmAuth().getCurrentUser();
+            FirebaseUser currentUser = db.getmAuth().getCurrentUser();
             String input = currentUser.getUid();
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] hash = digest.digest(input.getBytes());
