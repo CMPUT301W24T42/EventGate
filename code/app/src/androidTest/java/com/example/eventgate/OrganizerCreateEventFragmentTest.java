@@ -46,7 +46,7 @@ public class OrganizerCreateEventFragmentTest {
         FragmentScenario<OrganizerCreateEventFragment> scenario = FragmentScenario.launchInContainer(OrganizerCreateEventFragment.class);
 
         // Click on the Generate QR Button
-        Espresso.onView(withId(R.id.generateQRButton)).perform(ViewActions.click());
+            Espresso.onView(withId(R.id.generateQRButton)).perform(ViewActions.click());
     }
     /**
      * Test to verify that clicking on the Generate Description QR Button works.
