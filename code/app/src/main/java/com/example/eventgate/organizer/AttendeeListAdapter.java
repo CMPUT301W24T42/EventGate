@@ -1,6 +1,7 @@
 package com.example.eventgate.organizer;
 
 import android.content.Context;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,7 +52,9 @@ public class AttendeeListAdapter extends ArrayAdapter<String> {
 
         String attendee = attendees.get(position);
 
-        TextView eventName = convertView.findViewById(R.id.event_name);
+        TextView eventName = convertView.findViewById(R.id.list_item_name);
+
+        eventName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
 
         eventName.setText(attendee);
 

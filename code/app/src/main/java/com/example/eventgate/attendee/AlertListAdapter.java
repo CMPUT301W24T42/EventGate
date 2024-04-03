@@ -11,7 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.eventgate.R;
-import com.example.eventgate.event.Event;
 import com.example.eventgate.organizer.OrganizerAlert;
 
 import java.util.ArrayList;

@@ -32,14 +32,19 @@ import com.example.eventgate.MainActivity;
 import com.example.eventgate.event.Event;
 import com.example.eventgate.event.EventDB;
 import com.example.eventgate.R;
+
 import com.example.eventgate.organizer.AttendeeListAdapter;
 import com.example.eventgate.organizer.EventListAdapter;
 import com.google.firebase.auth.FirebaseAuth;
+
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
+
+import com.google.firebase.firestore.FieldValue;
+
 import com.google.firebase.installations.FirebaseInstallations;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -85,7 +90,6 @@ public class AttendeeActivity extends AppCompatActivity {
     ListView allEventsList;
     Boolean deterministicProfileRemoved = false;
     //tracker for removing deterministic profile
-
 
 
     private final ActivityResultLauncher<Intent> qrLauncher =
@@ -238,6 +242,18 @@ public class AttendeeActivity extends AppCompatActivity {
 
 
 
+        //view all events dialogue
+        viewAllEventsButton = findViewById(R.id.allEventsButton);
+
+        viewAllEventsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Open a dialog
+                viewAllEventsDialog2();
+            }
+        });
+
+
 
     }
 
@@ -274,10 +290,6 @@ public class AttendeeActivity extends AppCompatActivity {
         dialog.show();
 
     }*/
-
-
-
-
 
 
     //prepares all events popup listview on button click
@@ -664,7 +676,6 @@ public class AttendeeActivity extends AppCompatActivity {
 
     /**
      * generates hash from firebase auth id for deterministic profile picture
-     * @param userId Firebase Install ID
      */
     //
     private void generateHash() {
@@ -698,7 +709,6 @@ public class AttendeeActivity extends AppCompatActivity {
 
     /**
      * Generates deterministic profile picture for attendee
-     * @param hashBytes hash from firebase auth id
      */
     //better version
     private void createBitmap2() {
@@ -738,6 +748,7 @@ public class AttendeeActivity extends AppCompatActivity {
                 eventDataList.clear();
                 eventDataList.addAll(r);
                 eventAdapter.notifyDataSetChanged();
+
             });
         });
     }
@@ -869,5 +880,6 @@ public class AttendeeActivity extends AppCompatActivity {
             userHomepageTextView.setText((String) userInfo.getOrDefault("homepage", "No Homepage"));
         });
     }
+
 
 }
