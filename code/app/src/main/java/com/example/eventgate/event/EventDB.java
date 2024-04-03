@@ -1,6 +1,5 @@
 package com.example.eventgate.event;
 
-import android.graphics.Bitmap;
 import android.util.Log;
 
 import com.example.eventgate.MyFirebaseMessagingService;
@@ -9,9 +8,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FieldPath;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,13 +20,9 @@ import androidx.annotation.NonNull;
 import com.example.eventgate.MainActivity;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.MultiFormatWriter;
-import com.google.zxing.WriterException;
-import com.google.zxing.common.BitMatrix;
-import com.journeyapps.barcodescanner.BarcodeEncoder;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+
 
 /**
  * This is used to add, remove, and retrieve event data from the database
@@ -45,7 +40,6 @@ public class EventDB {
      * The TAG for logging
      */
     final String TAG = "EventDB";
-    private Bitmap eventQRBitmap;
 
     /**
      * Constructs a new EventDB
@@ -61,47 +55,23 @@ public class EventDB {
      * @param event         The event object containing details of the event.
      * @param deviceId      The organizer's firebase installation id
      */
-    public Bitmap AddOrganizerEvent(Event event, String deviceId) {
+    public void AddOrganizerEvent(Event event, String deviceId) {
         String eventId = collection.document().getId();
         event.setEventId(eventId);
-        // add the organizer to eventid topic so that thet can receive alerts for event milestones
+
+        // add the organizer to eventid topic so that they can receive alerts for event milestones
         MyFirebaseMessagingService messagingService = MainActivity.db.getMessagingService();
         messagingService.addUserToTopic(eventId);
-
-        // Create Check in QR Code
-        MultiFormatWriter writer = new MultiFormatWriter();
-
-        try {
-            BitMatrix matrix = writer.encode(eventId, BarcodeFormat.QR_CODE, 400, 400);
-            BarcodeEncoder encoder = new BarcodeEncoder();
-            eventQRBitmap = encoder.createBitmap(matrix);
-
-        } catch (WriterException e) {
-            e.printStackTrace();
-        }
-
-        event.setEventQRBitmap(eventQRBitmap);
-
-        // Convert bitmap to byte array
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        eventQRBitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-        byte[] byteArray = baos.toByteArray();
-
-        // Convert byte array to list of integers
-        List<Integer> byteArrayAsList = new ArrayList<>();
-        for (byte b : byteArray) {
-            byteArrayAsList.add((int) b);
-        }
 
         HashMap<String, Object> data = new HashMap<>();
         data.put("eventId", event.getEventId());
         data.put("name", event.getEventName());
         data.put("description", event.getEventDescription());
-        data.put("checkInQRCode", byteArrayAsList.toString());
         data.put("organizer", deviceId); // Set organizer field to firebase installation id
         data.put("attendees", new ArrayList<String>()); // Set attendees field to blank
         data.put("eventDetails", event.getEventDetails());
         data.put("milestones", new ArrayList<Integer>());
+        data.put("attendanceLimit", event.getEventAttendanceLimit());
         System.out.println(event.getEventDetails());
         System.out.println(event.getEventId());
 
@@ -110,8 +80,6 @@ public class EventDB {
                 .set(data)
                 .addOnSuccessListener(unused -> Log.d(TAG, "Event has been added successfully!"))
                 .addOnFailureListener(e -> Log.d(TAG, "Event could not be added!" + e));
-
-        return eventQRBitmap;
     }
 
     /**
@@ -133,6 +101,8 @@ public class EventDB {
                         if (event.equals(eventId)) {
                             alreadyExists = true;
                             futureResult.complete(2);
+                            // Increment check-in number
+                            incrementCheckInNumber(attendee.getId(), eventId);
                             break;
                         }
                     }
@@ -142,6 +112,9 @@ public class EventDB {
                         attendeeEvents.add(eventId);
                         updates.put("events", attendeeEvents);
                         db.collection("attendees").document(attendee.getId()).update(updates);
+
+                        // Increment check-in number
+                        incrementCheckInNumber(attendee.getId(), eventId);
 
                         // subscribe attendee to the events topic so they can receive notifications
                         MainActivity.db.getMessagingService().addUserToTopic(eventId);
@@ -160,6 +133,21 @@ public class EventDB {
             }
         });
         return futureResult;
+    }
+
+    /**
+     * Increments the check-in number for the attendee for a specific event
+     * @param attendeeId The ID of the attendee
+     * @param eventId The ID of the event
+     */
+    private void incrementCheckInNumber(String attendeeId, String eventId) {
+        // Construct the field name based on the event ID
+        String fieldName = "eventCheckInNumber." + eventId;
+        // Use Firestore's FieldValue.increment to atomically increment the check-in number for the event
+        db.collection("attendees").document(attendeeId)
+                .update(fieldName, FieldValue.increment(1))
+                .addOnSuccessListener(aVoid -> Log.d(TAG, "Check-in number for event incremented successfully"))
+                .addOnFailureListener(e -> Log.e(TAG, "Error incrementing check-in number for event", e));
     }
 
     /**
@@ -403,6 +391,4 @@ public class EventDB {
                 });
         return futureEvents;
     }
-
-
 }
