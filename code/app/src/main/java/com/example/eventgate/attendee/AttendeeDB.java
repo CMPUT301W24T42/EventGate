@@ -3,7 +3,13 @@ package com.example.eventgate.attendee;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.example.eventgate.MainActivity;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -75,7 +81,7 @@ public class AttendeeDB {
      *      is removed by an admin
      * @param attendee the attendee to be removed
      */
-    public void removeAttendee(Attendee attendee) {
+    public void removeAttendeeFromAllEvents(Attendee attendee) {
         String attendeeId = attendee.getAttendeeId();
         // get references to the attendee's document and the events collection in the database
         DocumentReference attendeeRef = collection.document(attendeeId);
@@ -127,5 +133,14 @@ public class AttendeeDB {
                 Log.d(TAG, "get failed with ", task.getException());
             }
         });
+    }
+
+    public void removeAttendee(Attendee attendee) {
+        String attendeeId = attendee.getAttendeeId();
+        // delete the attendees info/profile from firestore
+        collection.document(attendeeId).delete()
+                .addOnSuccessListener(aVoid -> Log.d(TAG, "Attendee successfully deleted!"))
+                .addOnFailureListener(e -> Log.w(TAG, "Error deleting attendee", e));
+
     }
 }
