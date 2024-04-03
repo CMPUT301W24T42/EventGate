@@ -13,16 +13,21 @@
         android:hint="Name" />
 
     <EditText
-        android:id="@+id/edittext_homepage"
+        android:id="@+id/edittext_user_homepage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Homepage" />
+        android:hint="user_homepage" />
 
     <EditText
-        android:id="@+id/edittext_contact_info"
+        android:id="@+id/edittext_user_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Contact Info" />
+        android:hint="Email" />
+    <EditText
+        android:id="@+id/edittextPhone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="user_phone" />
 
     <CheckBox
         android:id="@+id/checkbox_geolocation"
