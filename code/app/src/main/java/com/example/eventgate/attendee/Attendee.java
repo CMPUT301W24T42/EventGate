@@ -22,6 +22,7 @@ public class Attendee implements Serializable {
     private String homepage;
     private String email;
     private String phoneNumber;
+    private String profilePicture;
 
     /**
      * this constructs a new attendee object
@@ -35,6 +36,7 @@ public class Attendee implements Serializable {
         this.homepage = "";
         this.email = "";
         this.phoneNumber = "";
+        this.profilePicture = "";
     }
 
     public String getName() {
@@ -71,5 +73,13 @@ public class Attendee implements Serializable {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
     }
 }

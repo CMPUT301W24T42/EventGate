@@ -92,9 +92,16 @@ public class MainActivity extends AppCompatActivity {
             // if there's no attendee info, create a new attendee
             CollectionReference attendeesRef = db.getAttendeesRef();
             attendeesRef.whereEqualTo("deviceId", deviceId).get().addOnCompleteListener(task -> {
+                AttendeeDB attendeeDB = new AttendeeDB();
                 if (task.isSuccessful() && task.getResult().isEmpty()) {
-                    AttendeeDB attendeeDB = new AttendeeDB();
                     attendeeDB.createNewAttendee(db.getAttendeesRef(), deviceId, preferences);
+                } else {  // get existing profile for attendee
+                    String name;
+                    String id;
+                    name = preferences.getString("attendeeName", "");
+                    id = preferences.getString("attendeeId", "");
+                    attendee = new Attendee(name, deviceId, id);
+                    attendeeDB.getAttendeeInfo(deviceId);
                 }
             });
         });

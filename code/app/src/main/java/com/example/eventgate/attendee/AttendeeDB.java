@@ -14,6 +14,8 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,7 +55,8 @@ public class AttendeeDB {
         data.put("events", new ArrayList<Integer>());
         data.put("hasUpdatedInfo", false);
         data.put("homepage", "");
-        data.put("contactInfo", new HashMap<>());
+        data.put("email", "");
+        data.put("phoneNumber", "");
         data.put("registeredEvents", new ArrayList<>());
         attendeesRef.document(attendeeId).set(data)
                 .addOnSuccessListener(unused -> {
@@ -146,5 +149,21 @@ public class AttendeeDB {
                 .addOnSuccessListener(aVoid -> Log.d(TAG, "Attendee successfully deleted!"))
                 .addOnFailureListener(e -> Log.w(TAG, "Error deleting attendee", e));
 
+    }
+
+    public void getAttendeeInfo(String deviceId) {
+        Attendee attendee = MainActivity.attendee;
+        CollectionReference attendeesRef = MainActivity.db.getAttendeesRef();
+        attendeesRef.whereEqualTo("deviceId", deviceId).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    attendee.setName(document.getString("name"));
+                    attendee.setHomepage(document.getString("homepage"));
+                    attendee.setEmail(document.getString("email"));
+                    attendee.setPhoneNumber(document.getString("phoneNumber"));
+                    attendee.setProfilePicture(document.getString("profilePicturePath"));
+                }
+            }
+        });
     }
 }
