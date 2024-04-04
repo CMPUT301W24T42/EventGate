@@ -463,15 +463,6 @@ public class AttendeeActivity extends AppCompatActivity {
                         }
                     }
                 });
-
-        db.collection("attendees").document(userId)
-                .set(profilePicture, SetOptions.merge())
-                .addOnSuccessListener(aVoid -> {
-                    Log.d("Firestore", "Profile picture path successfully written!");
-                    // show image after uploading
-                    fetchImagePathAndSetImageButton(userId, findViewById(R.id.profile_image));
-                })
-                .addOnFailureListener(e -> Log.w("Firestore", "Error writing document", e));
     }
 
     private void fetchImagePathAndSetImageButton(String userId, ImageButton imageButton) {

@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
                     name = preferences.getString("attendeeName", "");
                     id = preferences.getString("attendeeId", "");
                     attendee = new Attendee(name, deviceId, id);
-                    attendeeDB.getAttendeeInfo(deviceId);
+                    attendeeDB.getAttendeeInfo(deviceId, attendee);
                 }
             });
         });

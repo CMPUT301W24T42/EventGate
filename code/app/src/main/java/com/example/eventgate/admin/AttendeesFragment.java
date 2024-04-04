@@ -14,6 +14,7 @@ import android.widget.ListView;
 import com.example.eventgate.MainActivity;
 import com.example.eventgate.R;
 import com.example.eventgate.attendee.Attendee;
+import com.example.eventgate.attendee.AttendeeDB;
 import com.example.eventgate.event.Event;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -46,12 +47,14 @@ public class AttendeesFragment extends Fragment {
         // get reference to attendees collection
         CollectionReference attendeesRef = MainActivity.db.getAttendeesRef();
         // snapshot listener that adds/updates all the attendees/users from the database
+        AttendeeDB attendeeDB = new AttendeeDB();
         attendeesRef.addSnapshotListener((queryDocumentSnapshots, error) -> {
             attendeeDataList.clear();
             for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
             {
                 Attendee attendee = new Attendee((String) doc.getData().get("name"),
                         (String) doc.getData().get("deviceId"), (String) doc.getData().get("attendeeId"));
+                attendeeDB.getAttendeeInfo((String) doc.getData().get("deviceId"), attendee);
                 attendeeDataList.add(attendee);
                 attendeeAdapter.notifyDataSetChanged();
             }

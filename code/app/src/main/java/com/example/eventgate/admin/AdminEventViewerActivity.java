@@ -18,6 +18,8 @@ import com.example.eventgate.ConfirmDeleteDialog;
 import com.example.eventgate.MainActivity;
 import com.example.eventgate.R;
 import com.example.eventgate.attendee.Attendee;
+import com.example.eventgate.attendee.AttendeeDB;
+import com.example.eventgate.attendee.AttendeeEventListAdapter;
 import com.example.eventgate.attendee.PosterPagerAdapter;
 import com.example.eventgate.event.EventDB;
 import com.google.firebase.firestore.CollectionReference;
@@ -46,6 +48,7 @@ public class AdminEventViewerActivity extends AppCompatActivity {
      * this is an adapter for displaying a list of attendees
      */
     ArrayAdapter<Attendee> attendeeAdapter;
+    ListView attendeeList;
     /**
      * this is the viewpager to display event posters
      */
@@ -146,6 +149,17 @@ public class AdminEventViewerActivity extends AppCompatActivity {
         // add/update attendees list
         updateAttendeesList(eventRef, attendeesRef);
 
+        // starts a new activity to view event info including attendees of event
+        attendeeList.setOnItemClickListener((parent, view, position, id) -> {
+            // pop dialog to show all user info
+            UserInfoDialog fragment = new UserInfoDialog();
+            // create a bundle so we can access
+            Bundle args = new Bundle();
+            args.putSerializable("attendee", attendeeDataList.get(position));
+            fragment.setArguments(args);
+            fragment.show(getSupportFragmentManager(), "IMAGE POPUP");  // show dialog
+        });
+
 
     }
 
@@ -155,7 +169,7 @@ public class AdminEventViewerActivity extends AppCompatActivity {
     private void createAttendeeList() {
         attendeeDataList = new ArrayList<>();
 
-        ListView attendeeList = findViewById(R.id.user_list);
+        attendeeList = findViewById(R.id.user_list);
 
         attendeeAdapter = new AdminAttendeeListAdapter(this, attendeeDataList, eventId);
         attendeeList.setAdapter(attendeeAdapter);
@@ -169,6 +183,7 @@ public class AdminEventViewerActivity extends AppCompatActivity {
      */
     private void updateAttendeesList(DocumentReference eventRef, CollectionReference attendeesRef) {
         // add/update the list of attendees attending this specific event
+        AttendeeDB attendeeDB = new AttendeeDB();
         eventRef.addSnapshotListener((value, error) -> {
             if (error != null) {
                 Log.e("Firestore", error.toString());
@@ -185,6 +200,7 @@ public class AdminEventViewerActivity extends AppCompatActivity {
                                     Attendee attendee = new Attendee(documentSnapshot.getString("name"),
                                             documentSnapshot.getString("deviceId"),
                                             documentSnapshot.getId());
+                                    attendeeDB.getAttendeeInfo((String) documentSnapshot.getData().get("deviceId"), attendee);
                                     attendeeDataList.add(attendee);
                                     attendeeAdapter.notifyDataSetChanged();
                                 });

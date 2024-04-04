@@ -151,8 +151,7 @@ public class AttendeeDB {
 
     }
 
-    public void getAttendeeInfo(String deviceId) {
-        Attendee attendee = MainActivity.attendee;
+    public void getAttendeeInfo(String deviceId, Attendee attendee) {
         CollectionReference attendeesRef = MainActivity.db.getAttendeesRef();
         attendeesRef.whereEqualTo("deviceId", deviceId).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
