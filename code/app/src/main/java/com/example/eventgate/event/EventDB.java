@@ -1,12 +1,17 @@
 package com.example.eventgate.event;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.eventgate.MyFirebaseMessagingService;
 import com.example.eventgate.attendee.AttendeeDB;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -20,6 +25,14 @@ import androidx.annotation.NonNull;
 import com.example.eventgate.MainActivity;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+
+import com.google.firebase.firestore.SetOptions;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.journeyapps.barcodescanner.BarcodeEncoder;
+
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
@@ -230,6 +243,7 @@ public class EventDB {
         db.collection("events").document(eventId).get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
+                        System.out.println("id is:" + userId);
 
                         List<String> registeredUsers = (List<String>) documentSnapshot.get("registeredUsers");
                         if (registeredUsers != null && registeredUsers.contains(userId)) {
@@ -248,6 +262,56 @@ public class EventDB {
                     System.out.println("Error accessing document: " + e.getMessage());
                     future.completeExceptionally(e);
                 });
+        return future;
+    }
+
+    /**
+     * This function stores the registered attendee under event
+     * @param userId firebase id
+     * @param eventId event id
+     * @return future
+     */
+    public CompletableFuture<Void> registerAttendee(Context context, String userId, String eventId) {
+        CompletableFuture<Void> future = new CompletableFuture<>();
+        DocumentReference eventDocRef = db.collection("events").document(eventId);
+
+        //arrayunion will automatically check for pre-existing user
+        eventDocRef.update("registeredUsers", FieldValue.arrayUnion(userId))
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(context, "You're registered", Toast.LENGTH_SHORT).show();
+                    future.complete(null);
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(context, "Error while registering, try again" + e.getMessage(), Toast.LENGTH_LONG).show();
+                    future.completeExceptionally(e);
+                });
+
+        return future;
+    }
+
+    /**
+     * this is 2nd version of register attendee that is also run to store registered attendee under attendee
+     * @param deviceId
+     * @param eventId
+     * @return
+     */
+    public CompletableFuture<Void> registerAttendee2(String deviceId, String eventId) {
+        CompletableFuture<Void> future = new CompletableFuture<>();
+        DocumentReference attendeeDocRef = db.collection("attendees").document(deviceId);
+
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("registeredEvents", FieldValue.arrayUnion(eventId));
+
+        attendeeDocRef.set(updates, SetOptions.merge())
+                .addOnSuccessListener(aVoid -> {
+                    System.out.println("Event successfully added to the attendee's registered events.");
+                    future.complete(null);
+                })
+                .addOnFailureListener(e -> {
+                    System.out.println("Error updating the attendee document: " + e.getMessage());
+                    future.completeExceptionally(e);
+                });
+
         return future;
     }
   
@@ -391,4 +455,70 @@ public class EventDB {
                 });
         return futureEvents;
     }
+
+
+    public CompletableFuture<Void> updateUserInfo(String deviceId, String name, String phoneNumber, String email, String homepage, Boolean hasUpdatedInfo) {
+        CompletableFuture<Void> future = new CompletableFuture<>();
+        DocumentReference userAttributeDocRef = db.collection("attendees").document(deviceId);
+
+        Map<String, Object> attributes = new HashMap<>();
+        attributes.put("name", name);
+        attributes.put("phoneNumber", phoneNumber);
+        attributes.put("email", email);
+        attributes.put("homepage", homepage);
+        attributes.put("hasUpdatedInfo", hasUpdatedInfo);
+
+        userAttributeDocRef.set(attributes, SetOptions.merge())
+                .addOnSuccessListener(aVoid -> {
+                    future.complete(null);
+                })
+                .addOnFailureListener(e -> {
+                    future.completeExceptionally(e);
+                });
+
+        return future;
+    }
+
+    public CompletableFuture<Map<String, Object>> getUserInfo(String deviceId) {
+        CompletableFuture<Map<String, Object>> future = new CompletableFuture<>();
+        DocumentReference userDocRef = db.collection("attendees").document(deviceId);
+
+        userDocRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    future.complete(document.getData());
+                } else {
+                    future.completeExceptionally(new Exception("No such document."));
+                }
+            } else {
+                future.completeExceptionally(task.getException());
+            }
+        });
+
+        return future;
+    }
+
+    public CompletableFuture<Boolean> getUserInfoUpdateStatus(String deviceId) {
+        CompletableFuture<Boolean> future = new CompletableFuture<>();
+        DocumentReference userDocRef = db.collection("attendees").document(deviceId);
+
+        userDocRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    Boolean isActive = document.getBoolean("hasUpdatedInfo");
+                    future.complete(isActive);
+                } else {
+                    future.completeExceptionally(new Exception("No such document."));
+                }
+            } else {
+                future.completeExceptionally(task.getException());
+            }
+        });
+
+        return future;
+    }
+
+
 }
