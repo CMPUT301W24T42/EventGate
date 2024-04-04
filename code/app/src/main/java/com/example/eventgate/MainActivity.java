@@ -93,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
             CollectionReference attendeesRef = db.getAttendeesRef();
             attendeesRef.whereEqualTo("deviceId", deviceId).get().addOnCompleteListener(task -> {
                 AttendeeDB attendeeDB = new AttendeeDB();
+                Log.d("deviceId", deviceId);
                 if (task.isSuccessful() && task.getResult().isEmpty()) {
                     attendeeDB.createNewAttendee(db.getAttendeesRef(), deviceId, preferences);
                 } else {  // get existing profile for attendee

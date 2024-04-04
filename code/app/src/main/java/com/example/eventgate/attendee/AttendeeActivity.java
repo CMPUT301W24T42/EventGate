@@ -22,6 +22,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.activity.result.ActivityResultLauncher;
@@ -35,12 +36,17 @@ import com.example.eventgate.R;
 
 import com.example.eventgate.organizer.AttendeeListAdapter;
 import com.example.eventgate.organizer.EventListAdapter;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 
 import com.google.firebase.firestore.FieldValue;
@@ -442,6 +448,21 @@ public class AttendeeActivity extends AppCompatActivity {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         Map<String, Object> profilePicture = new HashMap<>();
         profilePicture.put("profilePicturePath", downloadUrl);
+
+        db.collection("attendees").whereEqualTo("deviceId", userId).get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot doc : task.getResult()) {
+                            db.collection("attendees").document(doc.getId()).update(profilePicture)
+                                    .addOnSuccessListener(unused -> {
+                                        Log.d("Firestore", "Profile picture path successfully written!");
+                                        // show image after uploading
+                                        fetchImagePathAndSetImageButton(userId, findViewById(R.id.profile_image));
+                                    })
+                                    .addOnFailureListener(e -> Log.w("Firestore", "Error writing document", e));
+                        }
+                    }
+                });
 
         db.collection("attendees").document(userId)
                 .set(profilePicture, SetOptions.merge())
