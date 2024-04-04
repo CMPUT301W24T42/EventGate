@@ -1,5 +1,6 @@
 package com.example.eventgate.admin;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -13,6 +14,7 @@ import android.widget.ListView;
 import com.example.eventgate.MainActivity;
 import com.example.eventgate.R;
 import com.example.eventgate.attendee.Attendee;
+import com.example.eventgate.event.Event;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -30,6 +32,10 @@ public class AttendeesFragment extends Fragment {
      * this is an adapter for displaying a list of attendees
      */
     ArrayAdapter<Attendee> attendeeAdapter;
+    /**
+     * This is the listview that displays the attendees in the attendeeDataList
+     */
+    ListView attendeeList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -51,6 +57,17 @@ public class AttendeesFragment extends Fragment {
             }
         });
 
+        // starts a new activity to view event info including attendees of event
+        attendeeList.setOnItemClickListener((parent, view, position, id) -> {
+            // pop dialog to show all user info
+            UserInfoDialog fragment = new UserInfoDialog();
+            // create a bundle so we can access
+            Bundle args = new Bundle();
+            args.putSerializable("attendee", attendeeDataList.get(position));
+            fragment.setArguments(args);
+            fragment.show(getActivity().getSupportFragmentManager(), "IMAGE POPUP");  // show dialog
+        });
+
         return fragmentView;
     }
 
@@ -60,7 +77,7 @@ public class AttendeesFragment extends Fragment {
     private void createAttendeeList(View view) {
         attendeeDataList = new ArrayList<>();
 
-        ListView attendeeList = view.findViewById(R.id.user_list);
+        attendeeList = view.findViewById(R.id.user_list);
 
         attendeeAdapter = new AdminAttendeeListAdapter(getActivity(), attendeeDataList, "");
         attendeeList.setAdapter(attendeeAdapter);

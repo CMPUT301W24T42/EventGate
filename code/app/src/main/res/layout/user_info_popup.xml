@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/profile_picture"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="30dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/user_info_dismiss_button"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:backgroundTint="@color/white"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="13dp"
+            android:layout_marginEnd="10dp"
+            android:focusable="false"
+            app:icon="@android:drawable/ic_delete"
+            app:iconTint="@color/red"
+            app:iconGravity="textTop">
+        </com.google.android.material.button.MaterialButton>
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingVertical="10dp">
+
+
+        <TextView
+            android:id="@+id/attendee_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingVertical="5dp"
+            android:text="@string/name"
+            android:textSize="22sp"
+            android:textColor="@color/black"
+            android:paddingStart="15dp"
+            android:paddingEnd="55dp"
+            android:gravity="center_vertical"
+            android:maxLines="1"
+            android:textStyle="bold"
+            android:ellipsize="end">
+        </TextView>
+        <TextView
+            android:id="@+id/attendee_homepage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingVertical="5dp"
+            android:textSize="22sp"
+            android:text="thisissomestringthatisverylong"
+            android:textColor="@color/black"
+            android:gravity="center_vertical"
+            android:paddingEnd="10dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:layout_below="@id/attendee_name"
+            android:layout_toEndOf="@id/homepage_string"/>
+
+        <TextView
+            android:id="@+id/homepage_string"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:paddingVertical="5dp"
+            android:text="Homepage: "
+            android:textSize="22sp"
+            android:textColor="@color/black"
+            android:paddingStart="15dp"
+            android:gravity="center_vertical"
+            android:layout_below="@id/attendee_name">
+        </TextView>
+
+        <TextView
+            android:id="@+id/attendee_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingVertical="5dp"
+            android:textSize="22sp"
+            android:paddingEnd="10dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:gravity="center_vertical"
+            android:textColor="@color/black"
+            android:layout_below="@id/homepage_string"
+            android:layout_toEndOf="@id/email"/>
+
+        <TextView
+            android:id="@+id/email"
+            android:layout_width="85dp"
+            android:layout_height="wrap_content"
+            android:paddingVertical="5dp"
+            android:text="Email: "
+            android:textSize="22sp"
+            android:textColor="@color/black"
+            android:paddingStart="15dp"
+            android:gravity="center_vertical"
+            android:layout_below="@id/homepage_string">
+        </TextView>
+
+        <TextView
+            android:id="@+id/phone_number"
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:paddingVertical="5dp"
+            android:text="Phone Number: "
+            android:textSize="22sp"
+            android:textColor="@color/black"
+            android:paddingStart="15dp"
+            android:gravity="center_vertical"
+            android:layout_below="@id/email">
+        </TextView>
+
+        <TextView
+            android:id="@+id/attendee_number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingVertical="5dp"
+            android:textSize="22sp"
+            android:paddingEnd="10dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/black"
+            android:gravity="center_vertical"
+            android:layout_below="@id/email"
+            android:layout_toEndOf="@id/phone_number"/>
+
+        <TextView
+            android:id="@+id/delete_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/phone_number"
+            android:text="Delete this profile picture? This action cannot be undone."
+            android:textSize="22sp"
+            android:textColor="@color/black"
+            android:layout_marginTop="25dp"
+            android:paddingHorizontal="20dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/delete_picture_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:backgroundTint="@color/red"
+            android:paddingVertical="15dp"
+            android:ems="8"
+            android:text="Delete Picture"
+            android:textColor="@color/black"
+            android:layout_marginTop="10dp"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:cornerRadius="5dp"
+            android:layout_below="@id/delete_message"
+            android:layout_centerHorizontal="true"/>
+    </RelativeLayout>
+
+</LinearLayout>
+
