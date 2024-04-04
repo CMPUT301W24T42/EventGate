@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -41,6 +42,8 @@ public class AttendeeAllEventViewerDetail extends AppCompatActivity {
     private TextView textViewEventName;
     private String eventID;
     private String eventName;
+    private Integer attendanceLimit;
+    private Integer registrationCount;
     private ArrayList<OrganizerAlert> alertsDataList;
     private ListView alertsList;
     private ArrayAdapter<OrganizerAlert> alertsAdapter;
@@ -53,10 +56,8 @@ public class AttendeeAllEventViewerDetail extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_attendee_event_viewer_detailed);
 
-
         FirebaseInstallations.getInstance().getId().addOnSuccessListener(id -> {
              userId = id;
-
         });
 
         //extract event info
@@ -67,7 +68,6 @@ public class AttendeeAllEventViewerDetail extends AppCompatActivity {
             alertsDataList = (ArrayList<OrganizerAlert>) extras.getSerializable("alerts");
         }
 
-
         alertsList = findViewById(R.id.alertList);
         alertsAdapter = new AlertListAdapter(this, alertsDataList);
         alertsList.setAdapter(alertsAdapter);
@@ -75,26 +75,57 @@ public class AttendeeAllEventViewerDetail extends AppCompatActivity {
         //this checks whether to grey out signup button
         isAttendeeRegistered(userId);
 
+        // Retrieve the attendance limit and registration count
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        assert eventID != null;
+        db.collection("events").document(eventID).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        Object attendanceLimitObject = documentSnapshot.get("attendanceLimit");
+                        Object registrationCountObject = documentSnapshot.get("registrationCount");
+
+                        if (attendanceLimitObject instanceof Long) {
+                            // Attendance limit is stored as a Long (which is the Firestore representation for Integer)
+                            Long attendanceLimitLong = (Long) attendanceLimitObject;
+                            attendanceLimit = attendanceLimitLong.intValue();
+
+                        } else if (attendanceLimitObject instanceof Integer) {
+                            // Attendance limit is stored as an Integer
+                            attendanceLimit = (Integer) attendanceLimitObject;
+                        }
+
+                        // Do the same for registration count
+                        if (registrationCountObject instanceof Long) {
+                            // Registration Count is stored as a Long
+                            Long registrationCountLong = (Long) registrationCountObject;
+                            registrationCount = registrationCountLong.intValue();
+
+                        } else if (registrationCountObject instanceof Integer) {
+                            // Attendance limit is stored as an Integer
+                            registrationCount = (Integer) registrationCountObject;
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> {
+                });
+
         Button signupButton = findViewById(R.id.signupButton);
 
-
         //signing up will need 2 functions since registered events are stored under attendees and events
-
         signupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EventDB eventDB = new EventDB();
-
-                eventDB.registerAttendee(AttendeeAllEventViewerDetail.this, userId,eventID);
-
-                eventDB.registerAttendee2(userId,eventID);
-
-                isAttendeeRegistered(userId);
-
+                // Attendance limit of -1 indicates unlimited attendance
+                if (attendanceLimit == -1 || registrationCount < attendanceLimit) {
+                    EventDB eventDB = new EventDB();
+                    eventDB.registerAttendee(AttendeeAllEventViewerDetail.this, userId, eventID);
+                    eventDB.registerAttendee2(userId, eventID);
+                    isAttendeeRegistered(userId);
+                } else {
+                    Toast.makeText(AttendeeAllEventViewerDetail.this, "This Event is full!", Toast.LENGTH_SHORT).show();
+                }
             }
         });
-
-
 
         displayEventPosters(eventID);
 
