@@ -41,6 +41,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.SetOptions;
 
 import com.google.firebase.firestore.FieldValue;
@@ -445,14 +446,20 @@ public class AttendeeActivity extends AppCompatActivity {
         Map<String, Object> profilePicture = new HashMap<>();
         profilePicture.put("profilePicturePath", downloadUrl);
 
-        db.collection("attendees").document(userId)
-                .set(profilePicture, SetOptions.merge())
-                .addOnSuccessListener(aVoid -> {
-                    Log.d("Firestore", "Profile picture path successfully written!");
-                    // show image after uploading
-                    fetchImagePathAndSetImageButton(userId, findViewById(R.id.profile_image));
-                })
-                .addOnFailureListener(e -> Log.w("Firestore", "Error writing document", e));
+        db.collection("attendees").whereEqualTo("deviceId", userId).get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot doc : task.getResult()) {
+                            db.collection("attendees").document(doc.getId()).update(profilePicture)
+                                    .addOnSuccessListener(unused -> {
+                                        Log.d("Firestore", "Profile picture path successfully written!");
+                                        // show image after uploading
+                                        fetchImagePathAndSetImageButton(userId, findViewById(R.id.profile_image));
+                                    })
+                                    .addOnFailureListener(e -> Log.w("Firestore", "Error writing document", e));
+                        }
+                    }
+                });
     }
 
     private void fetchImagePathAndSetImageButton(String userId, ImageButton imageButton) {
