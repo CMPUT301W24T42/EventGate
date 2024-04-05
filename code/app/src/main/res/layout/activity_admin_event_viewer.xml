@@ -35,11 +35,21 @@
             android:textSize="22sp">
         </TextView>
 
-        <androidx.viewpager.widget.ViewPager
-            android:id="@+id/image_view_pager"
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="210dp">
-        </androidx.viewpager.widget.ViewPager>
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/image_view_pager"
+                android:layout_width="match_parent"
+                android:layout_height="210dp"/>
+
+            <ImageView
+                android:id="@+id/poster_image_view"
+                android:layout_width="match_parent"
+                android:layout_height="210dp"/>
+        </FrameLayout>
+
+
         
         <TextView
             android:id="@+id/event_details_textview"

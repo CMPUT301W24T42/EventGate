@@ -6,8 +6,10 @@ import static com.example.eventgate.admin.DeleteImageFromFirebase.deletePosterFr
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -73,6 +75,7 @@ public class AdminEventViewerActivity extends AppCompatActivity {
      * tag for logging
      */
     final String TAG = "AdminEventViewerActivity";
+    ImageView defaultImageView;
 
     /**
      * Called when the activity is starting.
@@ -138,6 +141,10 @@ public class AdminEventViewerActivity extends AppCompatActivity {
 
         // display posters
         displayEventPosters();
+
+        defaultImageView = findViewById(R.id.poster_image_view);
+
+
 
         // create the attendee list and set adapter
         createAttendeeList();
@@ -220,6 +227,7 @@ public class AdminEventViewerActivity extends AppCompatActivity {
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                        defaultImageView.setVisibility(View.GONE);
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             String imageUrl = document.getString("url");
                             posterImageUrls.add(imageUrl);
@@ -229,6 +237,8 @@ public class AdminEventViewerActivity extends AppCompatActivity {
                             enableButton();
                         }
                     } else {
+                            viewPager.setVisibility(View.GONE);
+                            defaultImageView.setImageResource(R.drawable.default_viewpager);
                         Log.d(TAG, "get failed with ", task.getException());
                     }
                 });
