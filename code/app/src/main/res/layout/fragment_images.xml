@@ -8,10 +8,10 @@
 
     <GridView
         android:id="@+id/image_grid_view"
-        android:layout_marginTop="30dp"
-        android:layout_width="350dp"
-        android:layout_height="600dp"
-        android:numColumns="2"
+        android:layout_marginTop="2dp"
+        android:layout_width="400dp"
+        android:layout_height="match_parent"
+        android:numColumns="3"
         android:background="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
