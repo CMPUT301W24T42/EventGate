@@ -29,6 +29,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 // citations
 // https://www.youtube.com/watch?v=aRgSrJO40z8&t=690s Elements of the following layout design,
@@ -47,9 +48,9 @@ public class ImagesFragment extends Fragment implements ImagePopUpDialog.OnImage
      */
     AdminGridViewAdapter gridViewAdapter;
     /**
-     * a list of event ids associated with each image from the database
+     * holds image urls and their associated eventId or attendeeId
      */
-    ArrayList<String> eventIdList;
+    HashMap<Object, Object> map;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -61,29 +62,30 @@ public class ImagesFragment extends Fragment implements ImagePopUpDialog.OnImage
         imageList = new ArrayList<>();
         gridViewAdapter = new AdminGridViewAdapter(getContext(), imageList);
         gridView.setAdapter(gridViewAdapter);
-        eventIdList = new ArrayList<>();
+        map = new HashMap<>();
 
-        // snapshot listener to add/update event posters from the database
-        CollectionReference eventsRef = MainActivity.db.getEventsRef();
-        eventsRef.addSnapshotListener((queryDocumentSnapshots, error) -> {
-            imageList.clear();
-            eventIdList.clear();
-            for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
-            {
-                // get posters collection for each event document
-                CollectionReference postersRef = eventsRef.document(doc.getId()).collection("posters");
-                postersRef.get().addOnCompleteListener(task -> {
-                    if (task.isSuccessful() && !task.getResult().isEmpty()) {
-                        // add urls from posters collection
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            String imageUrl = document.getString("url");
-                            imageList.add(imageUrl);
-                            eventIdList.add(postersRef.getParent().getId());
-                        }
-                        gridViewAdapter.notifyDataSetChanged();
+        // snapshot listener to add/update images from the database
+        CollectionReference imagesRef = MainActivity.db.getImagesRef();
+        imagesRef.addSnapshotListener((value, error) -> {
+            if (value != null) {
+                imageList.clear();
+                for (QueryDocumentSnapshot doc: value) {
+                    String imageUrl = doc.getString("url");
+                    String id;
+                    // id associated with the image will either be eventId (event posters) or attendeeId (profile picture)
+                    if (doc.getString("eventId") != null) {
+                        id = doc.getString("eventId");
+                    } else {
+                        id = doc.getString("attendeeId");
                     }
-                });
+                    if (!map.containsKey(imageUrl)) {
+                        map.put(imageUrl, id);
+                    }
+                    imageList.add(imageUrl);
+                }
+                gridViewAdapter.notifyDataSetChanged();
             }
+
         });
 
         // set on item click listener
@@ -111,15 +113,13 @@ public class ImagesFragment extends Fragment implements ImagePopUpDialog.OnImage
     public void onImageDelete(int position) {
         // get the image url and the event id associated with that image
         String imageUrl = imageList.get(position);
-        String eventId = eventIdList.get(position);
         // get a reference to the posters subcollection contained that poster
-        CollectionReference postersRef = MainActivity.db.getEventsRef().document(eventId).collection("posters");
+//        CollectionReference postersRef = MainActivity.db.getEventsRef().document(eventId).collection("posters");
         // delete the poster from firestore and cloud storage
-        deletePosterFromFirestore(imageUrl, postersRef);
+//        deletePosterFromFirestore(imageUrl, postersRef);
         deletePosterFromCloudStorage(imageUrl);
         // remove image url and event id from their respective lists
         imageList.remove(position);
-        eventIdList.remove(position);
 
         gridViewAdapter.notifyDataSetChanged();
     }
