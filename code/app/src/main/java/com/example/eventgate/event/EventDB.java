@@ -85,6 +85,7 @@ public class EventDB {
         data.put("eventDetails", event.getEventDetails());
         data.put("milestones", new ArrayList<Integer>());
         data.put("attendanceLimit", event.getEventAttendanceLimit());
+        data.put("registrationCount", 0);
         System.out.println(event.getEventDetails());
         System.out.println(event.getEventId());
 
@@ -234,7 +235,6 @@ public class EventDB {
 
     /**
      * Checks whether a user is signed up for an event
-     * @param deviceId attendee's firebase installation id
      * @return CompleteableFuture of Arraylist of Events
      * */
     public CompletableFuture<Boolean> isAttendeeSignedUp(String userId, String eventId) {
@@ -267,6 +267,7 @@ public class EventDB {
 
     /**
      * This function stores the registered attendee under event
+     * and increments the registration count
      * @param userId firebase id
      * @param eventId event id
      * @return future
@@ -275,19 +276,33 @@ public class EventDB {
         CompletableFuture<Void> future = new CompletableFuture<>();
         DocumentReference eventDocRef = db.collection("events").document(eventId);
 
-        //arrayunion will automatically check for pre-existing user
-        eventDocRef.update("registeredUsers", FieldValue.arrayUnion(userId))
-                .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(context, "You're registered", Toast.LENGTH_SHORT).show();
-                    future.complete(null);
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(context, "Error while registering, try again" + e.getMessage(), Toast.LENGTH_LONG).show();
-                    future.completeExceptionally(e);
-                });
+        db.runTransaction(transaction -> {
+            // Get the current registration count
+            DocumentSnapshot eventSnapshot = transaction.get(eventDocRef);
+            Long currentCount = eventSnapshot.getLong("registrationCount");
+
+            // Handle the case where the registrationCount field is null or doesn't exist
+            long newCount = (currentCount != null) ? currentCount + 1 : 1;
+
+            // Update the registration count
+            transaction.update(eventDocRef, "registrationCount", newCount);
+
+            // Add the user to the registeredUsers array
+            transaction.update(eventDocRef, "registeredUsers", FieldValue.arrayUnion(userId));
+
+            // Complete the transaction
+            return null;
+        }).addOnSuccessListener(result -> {
+            Toast.makeText(context, "You're registered", Toast.LENGTH_SHORT).show();
+            future.complete(null);
+        }).addOnFailureListener(e -> {
+            Toast.makeText(context, "Error while registering, try again: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            future.completeExceptionally(e);
+        });
 
         return future;
     }
+
 
     /**
      * this is 2nd version of register attendee that is also run to store registered attendee under attendee
