@@ -29,6 +29,7 @@ public class MainActivityTest {
 
     @Before
     public void dismissDialog() {
+        // dismiss the notification popup before every test
         onView(withId(R.id.permission_info)).check(matches(isDisplayed()));
         onView(withId(R.id.no_thanks_button)).perform(click());
         onView(withId(R.id.main_activity)).check(matches(isDisplayed()));
