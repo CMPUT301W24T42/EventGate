@@ -50,10 +50,11 @@ public class AttendeeDB {
     public void createNewAttendee(CollectionReference attendeesRef, String deviceId, SharedPreferences preferences) {
         String attendeeId = attendeesRef.document().getId();
         HashMap<String, Object> data = new HashMap<>();
+        FirebaseAuth mAuth = MainActivity.db.getmAuth();
         data.put("deviceId", deviceId);
         // set an attendee's name to their id by default until the user enters it later in user settings
         data.put("name", attendeeId);
-        data.put("uUid", MainActivity.db.getUser().getUid());
+        data.put("uUid", mAuth.getCurrentUser().getUid());
         data.put("events", new ArrayList<Integer>());
         data.put("hasUpdatedInfo", false);
         data.put("homepage", "");
