@@ -5,17 +5,20 @@
  * It provides functionality to generate and display QR codes for event check-in and description.
  * Organizers can also reuse existing QR codes if available and share existing qr codes.
  *
- * Citation:
+ * Citations:   https://developer.android.com/training/sharing/send#java
+ *              https://www.youtube.com/watch?v=BWZv0iynWkE
  */
 
 package com.example.eventgate.organizer;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -42,6 +45,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * This class provides functionality for organizers to edit QR codes associated with an event.
@@ -78,7 +82,8 @@ public class OrganizerEditQR extends AppCompatActivity {
         Button generateCheckInQRCodeButton = findViewById(R.id.generateCheckInQRButton);
         Button reuseQRButton = findViewById(R.id.ReuseQR);
         Button generateDescriptionQRButton = findViewById(R.id.generateDescriptionQRButton);
-        Button shareQRCode = findViewById(R.id.OrganizerEditQRShareButton);
+        Button shareCheckInQRCode = findViewById(R.id.OrganizerEditQRShareCheckInButton);
+        Button shareDetailsQRCode = findViewById(R.id.OrganizerEditQRShareDetailsButton);
         Button backButton = findViewById(R.id.OrganizerEditQRBackButton);
 
         Intent previousIntent = getIntent();
@@ -233,32 +238,20 @@ public class OrganizerEditQR extends AppCompatActivity {
             }
         });
 
-        shareQRCode.setOnClickListener(new View.OnClickListener() {
+        shareCheckInQRCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (eventQRBitmap != null) {
-                    // Save the bitmap to a file
-                    File qrCodeFile = saveBitmapToFile(eventQRBitmap);
+                    shareImage(eventQRBitmap);
+                }
+            }
+        });
 
-                    // Get the content URI using FileProvider
-                    Uri qrCodeImageUri = FileProvider.getUriForFile(
-                            OrganizerEditQR.this,
-                            BuildConfig.APPLICATION_ID + ".fileprovider",
-                            qrCodeFile);
-
-                    // Create an intent to share the QR code image
-                    Intent shareIntent = new Intent(Intent.ACTION_SEND);
-                    shareIntent.setType("image/*"); // Set the MIME type to image
-                    shareIntent.putExtra(Intent.EXTRA_STREAM, qrCodeImageUri); // Set the URI of the QR code image as extra
-
-                    // Optionally, set a subject for the shared content
-                    shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Check-in QR Code");
-
-                    // Grant temporary permission to the content URI
-                    shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-                    // Start the activity with the share intent
-                    startActivity(Intent.createChooser(shareIntent, "Share QR Code"));
+        shareDetailsQRCode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (descriptionQRBitmap != null) {
+                    shareImage(descriptionQRBitmap);
                 }
             }
         });
@@ -266,26 +259,38 @@ public class OrganizerEditQR extends AppCompatActivity {
         backButton.setOnClickListener(v -> finish());
     }
 
-    private File saveBitmapToFile(Bitmap bitmap) {
-        // Create a directory to save the image
-        File directory = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "QRCodeImages");
-        if (!directory.exists()) {
-            directory.mkdirs();
-        }
+    private void shareImage(Bitmap bitmap) {
+        Intent share = new Intent(Intent.ACTION_SEND);
+        share.setType("image/jpeg");
+        Uri bmpUri;
+        String textToShare = "Share QR Code";
 
-        // Create a file to save the image
-        File file = new File(directory, "QRCodeImage.png");
+        bmpUri = saveImage(bitmap, getApplicationContext());
 
+        share.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        share.putExtra(Intent.EXTRA_STREAM, bmpUri);
+        share.putExtra(Intent.EXTRA_SUBJECT, "EventGate");
+        share.putExtra(Intent.EXTRA_TEXT, textToShare);
+
+        startActivity(Intent.createChooser(share, "Share Content"));
+    }
+
+    private static Uri saveImage(Bitmap image, Context context) {
+        File imagesFolder = new File(context.getCacheDir(), "images");
+        Uri uri = null;
         try {
-            // Compress the bitmap to PNG format and save it to the file
-            FileOutputStream outputStream = new FileOutputStream(file);
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
-            outputStream.flush();
-            outputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+            imagesFolder.mkdirs();
+            File file = new File(imagesFolder, "shared_images.jpg");
+
+            FileOutputStream stream = new FileOutputStream(file);
+            image.compress(Bitmap.CompressFormat.JPEG, 90, stream);
+            stream.flush();
+            stream.close();
+            uri = FileProvider.getUriForFile(Objects.requireNonNull(context.getApplicationContext()), "com.example.eventgate" + ".provider", file);
+        } catch (IOException e){
+            Log.d("TAG", "Exception" + e.getMessage());
         }
 
-        return file;
+        return uri;
     }
 }
