@@ -63,7 +63,7 @@ public class OrganizerMainMenuActivityTest {
             onView(withId(R.id.organizerCreateEventName)).perform(ViewActions.typeText("Event1"), ViewActions.closeSoftKeyboard());
 
             // Generate both QR Codes
-            onView(withId(R.id.generateQRButton)).perform(click());
+            onView(withId(R.id.generateCheckInQRButton)).perform(click());
             onView(withId(R.id.generateDescriptionQRButton)).perform(click());
 
             // Click on Continue Button
