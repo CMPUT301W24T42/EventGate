@@ -2,6 +2,8 @@ package com.example.eventgate.admin;
 
 import android.util.Log;
 
+import com.example.eventgate.MainActivity;
+import com.example.eventgate.attendee.Attendee;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.storage.FirebaseStorage;
@@ -37,10 +39,23 @@ public final class DeleteImageFromFirebase {
         // get reference to the image in firebase cloud storage and delete it
         StorageReference storageRef = FirebaseStorage.getInstance().getReference();
         StorageReference fileReference = storageRef.child("images/" + imageName + ".jpg");
-        Log.d("Firebase", String.valueOf(fileReference));
         fileReference.delete()
                 .addOnSuccessListener(unused -> Log.d("Firebase", "Event poster successfully deleted from Storage"))
                 .addOnFailureListener(e -> Log.d("Firebase", "Error deleting event poster from Storage", e));
 
+    }
+
+    static void deleteProfilePicFromFirestore(String attendeeId) {
+        CollectionReference attendeesRef = MainActivity.db.getAttendeesRef();
+        attendeesRef.document(attendeeId).update("profilePicturePath", "");
+    }
+
+    static void deleteProfilePicFromCloudStorage(String deviceId) {
+        // get reference to the image in firebase cloud storage and delete it
+        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+        StorageReference fileReference = storageRef.child("images/" + deviceId + ".jpg");
+        fileReference.delete()
+                .addOnSuccessListener(unused -> Log.d("Firebase", "Profile picture successfully deleted from Storage"))
+                .addOnFailureListener(e -> Log.d("Firebase", "Error deleting profile picture from Storage", e));
     }
 }

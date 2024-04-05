@@ -1,6 +1,5 @@
 package com.example.eventgate.admin;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -15,7 +14,6 @@ import com.example.eventgate.MainActivity;
 import com.example.eventgate.R;
 import com.example.eventgate.attendee.Attendee;
 import com.example.eventgate.attendee.AttendeeDB;
-import com.example.eventgate.event.Event;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -24,7 +22,7 @@ import java.util.ArrayList;
 /**
  * this is a fragment to show a list of users/attendees
  */
-public class AttendeesFragment extends Fragment {
+public class UsersFragment extends Fragment {
     /**
      * this is an array list that holds attendees
      */
@@ -53,7 +51,7 @@ public class AttendeesFragment extends Fragment {
             for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
             {
                 Attendee attendee = new Attendee((String) doc.getData().get("name"),
-                        (String) doc.getData().get("deviceId"), (String) doc.getData().get("attendeeId"));
+                        (String) doc.getData().get("deviceId"), doc.getId());
                 attendeeDB.getAttendeeInfo((String) doc.getData().get("deviceId"), attendee);
                 attendeeDataList.add(attendee);
                 attendeeAdapter.notifyDataSetChanged();

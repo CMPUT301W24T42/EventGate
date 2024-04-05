@@ -46,6 +46,9 @@ public class Attendee implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
+    public String getDeviceId() {
+        return deviceId;
+    }
 
     public String getAttendeeId() {
         return attendeeId;

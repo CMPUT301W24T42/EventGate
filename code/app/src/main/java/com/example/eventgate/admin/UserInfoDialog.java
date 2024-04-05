@@ -1,5 +1,8 @@
 package com.example.eventgate.admin;
 
+import static com.example.eventgate.admin.DeleteImageFromFirebase.deleteProfilePicFromCloudStorage;
+import static com.example.eventgate.admin.DeleteImageFromFirebase.deleteProfilePicFromFirestore;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Bundle;
@@ -63,11 +66,21 @@ public class UserInfoDialog extends DialogFragment {
             attendeeHomepage.setText(homepage);
             attendeeEmail.setText(email);
             attendeeNumber.setText(phoneNumber);
+
+            // set on delete click listener
+            deleteButton.setOnClickListener(v -> {
+                attendeePicture.setImageResource(R.drawable.profile_picture);
+                deleteButton.setClickable(false);
+                deleteButton.setBackgroundColor(getResources().getColor(R.color.light_gray));
+                deleteButton.setTextColor(getResources().getColor(R.color.dark_gray));
+                deleteProfilePicFromFirestore(attendee.getAttendeeId());
+                deleteProfilePicFromCloudStorage(attendee.getDeviceId());
+            });
         }
 
         dismissButton.setOnClickListener(v -> dismiss());
 
-        // set on delete click listener
+
 
         // build the dialog
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());

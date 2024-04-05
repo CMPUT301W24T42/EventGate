@@ -18,7 +18,7 @@ public class AdminViewPagerAdapter extends FragmentStateAdapter {
     }
 
     /**
-     * Provide a new EventsFragment or AttendeesFragment associated with the specified position.
+     * Provide a new EventsFragment or UsersFragment associated with the specified position.
      * @param position the specified position
      * @return a new fragment
      */
@@ -27,7 +27,7 @@ public class AdminViewPagerAdapter extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         switch (position) {
             case 0: return new EventsFragment();
-            case 1: return new AttendeesFragment();
+            case 1: return new UsersFragment();
             case 2: return new ImagesFragment();
             default: return new EventsFragment();
         }
