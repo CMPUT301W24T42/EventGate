@@ -73,7 +73,7 @@ public class UserInfoDialog extends DialogFragment {
                 deleteButton.setClickable(false);
                 deleteButton.setBackgroundColor(getResources().getColor(R.color.light_gray));
                 deleteButton.setTextColor(getResources().getColor(R.color.dark_gray));
-                deleteProfilePicFromFirestore(attendee.getAttendeeId());
+                deleteProfilePicFromFirestore(attendee.getAttendeeId(), profilePicture);
                 deleteProfilePicFromCloudStorage(attendee.getDeviceId());
             });
         }

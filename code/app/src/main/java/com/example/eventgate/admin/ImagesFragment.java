@@ -2,31 +2,26 @@ package com.example.eventgate.admin;
 
 import static com.example.eventgate.admin.DeleteImageFromFirebase.deletePosterFromCloudStorage;
 import static com.example.eventgate.admin.DeleteImageFromFirebase.deletePosterFromFirestore;
+import static com.example.eventgate.admin.DeleteImageFromFirebase.deleteProfilePicFromCloudStorage;
+import static com.example.eventgate.admin.DeleteImageFromFirebase.deleteProfilePicFromFirestore;
 
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.GridView;
 
 import com.example.eventgate.MainActivity;
 import com.example.eventgate.R;
-import com.example.eventgate.event.Event;
-import com.example.eventgate.organizer.CreateAlertFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -71,16 +66,14 @@ public class ImagesFragment extends Fragment implements ImagePopUpDialog.OnImage
                 imageList.clear();
                 for (QueryDocumentSnapshot doc: value) {
                     String imageUrl = doc.getString("url");
-                    String id;
+                    ImageData imageData;
                     // id associated with the image will either be eventId (event posters) or attendeeId (profile picture)
                     if (doc.getString("eventId") != null) {
-                        id = doc.getString("eventId");
+                        imageData = new ImageData("poster", doc.getString("eventId"));
                     } else {
-                        id = doc.getString("attendeeId");
+                        imageData =  new ImageData("pfp", doc.getString("attendeeId"));
                     }
-                    if (!map.containsKey(imageUrl)) {
-                        map.put(imageUrl, id);
-                    }
+                    map.put(imageUrl, imageData);
                     imageList.add(imageUrl);
                 }
                 gridViewAdapter.notifyDataSetChanged();
@@ -111,16 +104,27 @@ public class ImagesFragment extends Fragment implements ImagePopUpDialog.OnImage
      */
     @Override
     public void onImageDelete(int position) {
-        // get the image url and the event id associated with that image
         String imageUrl = imageList.get(position);
-        // get a reference to the posters subcollection contained that poster
-//        CollectionReference postersRef = MainActivity.db.getEventsRef().document(eventId).collection("posters");
-        // delete the poster from firestore and cloud storage
-//        deletePosterFromFirestore(imageUrl, postersRef);
-        deletePosterFromCloudStorage(imageUrl);
-        // remove image url and event id from their respective lists
-        imageList.remove(position);
+        ImageData data = (ImageData) map.get(imageUrl);
+        String imageType = data.getImageType();
+        String id = data.getAssociatedId();
 
+        if (imageType.equals("poster")) {
+            CollectionReference postersRef = MainActivity.db.getEventsRef().document(id).collection("posters");
+            deletePosterFromFirestore(imageUrl, postersRef);
+            deletePosterFromCloudStorage(imageUrl);
+        } else {  // image type is pfp (profile picture)
+            deleteProfilePicFromFirestore(id, imageUrl);
+            CollectionReference attendeesRef = MainActivity.db.getAttendeesRef();
+            attendeesRef.document(id).get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    String deviceId = task.getResult().getString("deviceId");
+                    deleteProfilePicFromCloudStorage(deviceId);
+                }
+            });
+        }
+        // remove image url from imageList
+        imageList.remove(position);
         gridViewAdapter.notifyDataSetChanged();
     }
 }

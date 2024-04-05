@@ -2,10 +2,16 @@ package com.example.eventgate.admin;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.example.eventgate.MainActivity;
 import com.example.eventgate.attendee.Attendee;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -45,9 +51,19 @@ public final class DeleteImageFromFirebase {
 
     }
 
-    static void deleteProfilePicFromFirestore(String attendeeId) {
+    static void deleteProfilePicFromFirestore(String attendeeId, String imageUrl) {
         CollectionReference attendeesRef = MainActivity.db.getAttendeesRef();
         attendeesRef.document(attendeeId).update("profilePicturePath", "");
+        CollectionReference imagesRef = MainActivity.db.getImagesRef();
+        imagesRef.whereEqualTo("url", imageUrl).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                for (QueryDocumentSnapshot doc: task.getResult()) {
+                    imagesRef.document(doc.getId()).delete().addOnSuccessListener(unused -> {
+                        Log.d("Firestore", "Successfully removed profile picture from images collection");
+                    });
+                }
+            }
+        });
     }
 
     static void deleteProfilePicFromCloudStorage(String deviceId) {
