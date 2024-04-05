@@ -9,7 +9,7 @@
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="0dp"
-        android:layout_height="500dp"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="30dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -22,37 +22,38 @@
             android:layout_height="45dp"
             android:background="@color/green"
             android:gravity="center"
-            android:text="@string/enter_event_name"
+            android:text="@string/create_an_event"
             android:textAlignment="center"
             android:textColor="@color/black"
             android:textSize="22sp" />
 
         <EditText
             android:id="@+id/organizerCreateEventName"
-            android:layout_width="match_parent"
+            android:layout_width="350dp"
             android:layout_height="48dp"
             android:autofillHints=""
             android:ems="10"
             android:hint="@string/event_name"
-            android:inputType="text" />
+            android:inputType="text"
+            android:layout_gravity="center"/>
 
         <EditText
             android:id="@+id/eventDetailsEdittext"
-            android:layout_width="match_parent"
+            android:layout_width="350dp"
             android:layout_height="48dp"
             android:inputType="textMultiLine"
             android:autofillHints=""
             android:hint="@string/event_details"
-            />
+            android:layout_gravity="center"/>
 
         <EditText
             android:id="@+id/organizerLimitAttendance"
-            android:layout_width="match_parent"
+            android:layout_width="350dp"
             android:layout_height="48dp"
             android:inputType="textMultiLine"
             android:autofillHints=""
             android:hint="@string/attendance_limit"
-            />
+            android:layout_gravity="center"/>
 
         <LinearLayout
             android:id="@+id/ContinueCancelButtons"
