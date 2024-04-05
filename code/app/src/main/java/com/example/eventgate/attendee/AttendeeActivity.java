@@ -42,6 +42,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -460,6 +461,15 @@ public class AttendeeActivity extends AppCompatActivity {
                                         fetchImagePathAndSetImageButton(userId, findViewById(R.id.profile_image));
                                     })
                                     .addOnFailureListener(e -> Log.w("Firestore", "Error writing document", e));
+                            // save url in images collection of database
+                            CollectionReference imagesRef = MainActivity.db.getImagesRef();
+                            String imagesId =  imagesRef.document().getId();
+                            HashMap<String, Object> data = new HashMap<>();
+                            data.put("url", downloadUrl);
+                            data.put("attendeeId", doc.getId());
+                            imagesRef.document(imagesId).set(data)
+                                    .addOnSuccessListener(unused -> Log.d("Firestore", "Image has been added successfully!"))
+                                    .addOnFailureListener(e -> Log.d("Firestore", "Image could not be added!" + e));
                         }
                     }
                 });
