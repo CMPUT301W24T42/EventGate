@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/light_blue"
+    tools:context=".organizer.OrganizerReuseQRActivity">
+
+    <LinearLayout
+        android:id="@+id/eventContainerReuseQR"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="87dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="33dp"
+        android:background="@drawable/list_rounded_corners"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/ReuseQRContinue"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/ReuseQR"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="@drawable/title_rounded_corners"
+            android:gravity="center"
+            android:text="@string/select_check_in_qr_code"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="22sp" />
+
+        <ListView
+            android:id="@+id/ReuseQREvents"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:choiceMode="singleChoice" />
+    </LinearLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/ReuseQRContinue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="62dp"
+        android:backgroundTint="@color/light_gray"
+        android:ems="7"
+        android:text="@string/reuse_qr"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:cornerRadius="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/OrganizerReuseQRBackButton"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/eventContainerReuseQR" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/OrganizerReuseQRBackButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/light_gray"
+        android:ems="5"
+        android:text="@string/back"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:cornerRadius="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/ReuseQRContinue"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/ReuseQRContinue"
+        app:layout_constraintTop_toTopOf="@+id/ReuseQRContinue" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

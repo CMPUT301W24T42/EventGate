@@ -1,17 +1,21 @@
 package com.example.eventgate.event;
 
+import android.content.Context;
 import android.graphics.Bitmap;
+
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.eventgate.MyFirebaseMessagingService;
 import com.example.eventgate.attendee.AttendeeDB;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldPath;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,13 +25,17 @@ import androidx.annotation.NonNull;
 import com.example.eventgate.MainActivity;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+
+import com.google.firebase.firestore.SetOptions;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
+
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+
 
 /**
  * This is used to add, remove, and retrieve event data from the database
@@ -45,7 +53,6 @@ public class EventDB {
      * The TAG for logging
      */
     final String TAG = "EventDB";
-    private Bitmap eventQRBitmap;
 
     /**
      * Constructs a new EventDB
@@ -61,47 +68,23 @@ public class EventDB {
      * @param event         The event object containing details of the event.
      * @param deviceId      The organizer's firebase installation id
      */
-    public Bitmap AddOrganizerEvent(Event event, String deviceId) {
+    public void AddOrganizerEvent(Event event, String deviceId) {
         String eventId = collection.document().getId();
         event.setEventId(eventId);
-        // add the organizer to eventid topic so that thet can receive alerts for event milestones
+
+        // add the organizer to eventid topic so that they can receive alerts for event milestones
         MyFirebaseMessagingService messagingService = MainActivity.db.getMessagingService();
         messagingService.addUserToTopic(eventId);
-
-        // Create Check in QR Code
-        MultiFormatWriter writer = new MultiFormatWriter();
-
-        try {
-            BitMatrix matrix = writer.encode(eventId, BarcodeFormat.QR_CODE, 400, 400);
-            BarcodeEncoder encoder = new BarcodeEncoder();
-            eventQRBitmap = encoder.createBitmap(matrix);
-
-        } catch (WriterException e) {
-            e.printStackTrace();
-        }
-
-        event.setEventQRBitmap(eventQRBitmap);
-
-        // Convert bitmap to byte array
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        eventQRBitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-        byte[] byteArray = baos.toByteArray();
-
-        // Convert byte array to list of integers
-        List<Integer> byteArrayAsList = new ArrayList<>();
-        for (byte b : byteArray) {
-            byteArrayAsList.add((int) b);
-        }
 
         HashMap<String, Object> data = new HashMap<>();
         data.put("eventId", event.getEventId());
         data.put("name", event.getEventName());
         data.put("description", event.getEventDescription());
-        data.put("checkInQRCode", byteArrayAsList.toString());
         data.put("organizer", deviceId); // Set organizer field to firebase installation id
         data.put("attendees", new ArrayList<String>()); // Set attendees field to blank
         data.put("eventDetails", event.getEventDetails());
         data.put("milestones", new ArrayList<Integer>());
+        data.put("attendanceLimit", event.getEventAttendanceLimit());
         System.out.println(event.getEventDetails());
         System.out.println(event.getEventId());
 
@@ -110,8 +93,6 @@ public class EventDB {
                 .set(data)
                 .addOnSuccessListener(unused -> Log.d(TAG, "Event has been added successfully!"))
                 .addOnFailureListener(e -> Log.d(TAG, "Event could not be added!" + e));
-
-        return eventQRBitmap;
     }
 
     /**
@@ -133,6 +114,8 @@ public class EventDB {
                         if (event.equals(eventId)) {
                             alreadyExists = true;
                             futureResult.complete(2);
+                            // Increment check-in number
+                            incrementCheckInNumber(attendee.getId(), eventId);
                             break;
                         }
                     }
@@ -142,6 +125,9 @@ public class EventDB {
                         attendeeEvents.add(eventId);
                         updates.put("events", attendeeEvents);
                         db.collection("attendees").document(attendee.getId()).update(updates);
+
+                        // Increment check-in number
+                        incrementCheckInNumber(attendee.getId(), eventId);
 
                         // subscribe attendee to the events topic so they can receive notifications
                         MainActivity.db.getMessagingService().addUserToTopic(eventId);
@@ -160,6 +146,21 @@ public class EventDB {
             }
         });
         return futureResult;
+    }
+
+    /**
+     * Increments the check-in number for the attendee for a specific event
+     * @param attendeeId The ID of the attendee
+     * @param eventId The ID of the event
+     */
+    private void incrementCheckInNumber(String attendeeId, String eventId) {
+        // Construct the field name based on the event ID
+        String fieldName = "eventCheckInNumber." + eventId;
+        // Use Firestore's FieldValue.increment to atomically increment the check-in number for the event
+        db.collection("attendees").document(attendeeId)
+                .update(fieldName, FieldValue.increment(1))
+                .addOnSuccessListener(aVoid -> Log.d(TAG, "Check-in number for event incremented successfully"))
+                .addOnFailureListener(e -> Log.e(TAG, "Error incrementing check-in number for event", e));
     }
 
     /**
@@ -242,6 +243,7 @@ public class EventDB {
         db.collection("events").document(eventId).get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
+                        System.out.println("id is:" + userId);
 
                         List<String> registeredUsers = (List<String>) documentSnapshot.get("registeredUsers");
                         if (registeredUsers != null && registeredUsers.contains(userId)) {
@@ -260,6 +262,56 @@ public class EventDB {
                     System.out.println("Error accessing document: " + e.getMessage());
                     future.completeExceptionally(e);
                 });
+        return future;
+    }
+
+    /**
+     * This function stores the registered attendee under event
+     * @param userId firebase id
+     * @param eventId event id
+     * @return future
+     */
+    public CompletableFuture<Void> registerAttendee(Context context, String userId, String eventId) {
+        CompletableFuture<Void> future = new CompletableFuture<>();
+        DocumentReference eventDocRef = db.collection("events").document(eventId);
+
+        //arrayunion will automatically check for pre-existing user
+        eventDocRef.update("registeredUsers", FieldValue.arrayUnion(userId))
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(context, "You're registered", Toast.LENGTH_SHORT).show();
+                    future.complete(null);
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(context, "Error while registering, try again" + e.getMessage(), Toast.LENGTH_LONG).show();
+                    future.completeExceptionally(e);
+                });
+
+        return future;
+    }
+
+    /**
+     * this is 2nd version of register attendee that is also run to store registered attendee under attendee
+     * @param deviceId
+     * @param eventId
+     * @return
+     */
+    public CompletableFuture<Void> registerAttendee2(String deviceId, String eventId) {
+        CompletableFuture<Void> future = new CompletableFuture<>();
+        DocumentReference attendeeDocRef = db.collection("attendees").document(deviceId);
+
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("registeredEvents", FieldValue.arrayUnion(eventId));
+
+        attendeeDocRef.set(updates, SetOptions.merge())
+                .addOnSuccessListener(aVoid -> {
+                    System.out.println("Event successfully added to the attendee's registered events.");
+                    future.complete(null);
+                })
+                .addOnFailureListener(e -> {
+                    System.out.println("Error updating the attendee document: " + e.getMessage());
+                    future.completeExceptionally(e);
+                });
+
         return future;
     }
   
@@ -402,6 +454,70 @@ public class EventDB {
                     futureEvents.completeExceptionally(e);
                 });
         return futureEvents;
+    }
+
+
+    public CompletableFuture<Void> updateUserInfo(String deviceId, String name, String phoneNumber, String email, String homepage, Boolean hasUpdatedInfo) {
+        CompletableFuture<Void> future = new CompletableFuture<>();
+        DocumentReference userAttributeDocRef = db.collection("attendees").document(deviceId);
+
+        Map<String, Object> attributes = new HashMap<>();
+        attributes.put("name", name);
+        attributes.put("phoneNumber", phoneNumber);
+        attributes.put("email", email);
+        attributes.put("homepage", homepage);
+        attributes.put("hasUpdatedInfo", hasUpdatedInfo);
+
+        userAttributeDocRef.set(attributes, SetOptions.merge())
+                .addOnSuccessListener(aVoid -> {
+                    future.complete(null);
+                })
+                .addOnFailureListener(e -> {
+                    future.completeExceptionally(e);
+                });
+
+        return future;
+    }
+
+    public CompletableFuture<Map<String, Object>> getUserInfo(String deviceId) {
+        CompletableFuture<Map<String, Object>> future = new CompletableFuture<>();
+        DocumentReference userDocRef = db.collection("attendees").document(deviceId);
+
+        userDocRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    future.complete(document.getData());
+                } else {
+                    future.completeExceptionally(new Exception("No such document."));
+                }
+            } else {
+                future.completeExceptionally(task.getException());
+            }
+        });
+
+        return future;
+    }
+
+    public CompletableFuture<Boolean> getUserInfoUpdateStatus(String deviceId) {
+        CompletableFuture<Boolean> future = new CompletableFuture<>();
+        DocumentReference userDocRef = db.collection("attendees").document(deviceId);
+
+        userDocRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    Boolean isActive = document.getBoolean("hasUpdatedInfo");
+                    future.complete(isActive);
+                } else {
+                    future.completeExceptionally(new Exception("No such document."));
+                }
+            } else {
+                future.completeExceptionally(task.getException());
+            }
+        });
+
+        return future;
     }
 
 

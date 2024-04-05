@@ -39,59 +39,20 @@
         <EditText
             android:id="@+id/eventDetailsEdittext"
             android:layout_width="match_parent"
-            android:layout_height="80dp"
+            android:layout_height="48dp"
             android:inputType="textMultiLine"
             android:autofillHints=""
-            android:hint="Event Details"
+            android:hint="@string/event_details"
             />
 
-        <ImageView
-            android:id="@+id/organizerEventDescriptionQRCode"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_gravity="center_horizontal"
-            android:clickable="false"
-            android:contentDescription="@string/eventDescriptionQR"
-            android:scaleType="fitCenter" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/generateDescriptionQRButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/generate_event_qr"
-            android:layout_gravity="center_horizontal"
-            android:backgroundTint="@color/light_gray"
-            android:ems="11"
-            android:textColor="@color/black"
-            android:textSize="18sp"
-            app:cornerRadius="0dp"
-            app:layout_constraintTop_toBottomOf="@id/organizerCreateEventName"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
-
-        <ImageView
-            android:id="@+id/organizerCreateEventQRCode"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_gravity="center_horizontal"
-            android:clickable="false"
-            android:contentDescription="@string/qrcode"
-            android:scaleType="fitCenter" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/generateQRButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/generate_check_in_qr"
-            android:layout_gravity="center_horizontal"
-            android:backgroundTint="@color/light_gray"
-            android:ems="11"
-            android:textColor="@color/black"
-            android:textSize="18sp"
-            app:cornerRadius="0dp"
-            app:layout_constraintTop_toBottomOf="@id/organizerCreateEventName"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+        <EditText
+            android:id="@+id/organizerLimitAttendance"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:inputType="textMultiLine"
+            android:autofillHints=""
+            android:hint="@string/attendance_limit"
+            />
 
         <LinearLayout
             android:id="@+id/ContinueCancelButtons"
@@ -107,7 +68,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:backgroundTint="@color/light_gray"
-                android:ems="6"
+                android:ems="7"
                 android:textColor="@color/black"
                 android:textSize="18sp"
                 app:cornerRadius="0dp"
@@ -120,7 +81,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:backgroundTint="@color/light_gray"
-                android:ems="6"
+                android:ems="7"
                 android:textColor="@color/black"
                 android:textSize="18sp"
                 app:cornerRadius="0dp"

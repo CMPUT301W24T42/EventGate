@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/light_blue"
+    tools:context=".organizer.OrganizerEditQR">
+
+    <LinearLayout
+        android:id="@+id/eventContainer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="46dp"
+        android:background="@drawable/list_rounded_corners"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/OrganizerEditQRBackButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/QRCodes"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="@drawable/title_rounded_corners"
+            android:gravity="center"
+            android:text="@string/qr_codes"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="22sp" />
+
+        <TextView
+            android:id="@+id/CheckInQRCode"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:gravity="center"
+            android:text="@string/check_in_qr_code"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="18sp" />
+
+        <ImageView
+            android:id="@+id/organizerEditCheckInQRCode"
+            android:layout_width="125dp"
+            android:layout_height="125dp"
+            android:layout_gravity="center_horizontal"
+            android:clickable="false"
+            android:contentDescription="@string/qrcode"
+            android:scaleType="fitCenter" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/generateCheckInQRButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/light_gray"
+                android:ems="12"
+                android:text="@string/generate_check_in_qr_edit"
+                android:textColor="@color/black"
+                android:textSize="11sp"
+                app:cornerRadius="0dp" />
+
+            <Space
+                android:layout_width="9dp"
+                android:layout_height="wrap_content" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/ReuseQR"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/light_gray"
+                android:ems="12"
+                android:text="@string/reuse_existing_qr"
+                android:textColor="@color/black"
+                android:textSize="11sp"
+                app:cornerRadius="0dp" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/DescriptionQRCode"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:gravity="center"
+            android:text="@string/event_details_qr_code"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="18sp" />
+
+        <ImageView
+            android:id="@+id/organizerEditDescriptionQRCode"
+            android:layout_width="125dp"
+            android:layout_height="125dp"
+            android:layout_gravity="center_horizontal"
+            android:clickable="false"
+            android:contentDescription="@string/qrcode"
+            android:scaleType="fitCenter" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/generateDescriptionQRButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:backgroundTint="@color/light_gray"
+            android:ems="12"
+            android:text="@string/generate_detail_qr"
+            android:textColor="@color/black"
+            android:textSize="11sp"
+            app:cornerRadius="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/organizerCreateEventName" />
+
+    </LinearLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/OrganizerEditQRBackButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="57dp"
+        android:backgroundTint="@color/light_gray"
+        android:ems="7"
+        android:text="@string/back"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:cornerRadius="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/OrganizerEditQRShareButton"
+        app:layout_constraintTop_toBottomOf="@+id/eventContainer" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/OrganizerEditQRShareButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="1dp"
+        android:layout_marginEnd="2dp"
+        android:backgroundTint="@color/light_gray"
+        android:ems="7"
+        android:text="@string/share_qr"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:cornerRadius="0dp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/OrganizerEditQRBackButton"
+        app:layout_constraintEnd_toStartOf="@+id/OrganizerEditQRBackButton"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

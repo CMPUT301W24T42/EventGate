@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import android.widget.ImageButton;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -36,8 +38,20 @@ import com.example.eventgate.organizer.EventListAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.installations.FirebaseInstallations;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldPath;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.SetOptions;
 
+import com.google.firebase.firestore.FieldValue;
+
+import com.google.firebase.installations.FirebaseInstallations;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -52,6 +66,8 @@ import android.graphics.Paint;
 //https://www.baeldung.com/sha-256-hashing-java
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -73,6 +89,9 @@ public class AttendeeActivity extends AppCompatActivity {
     ArrayList<Event> allEventsDataList;
     ArrayAdapter<Event> allEventsAdapter;
     ListView allEventsList;
+    Boolean deterministicProfileRemoved = false;
+    //tracker for removing deterministic profile
+
 
     private final ActivityResultLauncher<Intent> qrLauncher =
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
@@ -103,6 +122,12 @@ public class AttendeeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_attendee);
 
+
+        //get saved user preferences
+        SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
+        deterministicProfileRemoved = prefs.getBoolean("DeterministicProfileRemoved", false);
+
+
         //some handling for attendees on start
 
         //text sizing for events listview title
@@ -114,18 +139,23 @@ public class AttendeeActivity extends AppCompatActivity {
         textView.setText(spannableString);*/
 
 
+
+
+
         //generate user profile pic
-        if (hashBytes == null) {
-            generateHash();
-            createBitmap2();
-            ImageButton imageButton = findViewById(R.id.profile_image);
-            imageButton.setImageBitmap(profileBitmap);
-        }
+        updateProfilePicture();
+
+        //show profile pic
+        retrieveAndSetUserImage();
+
+        checkAndUpdateUserInfoIfNeeded();
 
 
+
+        fetchUserIdAndSetUpListener();
         //check if first time opening attendee section, save attendee to db if so
-        SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
-        boolean isFirstTimeOpening = prefs.getBoolean("isFirstTime", true);
+       /* SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
+        boolean isFirstTimeOpening = prefs.getBoolean("isFirstTime", true);*/
         //this is all placeholder for now, im not exactly sure how we're going to handle saved user info w/ firebase auth yet
         /*if (isFirstTimeOpening) {
             user_settings_dialog();
@@ -202,6 +232,9 @@ public class AttendeeActivity extends AppCompatActivity {
 
         //view all events dialogue
         Button viewAllEventsButton = findViewById(R.id.allEventsButton);
+   
+        //view all events dialogue
+        viewAllEventsButton = findViewById(R.id.allEventsButton);
 
         viewAllEventsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -210,6 +243,9 @@ public class AttendeeActivity extends AppCompatActivity {
                 viewAllEventsDialog2();
             }
         });
+
+
+
 
     }
 
@@ -319,6 +355,30 @@ public class AttendeeActivity extends AppCompatActivity {
 
     }*/
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateProfilePicture();
+    }
+
+    /**
+     * runs all functions for setting deterministic profile
+     * run at all times, unless pic removed
+     */
+    private void updateProfilePicture(){
+        //generate user profile pic
+        if (!deterministicProfileRemoved) {
+            if (hashBytes == null || profileBitmap == null) {
+                generateHash();
+                createBitmap2();
+                ImageButton imageButton = findViewById(R.id.profile_image);
+                imageButton.setImageBitmap(profileBitmap);
+            }
+        }
+        return;
+    }
+
+
     //uses attendeelistadapter
     private void viewAllEventsDialog2() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -376,31 +436,123 @@ public class AttendeeActivity extends AppCompatActivity {
      *                    (various data can be attached to Intent "extras").
      */
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_IMAGE && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            Uri imageUri = data.getData();
 
-        if (requestCode == PICK_IMAGE && resultCode == RESULT_OK) {
-            if (data == null) {
-
-                return;
-            }
-            try {
-                ImageButton imageButton = findViewById(R.id.profile_image);
-                Uri imageUri = data.getData();
-                imageButton.setImageURI(imageUri);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            FirebaseInstallations.getInstance().getId().addOnSuccessListener(id -> {
+                uploadImageToFirebase(imageUri, id);
+            }).addOnFailureListener(e -> {
+                Log.e("FirebaseInstallations", "Failed to retrieve ID", e);
+                Toast.makeText(getApplicationContext(), "Failed to retrieve user ID.", Toast.LENGTH_SHORT).show();
+            });
         }
     }
 
+    private void uploadImageToFirebase(Uri imageUri, String userId) {
+        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+        StorageReference fileReference = storageRef.child("images/" + userId + ".jpg");
+
+        Log.d("UploadImage", "Uploading image to Firebase Storage. Path: " + fileReference.getPath());
+
+        fileReference.putFile(imageUri)
+                .addOnSuccessListener(taskSnapshot -> fileReference.getDownloadUrl().addOnSuccessListener(uri -> {
+                    String downloadUrl = uri.toString();
+                    saveImageReferenceInFirestore(downloadUrl, userId);
+
+
+                    Log.d("UploadImage", "Image uploaded to Firebase Storage at path: " + fileReference.getPath());
+
+                    Toast.makeText(getApplicationContext(), "Upload successful", Toast.LENGTH_SHORT).show();
+                }))
+                .addOnFailureListener(e -> {
+                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Log.e("UploadImage", "Failed to upload image to Firebase Storage.", e);
+                });
+    }
+
+    private void saveImageReferenceInFirestore(String downloadUrl, String userId) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        Map<String, Object> profilePicture = new HashMap<>();
+        profilePicture.put("profilePicturePath", downloadUrl);
+
+        db.collection("attendees").whereEqualTo("deviceId", userId).get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot doc : task.getResult()) {
+                            db.collection("attendees").document(doc.getId()).update(profilePicture)
+                                    .addOnSuccessListener(unused -> {
+                                        Log.d("Firestore", "Profile picture path successfully written!");
+                                        // show image after uploading
+                                        fetchImagePathAndSetImageButton(userId, findViewById(R.id.profile_image));
+                                    })
+                                    .addOnFailureListener(e -> Log.w("Firestore", "Error writing document", e));
+                        }
+                    }
+                });
+    }
+
+    private void fetchImagePathAndSetImageButton(String userId, ImageButton imageButton) {
+        String pathToSearch = "attendees/" + userId + "/profilePicturePath"; // Adjusted path
+        Log.d("FetchImage", "Searching for image path at: " + pathToSearch);
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("attendees").document(userId).get().addOnSuccessListener(documentSnapshot -> {
+            String imagePath = documentSnapshot.getString("profilePicturePath"); // Updated key
+            if (imagePath != null && !imagePath.isEmpty()) {
+                Log.d("FetchImage", "Image path found: " + imagePath);
+
+                // starts sequence of downloading and showing profile pic
+                downloadImageAndSetImageButton(imagePath, imageButton);
+
+
+                Log.d("FetchImage", "Image stored in Firestore at path: " + pathToSearch);
+            } else {
+                Log.d("FetchImage", "No image path found for user: " + userId);
+            }
+        }).addOnFailureListener(e -> {
+            Log.e("FetchImage", "Error fetching image path: " + e.getMessage());
+            Toast.makeText(getApplicationContext(), "Error fetching image path: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        });
+    }
+
+    private void downloadImageAndSetImageButton(String imagePath, ImageButton imageButton) {
+        StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(imagePath);
+
+        // temporary file for the downloaded image
+        File localFile;
+        try {
+            localFile = File.createTempFile("profileImage", "jpg");
+        } catch (IOException e) {
+            Log.e("Storage", "Error creating temporary file", e);
+            return;
+        }
+
+        storageRef.getFile(localFile).addOnSuccessListener(taskSnapshot -> {
+            Bitmap bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
+            imageButton.setImageBitmap(bitmap);
+        }).addOnFailureListener(exception -> {
+            Log.e("Storage", "Error downloading image", exception);
+        });
+    }
+
+    //main controller for profile pics
+    public void retrieveAndSetUserImage() {
+        FirebaseInstallations.getInstance().getId().addOnSuccessListener(installId -> {
+            String userId = installId;
+            ImageButton imageButton = findViewById(R.id.profile_image);
+            fetchImagePathAndSetImageButton(userId, imageButton);
+        }).addOnFailureListener(e -> {
+            Log.e("FirebaseInstallations", "Error retrieving Firebase Install ID", e);
+        });
+    }
 
 
     /**
      * Popup dialog for editing user settings when gear icon clicked
      */
     private void user_settings_dialog() {
-
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View customView = inflater.inflate(R.layout.user_settings_dialog, null);
 
@@ -408,32 +560,49 @@ public class AttendeeActivity extends AppCompatActivity {
         builder.setView(customView);
 
         EditText editTextName = customView.findViewById(R.id.edittext_name);
-        EditText editTextHomepage = customView.findViewById(R.id.edittext_homepage);
-        EditText editTextContactInfo = customView.findViewById(R.id.edittext_contact_info);
+        EditText editTextHomepage = customView.findViewById(R.id.edittext_user_homepage);
+        EditText editTextEmail = customView.findViewById(R.id.edittext_user_email);
+        EditText editTextPhone = customView.findViewById(R.id.edittextPhone);
         CheckBox checkboxGeolocation = customView.findViewById(R.id.checkbox_geolocation);
 
+        // Retrieve existing user info and populate fields
+        FirebaseInstallations.getInstance().getId().addOnSuccessListener(installId -> {
+            new EventDB().getUserInfo(installId).thenAccept(userInfo -> {
+                if (userInfo != null) {
+                    editTextName.setText(userInfo.getOrDefault("name", "").toString());
+                    editTextHomepage.setText(userInfo.getOrDefault("homepage", "").toString());
+                    editTextEmail.setText(userInfo.getOrDefault("email", "").toString());
+                    editTextPhone.setText(userInfo.getOrDefault("phoneNumber", "").toString());
+                }
+            }).exceptionally(e -> {
+                Log.e("AttendeeActivity", "Failed to fetch user info", e);
+                return null;
+            });
+        });
 
-        builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
+        builder.setPositiveButton("Save", (dialog, which) -> {
+            String name = editTextName.getText().toString();
+            String homepage = editTextHomepage.getText().toString();
+            String email = editTextEmail.getText().toString();
+            String phone = editTextPhone.getText().toString();
+            boolean isGeolocationEnabled = checkboxGeolocation.isChecked();
 
-                //maybe try to retrieve known user info if not first time opening
-                String name = editTextName.getText().toString();
-                String homepage = editTextHomepage.getText().toString();
-                String contactInfo = editTextContactInfo.getText().toString();
-                boolean isGeolocationEnabled = checkboxGeolocation.isChecked();
-
-                // Upload info to firebase
+            // must have name
+            if (!name.isEmpty()) {
+                FirebaseInstallations.getInstance().getId().addOnSuccessListener(installId -> {
+                    new EventDB().updateUserInfo(installId, name, phone, email, homepage, true)
+                            .thenRun(() -> Log.d("AttendeeActivity", "User info updated successfully"))
+                            .exceptionally(e -> {
+                                Log.e("AttendeeActivity", "Failed to update user info", e);
+                                return null;
+                            });
+                });
+            } else {
+                Toast.makeText(AttendeeActivity.this, "Name required.", Toast.LENGTH_SHORT).show();
             }
         });
 
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
 
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
@@ -462,7 +631,35 @@ public class AttendeeActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 //remove current profile picture
                 ImageButton imageButton = findViewById(R.id.profile_image);
-                imageButton.setImageDrawable(null);
+                imageButton.setImageResource(R.drawable.profile_picture);
+                // Save that deterministic profile pic has been removed to sharedpref
+                getSharedPreferences("MyAppPrefs", MODE_PRIVATE).edit()
+                        .putBoolean("DeterministicProfileRemoved", true)
+                        .apply();
+
+                // Clear the profile picture path in Firestore db
+                FirebaseInstallations.getInstance().getId().addOnSuccessListener(installId -> {
+                    String userId = installId;
+                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+                    db.collection("attendees").document(userId)
+                            .update("profilePicturePath", null)
+                            .addOnSuccessListener(aVoid -> {
+                                Log.d("RemoveProfilePic", "Profile picture removed successfully!");
+                                Toast.makeText(getApplicationContext(), "Profile picture removed successfully!", Toast.LENGTH_SHORT).show();
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.e("RemoveProfilePic", "Error removing profile picture", e);
+
+                            });
+                }).addOnFailureListener(e -> {
+                    Log.e("FirebaseInstallations", "Error retrieving Firebase Install ID", e);
+
+                });
+
+                getSharedPreferences("MyAppPrefs", MODE_PRIVATE).edit()
+                        .putBoolean("DeterministicProfileRemoved", true)
+                        .apply();
+
             }
         });
 
@@ -483,8 +680,8 @@ public class AttendeeActivity extends AppCompatActivity {
 
 
         EditText editTextName = customView.findViewById(R.id.edittext_name);
-        EditText editTextHomepage = customView.findViewById(R.id.edittext_homepage);
-        EditText editTextContactInfo = customView.findViewById(R.id.edittext_contact_info);
+        EditText editTextHomepage = customView.findViewById(R.id.edittext_user_homepage);
+        EditText editTextEmail = customView.findViewById(R.id.edittext_user_email);
         CheckBox checkboxGeolocation = customView.findViewById(R.id.checkbox_geolocation);
 
 
@@ -494,8 +691,8 @@ public class AttendeeActivity extends AppCompatActivity {
 
                 //maybe try to retrieve known user info if not first time opening
                 String name = editTextName.getText().toString();
-                String homepage = editTextHomepage.getText().toString();
-                String contactInfo = editTextContactInfo.getText().toString();
+                String user_homepage = editTextHomepage.getText().toString();
+                String contactInfo = editTextEmail.getText().toString();
                 boolean isGeolocationEnabled = checkboxGeolocation.isChecked();
 
                 // Upload info to firebase
@@ -517,7 +714,6 @@ public class AttendeeActivity extends AppCompatActivity {
 
     /**
      * generates hash from firebase auth id for deterministic profile picture
-     * @param userId Firebase Install ID
      */
     //
     private void generateHash() {
@@ -551,7 +747,6 @@ public class AttendeeActivity extends AppCompatActivity {
 
     /**
      * Generates deterministic profile picture for attendee
-     * @param hashBytes hash from firebase auth id
      */
     //better version
     private void createBitmap2() {
@@ -591,6 +786,7 @@ public class AttendeeActivity extends AppCompatActivity {
                 eventDataList.clear();
                 eventDataList.addAll(r);
                 eventAdapter.notifyDataSetChanged();
+
             });
         });
     }
@@ -649,5 +845,79 @@ public class AttendeeActivity extends AppCompatActivity {
             });
         });
     }
+
+    private void checkAndUpdateUserInfoIfNeeded() {
+        FirebaseInstallations.getInstance().getId().addOnSuccessListener(installId -> {
+            new EventDB().getUserInfoUpdateStatus(installId).thenAccept(hasUpdatedInfo -> {
+                // hasUpdatedInfo is null or false, show the dialog
+                if (hasUpdatedInfo == null || Boolean.FALSE.equals(hasUpdatedInfo)) {
+                    user_settings_dialog();
+                }
+            }).exceptionally(e -> {
+                Log.e("AttendeeActivity", "Error checking user info update status", e);
+                return null;
+            });
+        }).addOnFailureListener(e -> {
+            Log.e("AttendeeActivity", "Error getting Firebase Install ID", e);
+        });
+    }
+
+    /*private void updateUserInfoInView() {
+        FirebaseInstallations.getInstance().getId().addOnSuccessListener(installId -> {
+            new EventDB().getUserInfo(installId).thenAccept(userInfo -> {
+                if (userInfo != null) {
+
+                    TextView userNameTextView = findViewById(R.id.user_name);
+                    TextView userPhoneTextView = findViewById(R.id.user_phone);
+                    TextView userEmailTextView = findViewById(R.id.user_email);
+                    TextView userHomepageTextView = findViewById(R.id.user_homepage);
+                    runOnUiThread(() -> {
+                        userNameTextView.setText((String) userInfo.getOrDefault("name", "No Name"));
+                        userPhoneTextView.setText((String) userInfo.getOrDefault("phoneNumber", "No Phone Number"));
+                        userEmailTextView.setText((String) userInfo.getOrDefault("email", "No Email"));
+                        userHomepageTextView.setText((String) userInfo.getOrDefault("homepage", "No Homepage"));
+                    });
+                }
+            }).exceptionally(e -> {
+                Log.e("out", "Error updating user info view", e);
+                return null;
+            });
+        });
+    }*/
+
+    private void fetchUserIdAndSetUpListener() {
+        FirebaseInstallations.getInstance().getId().addOnSuccessListener(userId -> {
+            if (userId != null) {
+                setUpUserInfoListener(userId);
+            }
+        }).addOnFailureListener(e -> Log.e("out", "Error fetching fid", e));
+    }
+
+
+    private void setUpUserInfoListener(String userId) {
+        // Assuming EventDB.getUserInfo returns CompletableFuture<Map<String, Object>>
+        new EventDB().getUserInfo(userId).thenAccept(userInfo -> {
+            if (userInfo != null) {
+                updateUIWithUserInfo(userInfo);
+            }
+        }).exceptionally(e -> {
+            Log.e("AttendeeActivity", "Error fetching user info", e);
+            return null;
+        });
+    }
+
+    private void updateUIWithUserInfo(Map<String, Object> userInfo) {
+        TextView userNameTextView = findViewById(R.id.user_name);
+        TextView userPhoneTextView = findViewById(R.id.user_phone);
+        TextView userEmailTextView = findViewById(R.id.user_email);
+        TextView userHomepageTextView = findViewById(R.id.user_homepage);
+        runOnUiThread(() -> {
+            userNameTextView.setText((String) userInfo.getOrDefault("name", "No Name"));
+            userPhoneTextView.setText((String) userInfo.getOrDefault("phoneNumber", "No Phone Number"));
+            userEmailTextView.setText((String) userInfo.getOrDefault("email", "No Email"));
+            userHomepageTextView.setText((String) userInfo.getOrDefault("homepage", "No Homepage"));
+        });
+    }
+
 
 }
