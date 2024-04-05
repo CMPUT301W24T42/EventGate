@@ -3,7 +3,8 @@
  *
  * This class is responsible for allowing organizers to edit QR codes associated with an event.
  * It provides functionality to generate and display QR codes for event check-in and description.
- * Organizers can also reuse existing QR codes if available and share existing qr codes.
+ * It also allows Organizers to share a QR Code to another app and reuse existing QR codes if
+ * available.
  *
  * Citations:   https://developer.android.com/training/sharing/send#java
  *              https://www.youtube.com/watch?v=BWZv0iynWkE
@@ -17,9 +18,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
@@ -31,7 +30,6 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.eventgate.R;
-import com.google.firebase.database.collection.BuildConfig;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
@@ -238,27 +236,27 @@ public class OrganizerEditQR extends AppCompatActivity {
             }
         });
 
-        shareCheckInQRCode.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (eventQRBitmap != null) {
-                    shareImage(eventQRBitmap);
-                }
+        shareCheckInQRCode.setOnClickListener(v -> {
+            if (eventQRBitmap != null) {
+                shareImage(eventQRBitmap);
             }
         });
 
-        shareDetailsQRCode.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (descriptionQRBitmap != null) {
-                    shareImage(descriptionQRBitmap);
-                }
+        shareDetailsQRCode.setOnClickListener(v -> {
+            if (descriptionQRBitmap != null) {
+                shareImage(descriptionQRBitmap);
             }
         });
 
         backButton.setOnClickListener(v -> finish());
     }
 
+    /**
+     * Shares an image using an Intent.ACTION_SEND. This method allows the user to share the provided
+     * bitmap image via various sharing platforms installed on the device.
+     *
+     * @param bitmap The bitmap image to be shared.
+     */
     private void shareImage(Bitmap bitmap) {
         Intent share = new Intent(Intent.ACTION_SEND);
         share.setType("image/jpeg");
@@ -275,6 +273,13 @@ public class OrganizerEditQR extends AppCompatActivity {
         startActivity(Intent.createChooser(share, "Share Content"));
     }
 
+    /**
+     * Saves a bitmap image to the cache directory and returns the URI of the saved image.
+     *
+     * @param image   The bitmap image to be saved.
+     * @param context The context of the application.
+     * @return The URI of the saved image.
+     */
     private static Uri saveImage(Bitmap image, Context context) {
         File imagesFolder = new File(context.getCacheDir(), "images");
         Uri uri = null;
