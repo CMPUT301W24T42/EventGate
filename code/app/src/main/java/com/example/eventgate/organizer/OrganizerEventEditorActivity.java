@@ -244,10 +244,19 @@ public class OrganizerEventEditorActivity extends AppCompatActivity implements C
         Map<String, Object> poster = new HashMap<>();
         poster.put("url", downloadUrl);
 
-
         db.collection("events").document(eventId).collection("posters").add(poster)
                 .addOnSuccessListener(documentReference -> Log.d("TAG", "DocumentSnapshot added with ID: " + documentReference.getId()))
                 .addOnFailureListener(e -> Log.w("TAG", "Error adding document", e));
+
+        // save image to images collection
+        CollectionReference imagesRef = MainActivity.db.getImagesRef();
+        String imagesId =  imagesRef.document().getId();
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("url", downloadUrl);
+        data.put("eventId", eventId);
+        imagesRef.document(imagesId).set(data)
+                .addOnSuccessListener(unused -> Log.d("Firestore", "Image has been added successfully!"))
+                .addOnFailureListener(e -> Log.d("Firestore", "Image could not be added!" + e));
     }
 
     /**

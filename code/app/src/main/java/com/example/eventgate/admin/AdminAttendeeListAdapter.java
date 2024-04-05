@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -97,9 +98,12 @@ public class AdminAttendeeListAdapter extends ArrayAdapter<Attendee> {
             ConfirmDeleteDialog confirmDeleteDialog = ConfirmDeleteDialog.newInstance(title, message);
             confirmDeleteDialog.setOnDeleteClickListener(() -> {
                 attendees.remove(position);
+                // if delete button is clicked in AdminActivity then remove attendee as a whole, if clicked
+                //      from AdminEventViewerActivity then only remove attendee from specified event
                 if (context instanceof AdminActivity) {
                     // removes attendee from all events if the delete button is being clicked from AdminActivity
-                    attendeeDB.removeAttendee(attendee);
+                    attendeeDB.removeAttendeeFromAllEvents(attendee);
+                    attendeeDB.removeAttendee(attendee);  // remove attendee profile from database
                 } else {
                     // removes attendee from specified event if button is being clicked from AdminEventViewerActivity
                     attendeeDB.removeAttendeeFromEvent(attendee, eventId);
