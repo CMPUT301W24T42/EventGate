@@ -68,4 +68,31 @@ public class AdminActivityTest {
         onView(allOf(withId(R.id.admin_viewpager), isDisplayed())).perform(swipeLeft());
         onView(withId(R.id.image_grid_view)).check(matches(isDisplayed())); // check we're seeing images tab
     }
+
+    @Test
+    public void testAttendeesListView() {
+        // swipe left to the users tab
+        onView(allOf(withId(R.id.admin_viewpager), isDisplayed())).perform(swipeLeft());
+        // click on the first item in the users list view
+        onData(anything())
+                .inAdapterView(withId(R.id.user_list))
+                .atPosition(0)
+                .perform(click());
+        // check that it shows a UserInfoDialog
+        onView(withId(R.id.user_info_popup_layout));
+    }
+
+    @Test
+    public void testImagesGridView() {
+        // swipe left twice to the images tab
+        onView(allOf(withId(R.id.admin_viewpager), isDisplayed())).perform(swipeLeft());
+        onView(allOf(withId(R.id.admin_viewpager), isDisplayed())).perform(swipeLeft());
+        // click on the first item in the images grid view
+        onData(anything())
+                .inAdapterView(withId(R.id.image_grid_view))
+                .atPosition(0)
+                .perform(click());
+        // check that it shows an ImagePopUpDialog
+        onView(withId(R.id.image_popup_layout));
+    }
 }
