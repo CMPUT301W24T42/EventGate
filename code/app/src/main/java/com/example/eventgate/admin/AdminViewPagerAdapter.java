@@ -18,13 +18,14 @@ public class AdminViewPagerAdapter extends FragmentStateAdapter {
     }
 
     /**
-     * Provide a new EventsFragment or UsersFragment associated with the specified position.
+     * Provide a new EventsFragment or UsersFragment or ImagesFragment associated with the specified position.
      * @param position the specified position
      * @return a new fragment
      */
     @NonNull
     @Override
     public Fragment createFragment(int position) {
+        // creates a new fragment depending on the position of the viewpager
         switch (position) {
             case 0: return new EventsFragment();
             case 1: return new UsersFragment();

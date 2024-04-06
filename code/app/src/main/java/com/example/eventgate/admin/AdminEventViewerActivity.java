@@ -21,7 +21,6 @@ import com.example.eventgate.MainActivity;
 import com.example.eventgate.R;
 import com.example.eventgate.attendee.Attendee;
 import com.example.eventgate.attendee.AttendeeDB;
-import com.example.eventgate.attendee.AttendeeEventListAdapter;
 import com.example.eventgate.attendee.PosterPagerAdapter;
 import com.example.eventgate.event.EventDB;
 import com.google.firebase.firestore.CollectionReference;
@@ -50,6 +49,9 @@ public class AdminEventViewerActivity extends AppCompatActivity {
      * this is an adapter for displaying a list of attendees
      */
     ArrayAdapter<Attendee> attendeeAdapter;
+    /**
+     * this is the listview that displays the attendees attending the event
+     */
     ListView attendeeList;
     /**
      * this is the viewpager to display event posters
@@ -75,6 +77,9 @@ public class AdminEventViewerActivity extends AppCompatActivity {
      * tag for logging
      */
     final String TAG = "AdminEventViewerActivity";
+    /**
+     * imageview that shows default image if there are no posters
+     */
     ImageView defaultImageView;
 
     /**
@@ -144,8 +149,6 @@ public class AdminEventViewerActivity extends AppCompatActivity {
 
         defaultImageView = findViewById(R.id.poster_image_view);
 
-
-
         // create the attendee list and set adapter
         createAttendeeList();
 
@@ -156,11 +159,11 @@ public class AdminEventViewerActivity extends AppCompatActivity {
         // add/update attendees list
         updateAttendeesList(eventRef, attendeesRef);
 
-        // starts a new activity to view event info including attendees of event
+        // starts a new activity to view user info
         attendeeList.setOnItemClickListener((parent, view, position, id) -> {
-            // pop dialog to show all user info
+            // pop dialog to show user's info
             UserInfoDialog fragment = new UserInfoDialog();
-            // create a bundle so we can access
+            // create a bundle so we can access the attendee's info from the dialog
             Bundle args = new Bundle();
             args.putSerializable("attendee", attendeeDataList.get(position));
             fragment.setArguments(args);
@@ -201,6 +204,7 @@ public class AdminEventViewerActivity extends AppCompatActivity {
                 ArrayList<String> attendeeIds = (ArrayList<String>) value.get("attendees");
                 // there are attendees for the event
                 if (attendeeIds != null) {
+                    // for each attendee, get their info and create a new Attendee object then add the object to the attendeeDataList
                     for (String attendeeId : attendeeIds) {
                         attendeesRef
                                 .document(attendeeId).get().addOnSuccessListener(documentSnapshot -> {
@@ -223,6 +227,7 @@ public class AdminEventViewerActivity extends AppCompatActivity {
      * gets image urls from firestore and displays images in viewpager
      */
     private void displayEventPosters() {
+        // get to the posters subcollection of the specified event and get all the posters
         postersRef
                 .get()
                 .addOnCompleteListener(task -> {
@@ -234,9 +239,9 @@ public class AdminEventViewerActivity extends AppCompatActivity {
                             posterPagerAdapter.notifyDataSetChanged();
                         }
                         if (!posterImageUrls.isEmpty()) {
-                            enableButton();
+                            enableButton();  // enables the delete button if there are posters to delete
                         }
-                    } else {
+                    } else {  // there are no posters, so show default image
                             viewPager.setVisibility(View.GONE);
                             defaultImageView.setImageResource(R.drawable.default_viewpager);
                         Log.d(TAG, "get failed with ", task.getException());
@@ -251,7 +256,7 @@ public class AdminEventViewerActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if (posterImageUrls.isEmpty()) {
-            disableButton();
+            disableButton();  // disables button if there are no posters in the viewpager
         }
     }
 
@@ -274,6 +279,7 @@ public class AdminEventViewerActivity extends AppCompatActivity {
         posterPagerAdapter.removePoster(currentPoster);
         viewPager.setAdapter(posterPagerAdapter);
 
+        // if there are no posters then disable the delete button so admin cannot delete something that doesn't exist
         if (posterImageUrls.isEmpty()) {
             disableButton();
         }
@@ -285,12 +291,20 @@ public class AdminEventViewerActivity extends AppCompatActivity {
         deletePosterFromCloudStorage(imageUrl);
     }
 
+    /**
+     * Makes the button clickable in the case that there are posters that could be deleted.
+     *      This also changes the color of the button, implying that it is clickable
+     */
     private void enableButton() {
             deleteButton.setClickable(true);
             deleteButton.setBackgroundColor(getResources().getColor(R.color.red));
             deleteButton.setTextColor(getResources().getColor(R.color.black));
     }
 
+    /**
+     * Makes the button unclickable if there are no posters to delete.
+     *      This also changes the color of the button, implying that it is not clickable
+     */
     private void disableButton() {
         deleteButton.setClickable(false);
         deleteButton.setBackgroundColor(getResources().getColor(R.color.light_gray));

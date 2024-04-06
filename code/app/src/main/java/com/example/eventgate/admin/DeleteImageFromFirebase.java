@@ -2,20 +2,20 @@ package com.example.eventgate.admin;
 
 import android.util.Log;
 
-import androidx.annotation.NonNull;
 
 import com.example.eventgate.MainActivity;
-import com.example.eventgate.attendee.Attendee;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+/**
+ * this handles the deletion of images from Firestore and Firebase Cloud Storage
+ */
 public final class DeleteImageFromFirebase {
+    /**
+     * private constructor to prevent instantiation of object
+     */
     private DeleteImageFromFirebase() {
 
     }
@@ -51,10 +51,17 @@ public final class DeleteImageFromFirebase {
 
     }
 
+    /**
+     * this deletes the profile picture from firestore
+     * @param attendeeId the id of the attendee whose profile picture will be deleted
+     * @param imageUrl the url of the image to be deleted
+     */
     static void deleteProfilePicFromFirestore(String attendeeId, String imageUrl) {
         CollectionReference attendeesRef = MainActivity.db.getAttendeesRef();
+        // remove profile picture from attendee's document in firestore
         attendeesRef.document(attendeeId).update("profilePicturePath", "");
         CollectionReference imagesRef = MainActivity.db.getImagesRef();
+        // remove profile picture from images collection in firestore
         imagesRef.whereEqualTo("url", imageUrl).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 for (QueryDocumentSnapshot doc: task.getResult()) {
@@ -66,6 +73,10 @@ public final class DeleteImageFromFirebase {
         });
     }
 
+    /**
+     * this deletes the profile picture from cloud storage
+     * @param deviceId the deviceId of the user whose profile picture will be deleted
+     */
     static void deleteProfilePicFromCloudStorage(String deviceId) {
         // get reference to the image in firebase cloud storage and delete it
         StorageReference storageRef = FirebaseStorage.getInstance().getReference();
