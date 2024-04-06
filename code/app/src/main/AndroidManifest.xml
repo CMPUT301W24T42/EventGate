@@ -34,10 +34,16 @@
         <activity
             android:name=".organizer.OrganizerViewAttendeeActivity"
             android:exported="false" />
+        <activity
+            android:name=".organizer.OrganizerMapActivity"
+            android:exported="false" />
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_stat_onesignal_default" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCwwPdRqVOohdPIAUk3L_LkI472ubkwR_c" />
 
         <service
             android:name=".MyFirebaseMessagingService"

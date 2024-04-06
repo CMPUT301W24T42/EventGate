@@ -150,9 +150,10 @@ public class EventDB {
                                 public void onLocationResult(LocationResult locationResult) {
                                     super.onLocationResult(locationResult);
                                     if (locationResult != null && locationResult.getLastLocation() != null) {
+                                        String name = (String) attendee.get("name");
                                         double latitude = locationResult.getLastLocation().getLatitude();
                                         double longitude = locationResult.getLastLocation().getLongitude();
-                                        saveLocation(documentSnapshot, eventId, latitude, longitude);
+                                        saveLocation(documentSnapshot, eventId, name, latitude, longitude);
                                     }
                                 }
                             };
@@ -172,13 +173,24 @@ public class EventDB {
         return futureResult;
     }
 
-    private void saveLocation(DocumentSnapshot docSnapshot, String eventId, double latitude, double longitude) {
+    private void saveLocation(DocumentSnapshot docSnapshot, String eventId, String name, double latitude, double longitude) {
         HashMap<String, Object> updates = new HashMap<>();
-        ArrayList<GeoPoint> locations = (ArrayList<GeoPoint>) docSnapshot.get("locations");
+        ArrayList<Map<String, Object>> locations = (ArrayList<Map<String, Object>>) docSnapshot.get("locations");
+        HashMap<String, Object> location_info = new HashMap<>();
         GeoPoint location = new GeoPoint(latitude, longitude);
-        locations.add(location);
+        location_info.put("name", name);
+        location_info.put("location", location);
+        locations.add(location_info);
         updates.put("locations", locations);
         db.collection("events").document(eventId).update(updates);
+    }
+
+    public CompletableFuture<ArrayList<Map<String, Object>>> getLocations(String eventId) {
+        CompletableFuture<ArrayList<Map<String, Object>>> locations = new CompletableFuture<>();
+        db.collection("events").document(eventId).get().addOnSuccessListener(documentSnapshot -> {
+           locations.complete((ArrayList<Map<String, Object>>) documentSnapshot.get("locations"));
+        });
+        return locations;
     }
 
     /**
