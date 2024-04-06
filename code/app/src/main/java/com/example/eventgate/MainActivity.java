@@ -173,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
                 if (!dontAskAgain) {
                     // create new fragment that educates the user about the benefits of having notifications
                     //      turned on
-                    new NotificationPermissionFragment().show(getSupportFragmentManager(), "REQUEST NOTIFICATION PERMISSION");
+                    new NotificationPermissionDialog().show(getSupportFragmentManager(), "REQUEST NOTIFICATION PERMISSION");
                 }
             }
         }

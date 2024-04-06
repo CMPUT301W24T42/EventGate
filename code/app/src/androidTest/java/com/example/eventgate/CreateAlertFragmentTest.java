@@ -8,10 +8,12 @@ import android.os.Bundle;
 
 import androidx.fragment.app.testing.FragmentScenario;
 import androidx.lifecycle.Lifecycle;
+import androidx.test.core.app.ActivityScenario;
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.action.ViewActions;
 
 import com.example.eventgate.organizer.CreateAlertFragment;
+import com.example.eventgate.organizer.OrganizerEventEditorActivity;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -29,6 +31,8 @@ public class CreateAlertFragmentTest {
         FragmentScenario.launchInContainer(CreateAlertFragment.class, args, R.style.Theme_EventGate).moveToState(Lifecycle.State.CREATED);
         // wait for fragment to pop up
         Thread.sleep(2000);
+
+
     }
     @Test
     public void testCancelButton() {

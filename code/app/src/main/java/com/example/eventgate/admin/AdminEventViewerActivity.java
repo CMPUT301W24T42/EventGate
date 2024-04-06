@@ -16,12 +16,10 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
-import com.example.eventgate.ConfirmDeleteDialog;
 import com.example.eventgate.MainActivity;
 import com.example.eventgate.R;
 import com.example.eventgate.attendee.Attendee;
 import com.example.eventgate.attendee.AttendeeDB;
-import com.example.eventgate.attendee.AttendeeEventListAdapter;
 import com.example.eventgate.attendee.PosterPagerAdapter;
 import com.example.eventgate.event.EventDB;
 import com.google.firebase.firestore.CollectionReference;
