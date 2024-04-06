@@ -1,10 +1,15 @@
 package com.example.eventgate.admin;
 
+import static com.example.eventgate.admin.DeleteImageFromFirebase.deletePosterFromCloudStorage;
+import static com.example.eventgate.admin.DeleteImageFromFirebase.deletePosterFromFirestore;
+
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -15,13 +20,13 @@ import com.example.eventgate.ConfirmDeleteDialog;
 import com.example.eventgate.MainActivity;
 import com.example.eventgate.R;
 import com.example.eventgate.attendee.Attendee;
+import com.example.eventgate.attendee.AttendeeDB;
+import com.example.eventgate.attendee.AttendeeEventListAdapter;
 import com.example.eventgate.attendee.PosterPagerAdapter;
 import com.example.eventgate.event.EventDB;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +50,7 @@ public class AdminEventViewerActivity extends AppCompatActivity {
      * this is an adapter for displaying a list of attendees
      */
     ArrayAdapter<Attendee> attendeeAdapter;
+    ListView attendeeList;
     /**
      * this is the viewpager to display event posters
      */
@@ -69,6 +75,7 @@ public class AdminEventViewerActivity extends AppCompatActivity {
      * tag for logging
      */
     final String TAG = "AdminEventViewerActivity";
+    ImageView defaultImageView;
 
     /**
      * Called when the activity is starting.
@@ -135,6 +142,10 @@ public class AdminEventViewerActivity extends AppCompatActivity {
         // display posters
         displayEventPosters();
 
+        defaultImageView = findViewById(R.id.poster_image_view);
+
+
+
         // create the attendee list and set adapter
         createAttendeeList();
 
@@ -145,6 +156,17 @@ public class AdminEventViewerActivity extends AppCompatActivity {
         // add/update attendees list
         updateAttendeesList(eventRef, attendeesRef);
 
+        // starts a new activity to view event info including attendees of event
+        attendeeList.setOnItemClickListener((parent, view, position, id) -> {
+            // pop dialog to show all user info
+            UserInfoDialog fragment = new UserInfoDialog();
+            // create a bundle so we can access
+            Bundle args = new Bundle();
+            args.putSerializable("attendee", attendeeDataList.get(position));
+            fragment.setArguments(args);
+            fragment.show(getSupportFragmentManager(), "IMAGE POPUP");  // show dialog
+        });
+
 
     }
 
@@ -154,7 +176,7 @@ public class AdminEventViewerActivity extends AppCompatActivity {
     private void createAttendeeList() {
         attendeeDataList = new ArrayList<>();
 
-        ListView attendeeList = findViewById(R.id.user_list);
+        attendeeList = findViewById(R.id.user_list);
 
         attendeeAdapter = new AdminAttendeeListAdapter(this, attendeeDataList, eventId);
         attendeeList.setAdapter(attendeeAdapter);
@@ -168,6 +190,7 @@ public class AdminEventViewerActivity extends AppCompatActivity {
      */
     private void updateAttendeesList(DocumentReference eventRef, CollectionReference attendeesRef) {
         // add/update the list of attendees attending this specific event
+        AttendeeDB attendeeDB = new AttendeeDB();
         eventRef.addSnapshotListener((value, error) -> {
             if (error != null) {
                 Log.e("Firestore", error.toString());
@@ -184,6 +207,7 @@ public class AdminEventViewerActivity extends AppCompatActivity {
                                     Attendee attendee = new Attendee(documentSnapshot.getString("name"),
                                             documentSnapshot.getString("deviceId"),
                                             documentSnapshot.getId());
+                                    attendeeDB.getAttendeeInfo((String) documentSnapshot.getData().get("deviceId"), attendee);
                                     attendeeDataList.add(attendee);
                                     attendeeAdapter.notifyDataSetChanged();
                                 });
@@ -203,6 +227,7 @@ public class AdminEventViewerActivity extends AppCompatActivity {
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                        defaultImageView.setVisibility(View.GONE);
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             String imageUrl = document.getString("url");
                             posterImageUrls.add(imageUrl);
@@ -212,6 +237,8 @@ public class AdminEventViewerActivity extends AppCompatActivity {
                             enableButton();
                         }
                     } else {
+                            viewPager.setVisibility(View.GONE);
+                            defaultImageView.setImageResource(R.drawable.default_viewpager);
                         Log.d(TAG, "get failed with ", task.getException());
                     }
                 });
@@ -252,42 +279,10 @@ public class AdminEventViewerActivity extends AppCompatActivity {
         }
 
         // remove poster from firebase database
-        deletePosterFromFirestore(imageUrl);
+        deletePosterFromFirestore(imageUrl, postersRef);
 
         // remove poster from firebase storage
         deletePosterFromCloudStorage(imageUrl);
-    }
-
-    /**
-     * this deletes the event poster from firestore
-     * @param imageUrl the url of the image to be deleted
-     */
-    private void deletePosterFromFirestore(String imageUrl) {
-        postersRef.whereEqualTo("url", imageUrl).get().addOnSuccessListener(queryDocumentSnapshots -> {
-            for (QueryDocumentSnapshot snapshot : queryDocumentSnapshots) {
-                snapshot.getReference().delete()
-                        .addOnSuccessListener(unused -> Log.d(TAG, "Event poster successfully deleted from Firestore"))
-                        .addOnFailureListener(e -> Log.d(TAG, "Error deleting event poster from Firestore", e));
-            }
-        });
-    }
-
-    /**
-     * this deletes the event poster from firebase cloud storage
-     * @param imageUrl the url of the image to be deleted
-     */
-    private void deletePosterFromCloudStorage(String imageUrl) {
-        // get the name of the image from the url of the image
-        String imageName = imageUrl.substring(imageUrl.indexOf("images%2F") + 9, imageUrl.indexOf(".jpg?"));
-
-        // get reference to the image in firebase cloud storage and delete it
-        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
-        StorageReference fileReference = storageRef.child("images/" + imageName + ".jpg");
-        Log.d(TAG, String.valueOf(fileReference));
-        fileReference.delete()
-                .addOnSuccessListener(unused -> Log.d(TAG, "Event poster successfully deleted from Storage"))
-                .addOnFailureListener(e -> Log.d(TAG, "Error deleting event poster from Storage", e));
-
     }
 
     private void enableButton() {
