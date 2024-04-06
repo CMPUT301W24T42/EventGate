@@ -94,6 +94,7 @@ public class OrganizerCreateEventFragment extends DialogFragment {
             }
 
             if (getActivity() instanceof OnEventAddedListener) {
+                // The onEventAdded function is located in OrganizerMainMenuActivity.java
                 ((OnEventAddedListener) getActivity()).onEventAdded(eventAdded);
             }
 

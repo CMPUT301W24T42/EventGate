@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -50,6 +51,8 @@ public class AttendeeEventViewer extends AppCompatActivity {
     private ListView alertsList;
     private ArrayAdapter<OrganizerAlert> alertsAdapter;
     Button back_button, viewAttendeesButton;
+    ViewPager viewPager;
+    ImageView defaultImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +74,9 @@ public class AttendeeEventViewer extends AppCompatActivity {
         alertsAdapter = new AlertListAdapter(this, alertsDataList);
         alertsList.setAdapter(alertsAdapter);
 
+        defaultImageView = findViewById(R.id.default_imageview);
 
+        viewPager = findViewById(R.id.viewPager);
 
         displayEventPosters(eventID);
 
@@ -92,6 +97,7 @@ public class AttendeeEventViewer extends AppCompatActivity {
 
 
         TextView eventDetailsTv = findViewById(R.id.eventDetailsTextview);
+
         EventDB eventDB = new EventDB();
 
         CompletableFuture<String> eventDetailsFuture = eventDB.getEventDetailsDB(eventID);
@@ -160,7 +166,8 @@ public class AttendeeEventViewer extends AppCompatActivity {
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
+                        if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                            defaultImageView.setVisibility(View.GONE);
                             for (QueryDocumentSnapshot document : task.getResult()) {
 
                                 String imageUrl = document.getString("url");
@@ -169,6 +176,8 @@ public class AttendeeEventViewer extends AppCompatActivity {
 
                             setupViewPager(posterImageUrls);
                         } else {
+                            viewPager.setVisibility(View.GONE);
+                            defaultImageView.setImageResource(R.drawable.default_viewpager);
                             Log.w("test", "Error getting documents.", task.getException());
                         }
                     }
@@ -180,7 +189,6 @@ public class AttendeeEventViewer extends AppCompatActivity {
      * @param posterImageUrls array of poster locations in firebase db
      */
     private void setupViewPager(List<String> posterImageUrls) {
-        ViewPager viewPager = findViewById(R.id.viewPager);
         PosterPagerAdapter adapter = new PosterPagerAdapter(this, posterImageUrls);
         viewPager.setAdapter(adapter);
     }
