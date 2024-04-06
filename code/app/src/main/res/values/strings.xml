@@ -55,4 +55,7 @@
     <string name="generate_detail_qr">Generate Detail QR</string>
     <string name="select_check_in_qr_code">Select Check-In QR Code</string>
     <string name="reuse_qr">Reuse QR</string>
+    <string name="share_check_in_qr">Share Check-In QR</string>
+    <string name="share_details_qr">Share Details QR</string>
+    <string name="create_an_event">Create an Event</string>
 </resources>

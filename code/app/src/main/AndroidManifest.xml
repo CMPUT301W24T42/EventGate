@@ -28,9 +28,6 @@
         <activity
             android:name=".organizer.OrganizerEditQR"
             android:exported="false" />
-        <activity
-            android:name=".organizer.OrganizerViewAttendeeActivity"
-            android:exported="false" />
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
@@ -77,15 +74,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.example.eventgate.fileprovider"
+            android:authorities="${applicationId}.provider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths" />
+                android:resource="@xml/fileprovider_paths" />
         </provider>
+
     </application>
 
 </manifest>

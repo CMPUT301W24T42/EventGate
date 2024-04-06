@@ -49,7 +49,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import com.google.firebase.firestore.QuerySnapshot;
-
 import com.google.firebase.firestore.SetOptions;
 
 import com.google.firebase.firestore.FieldValue;
@@ -473,7 +472,6 @@ public class AttendeeActivity extends AppCompatActivity {
                             imagesRef.document(imagesId).set(data)
                                     .addOnSuccessListener(unused -> Log.d("Firestore", "Image has been added successfully!"))
                                     .addOnFailureListener(e -> Log.d("Firestore", "Image could not be added!" + e));
-
                         }
                     }
                 });
