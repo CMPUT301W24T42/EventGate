@@ -1,5 +1,8 @@
 package com.example.eventgate.attendee;
 
+import static com.example.eventgate.MainActivity.db;
+
+import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,6 +12,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,8 +32,10 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.example.eventgate.MainActivity;
+import com.example.eventgate.attendee.AttendeeDB;
 import com.example.eventgate.event.Event;
 import com.example.eventgate.event.EventDB;
 import com.example.eventgate.R;
@@ -37,6 +43,7 @@ import com.example.eventgate.R;
 import com.example.eventgate.organizer.AttendeeListAdapter;
 import com.example.eventgate.organizer.EventListAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -146,8 +153,22 @@ public class AttendeeActivity extends AppCompatActivity {
         textView.setText(spannableString);*/
 
 
+        FirebaseInstallations.getInstance().getId()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if (task.isSuccessful()) {
+                            // Get the installation ID
+                            String installationId = task.getResult();
+                            Log.d("FirebaseInstallation", "Installation ID: " + installationId);
+                        } else {
+                            // Handle error
+                            Log.e("FirebaseInstallation", "Failed to get installation ID", task.getException());
+                        }
+                    }
+                });
 
-
+       
 
         //generate user profile pic
         updateProfilePicture();
@@ -159,7 +180,9 @@ public class AttendeeActivity extends AppCompatActivity {
 
 
 
-        fetchUserIdAndSetUpListener();
+        retrieveUserInfo();
+
+
         //check if first time opening attendee section, save attendee to db if so
        /* SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
         boolean isFirstTimeOpening = prefs.getBoolean("isFirstTime", true);*/
@@ -345,6 +368,9 @@ public class AttendeeActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * opens dialog and displays all events retrieved from firestore db
+     */
     //uses attendeelistadapter
     private void viewAllEventsDialog2() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -416,6 +442,11 @@ public class AttendeeActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * saves image in firebase db
+     * @param imageUri chose image uri
+     * @param userId fid
+     */
     private void uploadImageToFirebase(Uri imageUri, String userId) {
         StorageReference storageRef = FirebaseStorage.getInstance().getReference();
         StorageReference fileReference = storageRef.child("images/" + userId + ".jpg");
@@ -438,37 +469,31 @@ public class AttendeeActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * saves path of profile pic stored in firebase db inside firestore db
+     * @param downloadUrl image url
+     * @param userId fid
+     */
     private void saveImageReferenceInFirestore(String downloadUrl, String userId) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         Map<String, Object> profilePicture = new HashMap<>();
         profilePicture.put("profilePicturePath", downloadUrl);
 
-        db.collection("attendees").whereEqualTo("deviceId", userId).get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        for (QueryDocumentSnapshot doc : task.getResult()) {
-                            db.collection("attendees").document(doc.getId()).update(profilePicture)
-                                    .addOnSuccessListener(unused -> {
-                                        Log.d("Firestore", "Profile picture path successfully written!");
-                                        // show image after uploading
-                                        fetchImagePathAndSetImageButton(userId, findViewById(R.id.profile_image));
-                                    })
-                                    .addOnFailureListener(e -> Log.w("Firestore", "Error writing document", e));
-
-                            // save url in images collection of database
-                            CollectionReference imagesRef = MainActivity.db.getImagesRef();
-                            String imagesId =  imagesRef.document().getId();
-                            HashMap<String, Object> data = new HashMap<>();
-                            data.put("url", downloadUrl);
-                            data.put("attendeeId", doc.getId());
-                            imagesRef.document(imagesId).set(data)
-                                    .addOnSuccessListener(unused -> Log.d("Firestore", "Image has been added successfully!"))
-                                    .addOnFailureListener(e -> Log.d("Firestore", "Image could not be added!" + e));
-                        }
-                    }
-                });
+        db.collection("attendees").document(userId)
+                .set(profilePicture, SetOptions.merge())
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("Firestore", "Profile picture path successfully written!");
+                    // show image after uploading
+                    fetchImagePathAndSetImageButton(userId, findViewById(R.id.profile_image));
+                })
+                .addOnFailureListener(e -> Log.w("Firestore", "Error writing document", e));
     }
 
+    /**
+     * fetches profile pic path in firebase db from firestore db using userid
+     * @param userId fid
+     * @param imageButton profile picture display
+     */
     private void fetchImagePathAndSetImageButton(String userId, ImageButton imageButton) {
         String pathToSearch = "attendees/" + userId + "/profilePicturePath"; // Adjusted path
         Log.d("FetchImage", "Searching for image path at: " + pathToSearch);
@@ -493,6 +518,10 @@ public class AttendeeActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * @param imagePath path of image in firebase db
+     * @param imageButton profile pic imagebutton display
+     */
     private void downloadImageAndSetImageButton(String imagePath, ImageButton imageButton) {
         StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(imagePath);
 
@@ -513,6 +542,9 @@ public class AttendeeActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * loads and displays user profile pic each time attendee menu is entered
+     */
     //main controller for profile pics
     public void retrieveAndSetUserImage() {
         FirebaseInstallations.getInstance().getId().addOnSuccessListener(installId -> {
@@ -541,6 +573,27 @@ public class AttendeeActivity extends AppCompatActivity {
         EditText editTextPhone = customView.findViewById(R.id.edittextPhone);
         CheckBox checkboxGeolocation = customView.findViewById(R.id.checkbox_geolocation);
 
+
+        builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                //maybe try to retrieve known user info if not first time opening
+                String name = editTextName.getText().toString();
+                String homepage = editTextHomepage.getText().toString();
+                String contactInfo = editTextContactInfo.getText().toString();
+                Boolean isGeolocationEnabled = checkboxGeolocation.isChecked();
+
+                if (isGeolocationEnabled) {
+                    ActivityCompat.requestPermissions(AttendeeActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1001);
+                }
+
+
+                FirebaseInstallations.getInstance().getId().addOnSuccessListener(deviceId -> {
+                    AttendeeDB attendeeDB = new AttendeeDB();
+                    attendeeDB.editAttendee(db.getAttendeesRef(), deviceId, name, homepage, isGeolocationEnabled);
+                });
+            }
         // Retrieve existing user info and populate fields
         FirebaseInstallations.getInstance().getId().addOnSuccessListener(installId -> {
             new EventDB().getUserInfo(installId).thenAccept(userInfo -> {
@@ -576,6 +629,7 @@ public class AttendeeActivity extends AppCompatActivity {
             } else {
                 Toast.makeText(AttendeeActivity.this, "Name required.", Toast.LENGTH_SHORT).show();
             }
+            retrieveUserInfo();
         });
 
         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
@@ -694,7 +748,7 @@ public class AttendeeActivity extends AppCompatActivity {
     //
     private void generateHash() {
         try {
-            FirebaseUser currentUser = MainActivity.db.getmAuth().getCurrentUser();
+            FirebaseUser currentUser = db.getmAuth().getCurrentUser();
             String input = currentUser.getUid();
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] hash = digest.digest(input.getBytes());
@@ -756,9 +810,11 @@ public class AttendeeActivity extends AppCompatActivity {
      * Queries firestore db for all events attendee is signed into
      */
     private void updateMyEvents() {
+        Log.d("EventRetrieval", "Retrieving events now");
         FirebaseInstallations.getInstance().getId().addOnSuccessListener(id -> {
             CompletableFuture<ArrayList<Event>> attendeeEvents = new EventDB().getAttendeeEvents(id);
             attendeeEvents.thenAccept(r -> {
+                Log.d("EventRetrieval", "Retrieved " + r.size() + " events.");
                 eventDataList.clear();
                 eventDataList.addAll(r);
                 eventAdapter.notifyDataSetChanged();
@@ -861,27 +917,38 @@ public class AttendeeActivity extends AppCompatActivity {
         });
     }*/
 
-    private void fetchUserIdAndSetUpListener() {
-        FirebaseInstallations.getInstance().getId().addOnSuccessListener(userId -> {
-            if (userId != null) {
-                setUpUserInfoListener(userId);
-            }
-        }).addOnFailureListener(e -> Log.e("out", "Error fetching fid", e));
-    }
 
+    /**
+     *retrieves user info from firestore db
+     */
+    private void retrieveUserInfo() {
+        FirebaseInstallations.getInstance().getId().addOnSuccessListener(new OnSuccessListener<String>() {
+            @Override
+            public void onSuccess(String id) {
+                String userId = id;
 
-    private void setUpUserInfoListener(String userId) {
-        // Assuming EventDB.getUserInfo returns CompletableFuture<Map<String, Object>>
-        new EventDB().getUserInfo(userId).thenAccept(userInfo -> {
-            if (userInfo != null) {
-                updateUIWithUserInfo(userInfo);
+                new EventDB().getUserInfo(userId).thenAccept(userInfo -> {
+                    if (userInfo != null) {
+                        updateUIWithUserInfo(userInfo);
+                    }
+                }).exceptionally(e -> {
+                    Log.e("retrieveUserInfo", "Error retrieving user info", e);
+                    return null;
+                });
             }
-        }).exceptionally(e -> {
-            Log.e("AttendeeActivity", "Error fetching user info", e);
-            return null;
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                // Handle the error when fetching the Firebase Installations ID fails
+                Log.e("FirebaseInstallationsID", "Error fetching Firebase Installations ID", e);
+            }
         });
     }
 
+    /**
+     * displays retrieved user info from firestore db
+     * @param userInfo contains all user info
+     */
     private void updateUIWithUserInfo(Map<String, Object> userInfo) {
         TextView userNameTextView = findViewById(R.id.user_name);
         TextView userPhoneTextView = findViewById(R.id.user_phone);
