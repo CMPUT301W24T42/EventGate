@@ -35,11 +35,6 @@ public class AdminActivityTest {
     public ActivityScenarioRule<AdminActivity> activityRule =
             new ActivityScenarioRule<>(AdminActivity.class);
 
-    @Before
-    public void loadData() throws InterruptedException {
-        Thread.sleep(1000); // allow time for the firebase data to load in
-    }
-
     @Test
     public void testBackButton() {
         onView(withId(R.id.admin_back_button)).perform(click());
@@ -48,7 +43,8 @@ public class AdminActivityTest {
     }
 
     @Test
-    public void testEventsListView() {
+    public void testEventsListView() throws InterruptedException {
+        Thread.sleep(1000); // allow time for the firebase data to load in
         // click on the first item in the events list view
         onData(anything())
                 .inAdapterView(withId(R.id.event_list))
@@ -70,9 +66,10 @@ public class AdminActivityTest {
     }
 
     @Test
-    public void testAttendeesListView() {
+    public void testAttendeesListView() throws InterruptedException {
         // swipe left to the users tab
         onView(allOf(withId(R.id.admin_viewpager), isDisplayed())).perform(swipeLeft());
+        Thread.sleep(1000);  // give time for data to load in
         // click on the first item in the users list view
         onData(anything())
                 .inAdapterView(withId(R.id.user_list))
@@ -83,10 +80,11 @@ public class AdminActivityTest {
     }
 
     @Test
-    public void testImagesGridView() {
+    public void testImagesGridView() throws InterruptedException {
         // swipe left twice to the images tab
         onView(allOf(withId(R.id.admin_viewpager), isDisplayed())).perform(swipeLeft());
         onView(allOf(withId(R.id.admin_viewpager), isDisplayed())).perform(swipeLeft());
+        Thread.sleep(1000);  // give time for data to load in
         // click on the first item in the images grid view
         onData(anything())
                 .inAdapterView(withId(R.id.image_grid_view))
