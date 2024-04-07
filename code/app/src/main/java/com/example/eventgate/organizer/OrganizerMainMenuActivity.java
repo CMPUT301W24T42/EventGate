@@ -1,3 +1,7 @@
+/**
+ * Activity for the organizer's main menu.
+ */
+
 package com.example.eventgate.organizer;
 
 import android.content.Intent;
@@ -18,7 +22,6 @@ import java.util.concurrent.CompletableFuture;
 
 
 /**
- * Activity for the organizer's main menu.
  * Allows the organizer to view and manage events, including creating new events and editing existing ones.
  * It utilizes fragments for creating new events and communicates with Firebase for event data management.
  * Outstanding issues: There are no outstanding issues currently known.
