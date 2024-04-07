@@ -14,7 +14,6 @@ import com.journeyapps.barcodescanner.BarcodeEncoder;
 import org.junit.Test;
 
 public class OrganizerEditQRTest {
-
     @Test
     public void generateEventQRCodeTest() {
         // Mock event ID for testing
