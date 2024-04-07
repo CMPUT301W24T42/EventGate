@@ -467,30 +467,14 @@ public class AttendeeActivity extends AppCompatActivity {
         Map<String, Object> profilePicture = new HashMap<>();
         profilePicture.put("profilePicturePath", downloadUrl);
 
-        db.collection("attendees").whereEqualTo("deviceId", userId).get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        for (QueryDocumentSnapshot doc : task.getResult()) {
-                            db.collection("attendees").document(doc.getId()).update(profilePicture)
-                                    .addOnSuccessListener(unused -> {
-                                        Log.d("Firestore", "Profile picture path successfully written!");
-                                        // show image after uploading
-                                        fetchImagePathAndSetImageButton(userId, findViewById(R.id.profile_image));
-                                    })
-                                    .addOnFailureListener(e -> Log.w("Firestore", "Error writing document", e));
-
-                            // save url in images collection of database
-                            CollectionReference imagesRef = MainActivity.db.getImagesRef();
-                            String imagesId =  imagesRef.document().getId();
-                            HashMap<String, Object> data = new HashMap<>();
-                            data.put("url", downloadUrl);
-                            data.put("attendeeId", doc.getId());
-                            imagesRef.document(imagesId).set(data)
-                                    .addOnSuccessListener(unused -> Log.d("Firestore", "Image has been added successfully!"))
-                                    .addOnFailureListener(e -> Log.d("Firestore", "Image could not be added!" + e));
-                        }
-                    }
-                });
+        db.collection("attendees").document(userId)
+                .set(profilePicture, SetOptions.merge())
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("Firestore", "Profile picture path successfully written!");
+                    // show image after uploading
+                    fetchImagePathAndSetImageButton(userId, findViewById(R.id.profile_image));
+                })
+                .addOnFailureListener(e -> Log.w("Firestore", "Error writing document", e));
     }
 
     /**

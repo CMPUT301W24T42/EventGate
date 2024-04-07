@@ -508,6 +508,26 @@ public class EventDB {
         return future;
     }
 
+    public CompletableFuture<String> retrieveUserNameFromID(String userId) {
+        CompletableFuture<String> future = new CompletableFuture<>();
+        DocumentReference userAttributeDocRef = db.collection("attendees").document(userId);
+
+        userAttributeDocRef.get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        String name = documentSnapshot.getString("name");
+                        future.complete(name);
+                    } else {
+                        future.completeExceptionally(new RuntimeException("User document does not exist for userId: " + userId));
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    future.completeExceptionally(e);
+                });
+
+        return future;
+    }
+
     /**
      * retrieves all info of user
      * @param deviceId fid
