@@ -13,7 +13,14 @@ import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 import org.junit.Test;
 
+/**
+ * This class contains unit tests for generating QR codes related to event organization.
+ */
 public class OrganizerEditQRTest {
+
+    /**
+     * Test method to generate a QR code for an event ID.
+     */
     @Test
     public void generateEventQRCodeTest() {
         // Mock event ID for testing
@@ -42,6 +49,9 @@ public class OrganizerEditQRTest {
         }
     }
 
+    /**
+     * Test method to generate a QR code for an event description.
+     */
     @Test
     public void generateDescriptionQRCodeTest() {
         // Mock event name for testing
