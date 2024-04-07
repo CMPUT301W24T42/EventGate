@@ -1,3 +1,7 @@
+/**
+ * This activity allows organizers to reuse existing QR codes for a new event.
+ */
+
 package com.example.eventgate.organizer;
 
 import android.os.Bundle;
@@ -21,7 +25,6 @@ import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 
 /**
- * This activity allows organizers to reuse existing QR codes for a new event.
  * Organizers can select from a list of previous events and reuse their check-in QR code
  * for the new event.
  */
