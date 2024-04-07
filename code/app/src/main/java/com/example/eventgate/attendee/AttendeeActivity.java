@@ -777,9 +777,11 @@ public class AttendeeActivity extends AppCompatActivity {
      * Queries firestore db for all events attendee is signed into
      */
     private void updateMyEvents() {
+        Log.d("EventRetrieval", "Retrieving events now");
         FirebaseInstallations.getInstance().getId().addOnSuccessListener(id -> {
             CompletableFuture<ArrayList<Event>> attendeeEvents = new EventDB().getAttendeeEvents(id);
             attendeeEvents.thenAccept(r -> {
+                Log.d("EventRetrieval", "Retrieved " + r.size() + " events.");
                 eventDataList.clear();
                 eventDataList.addAll(r);
                 eventAdapter.notifyDataSetChanged();
