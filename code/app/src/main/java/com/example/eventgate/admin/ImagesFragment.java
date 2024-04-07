@@ -7,7 +7,6 @@ import static com.example.eventgate.admin.DeleteImageFromFirebase.deleteProfileP
 
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -17,10 +16,7 @@ import android.widget.GridView;
 
 import com.example.eventgate.MainActivity;
 import com.example.eventgate.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
@@ -125,6 +121,8 @@ public class ImagesFragment extends Fragment implements ImagePopUpDialog.OnImage
         }
         // remove image url from imageList
         imageList.remove(position);
+        // remove the imageUrl along with its data (ImageData) from the map
+        map.remove(imageUrl);
         gridViewAdapter.notifyDataSetChanged();
     }
 }

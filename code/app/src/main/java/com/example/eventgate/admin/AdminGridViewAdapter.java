@@ -59,6 +59,7 @@ public class AdminGridViewAdapter extends BaseAdapter {
 
         ImageView view = convertView.findViewById(R.id.grid_image);
 
+        // load the image into the imageview
         Picasso.get().load(imageList.get(position)).fit().centerCrop().into(view);
 
         return convertView;
