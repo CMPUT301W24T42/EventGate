@@ -581,27 +581,6 @@ public class AttendeeActivity extends AppCompatActivity {
         EditText editTextPhone = customView.findViewById(R.id.edittextPhone);
         CheckBox checkboxGeolocation = customView.findViewById(R.id.checkbox_geolocation);
 
-
-        builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-                //maybe try to retrieve known user info if not first time opening
-                String name = editTextName.getText().toString();
-                String homepage = editTextHomepage.getText().toString();
-                String contactInfo = editTextContactInfo.getText().toString();
-                Boolean isGeolocationEnabled = checkboxGeolocation.isChecked();
-
-                if (isGeolocationEnabled) {
-                    ActivityCompat.requestPermissions(AttendeeActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1001);
-                }
-
-
-                FirebaseInstallations.getInstance().getId().addOnSuccessListener(deviceId -> {
-                    AttendeeDB attendeeDB = new AttendeeDB();
-                    attendeeDB.editAttendee(db.getAttendeesRef(), deviceId, name, homepage, isGeolocationEnabled);
-                });
-            }
         // Retrieve existing user info and populate fields
         FirebaseInstallations.getInstance().getId().addOnSuccessListener(installId -> {
             new EventDB().getUserInfo(installId).thenAccept(userInfo -> {
