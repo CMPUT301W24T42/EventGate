@@ -142,28 +142,6 @@ public class MainActivity extends AppCompatActivity {
                 AdminActivity.class)));
     }
 
-    /**
-     * called when the activity is visible to the user, immediately after onCreate
-     */
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        mAuth = db.getmAuth();
-
-        db.setMessagingService(new MyFirebaseMessagingService());
-
-        // Check if user is signed in (non-null) and update UI accordingly.
-        if (mAuth.getCurrentUser() == null) {
-            signInUser();
-        }
-        else {
-            FirebaseUser currentUser = mAuth.getCurrentUser();
-            db.setUser(currentUser);
-            updateUI(currentUser, adminButton);
-        }
-
-    }
 
     /**
      * Signs in the user using Firebase anonymous authentication
