@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("com.google.gms.google-services")
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
 android {
@@ -57,6 +58,8 @@ dependencies {
     implementation("com.google.zxing:core:3.4.1")
     implementation("com.google.firebase:firebase-storage:20.3.0")
     implementation("com.squareup.picasso:picasso:2.71828")
+    implementation("com.google.android.gms:play-services-maps:18.0.1")
+    implementation("com.google.android.gms:play-services-location:21.2.0")
     androidTestImplementation("androidx.test:runner:1.5.2")
     androidTestImplementation("androidx.test:rules:1.5.0")
 }
