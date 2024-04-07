@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,6 +27,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.installations.FirebaseInstallations;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,17 +42,23 @@ public class AttendeeAllEventViewerDetail extends AppCompatActivity {
     private TextView textViewEventName;
     private String eventID;
     private String eventName;
+    private Integer attendanceLimit;
+    private Integer registrationCount;
     private ArrayList<OrganizerAlert> alertsDataList;
     private ListView alertsList;
     private ArrayAdapter<OrganizerAlert> alertsAdapter;
     Button back_button, viewAttendeesButton;
+    private String userId;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_attendee_event_viewer_detailed);
 
-
+        FirebaseInstallations.getInstance().getId().addOnSuccessListener(id -> {
+             userId = id;
+        });
 
         //extract event info
         Bundle extras = getIntent().getExtras();
@@ -60,14 +68,74 @@ public class AttendeeAllEventViewerDetail extends AppCompatActivity {
             alertsDataList = (ArrayList<OrganizerAlert>) extras.getSerializable("alerts");
         }
 
-
         alertsList = findViewById(R.id.alertList);
         alertsAdapter = new AlertListAdapter(this, alertsDataList);
         alertsList.setAdapter(alertsAdapter);
 
-        isAttendeeRegistered();
+        //this checks whether to grey out signup button
+        isAttendeeRegistered(userId);
 
+        // Retrieve the attendance limit and registration count
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        assert eventID != null;
+        db.collection("events").document(eventID).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        Object attendanceLimitObject = documentSnapshot.get("attendanceLimit");
+                        Object registrationCountObject = documentSnapshot.get("registrationCount");
 
+                        if (attendanceLimitObject instanceof Long) {
+                            // Attendance limit is stored as a Long (which is the Firestore representation for Integer)
+                            Long attendanceLimitLong = (Long) attendanceLimitObject;
+                            attendanceLimit = attendanceLimitLong.intValue();
+
+                        } else if (attendanceLimitObject instanceof Integer) {
+                            // Attendance limit is stored as an Integer
+                            attendanceLimit = (Integer) attendanceLimitObject;
+                        }
+
+                        // Do the same for registration count
+                        if (registrationCountObject instanceof Long) {
+                            // Registration Count is stored as a Long
+                            Long registrationCountLong = (Long) registrationCountObject;
+                            registrationCount = registrationCountLong.intValue();
+
+                        } else if (registrationCountObject instanceof Integer) {
+                            // Attendance limit is stored as an Integer
+                            registrationCount = (Integer) registrationCountObject;
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> {
+                });
+
+        Button signupButton = findViewById(R.id.signupButton);
+
+        //signing up will need 2 functions since registered events are stored under attendees and events
+        signupButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Attendance limit of -1 indicates unlimited attendance
+                if (attendanceLimit == -1 || registrationCount < attendanceLimit) {
+                    EventDB eventDB = new EventDB();
+                    CompletableFuture<Void> registerAttendeeFuture = eventDB.registerAttendee(AttendeeAllEventViewerDetail.this, userId, eventID);
+                    CompletableFuture<Void> registerAttendee2Future = eventDB.registerAttendee2(userId, eventID);
+
+                    CompletableFuture.allOf(registerAttendeeFuture, registerAttendee2Future)
+                            .thenRun(() -> {
+                                // Call isAttendeeRegistered here to ensure it runs after registration is confirmed.
+                                isAttendeeRegistered(userId);
+                            })
+                            .exceptionally(e -> {
+                                // Handle any exceptions here
+                                Log.e("AttendeeAllEventViewerDetail", "Error registering attendee", e);
+                                return null;
+                            });
+                } else {
+                    Toast.makeText(AttendeeAllEventViewerDetail.this, "This Event is full!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
         displayEventPosters(eventID);
 
@@ -142,27 +210,36 @@ public class AttendeeAllEventViewerDetail extends AppCompatActivity {
 
     }
 
-    private void isAttendeeRegistered() {
-        FirebaseUser currentUser = MainActivity.db.getmAuth().getCurrentUser();
-        if (currentUser == null) {
+    /**
+     * checks if attendee is signed up for the event
+     * @param userId fid
+     */
+    private void isAttendeeRegistered(String userId) {
 
-            return;
-        }
-        String userId = currentUser.getUid();
-        EventDB eventDB = new EventDB();
 
-        eventDB.isAttendeeSignedUp(userId, eventID).thenAccept(isRegistered -> {
-            runOnUiThread(() -> {
-                Button signupButton = findViewById(R.id.signupButton);
-                if (isRegistered) {
-                    signupButton.setText("Already signed up");
-                    signupButton.setBackgroundColor(getResources().getColor(android.R.color.holo_red_dark));
-                    signupButton.setEnabled(false);
-                }
+        //getting fid must be asyncrhoinous, otherwise will be null
+        FirebaseInstallations.getInstance().getId().addOnSuccessListener(id -> {
+            String userId2 = id;
+            EventDB eventDB = new EventDB();
+
+            eventDB.isAttendeeSignedUp(userId2, eventID).thenAccept(isRegistered -> {
+                runOnUiThread(() -> {
+                    Button signupButton = findViewById(R.id.signupButton);
+                    if (isRegistered) {
+                        signupButton.setText("Already signed up");
+                        signupButton.setBackgroundColor(getResources().getColor(android.R.color.holo_red_dark));
+                        signupButton.setEnabled(false);
+                    } else {
+
+                    }
+                });
+            }).exceptionally(exception -> {
+                Log.e("YourActivity", "Error checking event registration status", exception);
+                return null;
             });
-        }).exceptionally(exception -> {
-            Log.e("YourActivity", "Error checking event registration status", exception);
-            return null;
+        }).addOnFailureListener(e -> {
+
+            Log.e("YourActivity", "Failed to get Firebase Installation ID", e);
         });
     }
 

@@ -3,11 +3,19 @@ package com.example.eventgate.attendee;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.example.eventgate.MainActivity;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,6 +54,11 @@ public class AttendeeDB {
         data.put("uUid", MainActivity.db.getUser().getUid());
         data.put("events", new ArrayList<Integer>());
         data.put("trackingEnabled", false);
+        data.put("hasUpdatedInfo", false);
+        data.put("homepage", "");
+        data.put("email", "");
+        data.put("phoneNumber", "");
+        data.put("registeredEvents", new ArrayList<>());
         attendeesRef.document(attendeeId).set(data)
                 .addOnSuccessListener(unused -> {
                     // store info in shared preferences
@@ -97,7 +110,7 @@ public class AttendeeDB {
      *      is removed by an admin
      * @param attendee the attendee to be removed
      */
-    public void removeAttendee(Attendee attendee) {
+    public void removeAttendeeFromAllEvents(Attendee attendee) {
         String attendeeId = attendee.getAttendeeId();
         // get references to the attendee's document and the events collection in the database
         DocumentReference attendeeRef = collection.document(attendeeId);
@@ -147,6 +160,30 @@ public class AttendeeDB {
                 }
             } else {
                 Log.d(TAG, "get failed with ", task.getException());
+            }
+        });
+    }
+
+    public void removeAttendee(Attendee attendee) {
+        String attendeeId = attendee.getAttendeeId();
+        // delete the attendees info/profile from firestore
+        collection.document(attendeeId).delete()
+                .addOnSuccessListener(aVoid -> Log.d(TAG, "Attendee successfully deleted!"))
+                .addOnFailureListener(e -> Log.w(TAG, "Error deleting attendee", e));
+
+    }
+
+    public void getAttendeeInfo(String deviceId, Attendee attendee) {
+        CollectionReference attendeesRef = MainActivity.db.getAttendeesRef();
+        attendeesRef.whereEqualTo("deviceId", deviceId).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    attendee.setName(document.getString("name"));
+                    attendee.setHomepage(document.getString("homepage"));
+                    attendee.setEmail(document.getString("email"));
+                    attendee.setPhoneNumber(document.getString("phoneNumber"));
+                    attendee.setProfilePicture(document.getString("profilePicturePath"));
+                }
             }
         });
     }

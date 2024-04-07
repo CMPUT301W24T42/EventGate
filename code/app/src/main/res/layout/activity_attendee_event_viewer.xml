@@ -48,10 +48,22 @@
             android:background="@color/white"
             android:choiceMode="singleChoice" />
 
-        <androidx.viewpager.widget.ViewPager
-            android:id="@+id/viewPager"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent">
+
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/viewPager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <ImageView
+                android:id="@+id/default_imageview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"/>
+
+        </FrameLayout>
 
     </LinearLayout>
 

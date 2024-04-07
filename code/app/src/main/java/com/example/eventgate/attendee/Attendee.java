@@ -1,10 +1,12 @@
 package com.example.eventgate.attendee;
 
+import java.io.Serializable;
+
 /**
  * this class represents a attendee
  * it allows one to set and get attendee info
  */
-public class Attendee {
+public class Attendee implements Serializable {
     /**
      * this holds the name of a attendee
      */
@@ -17,6 +19,10 @@ public class Attendee {
      * this holds the id of the firestore collection document for the attendee
      */
     private String attendeeId;
+    private String homepage;
+    private String email;
+    private String phoneNumber;
+    private String profilePicture;
 
     /**
      * this constructs a new attendee object
@@ -27,6 +33,10 @@ public class Attendee {
         this.name = name;
         this.deviceId = deviceId;
         this.attendeeId = attendeeId;
+        this.homepage = "";
+        this.email = "";
+        this.phoneNumber = "";
+        this.profilePicture = "";
     }
 
     public String getName() {
@@ -36,8 +46,43 @@ public class Attendee {
     public void setName(String name) {
         this.name = name;
     }
+    public String getDeviceId() {
+        return deviceId;
+    }
 
     public String getAttendeeId() {
         return attendeeId;
+    }
+
+    public String getHomepage() {
+        return homepage;
+    }
+
+    public void setHomepage(String homepage) {
+        this.homepage = homepage;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
     }
 }

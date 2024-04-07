@@ -8,7 +8,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 
 /**
  * This class represents Firebase
- * It allows the app to access the Firestore database and use Firebase authentication
+ * It allows the app to access features of Firebase
  */
 
 public class Firebase {
@@ -24,6 +24,9 @@ public class Firebase {
      * this holds an instance of the Firebase Cloud Messaging
      */
     private final FirebaseMessaging fcm;
+    /**
+     * this holds and instance of MyFirebaseMessagingService
+     */
     private MyFirebaseMessagingService messagingService;
     /**
      * this is the reference to the events collection in the database
@@ -47,6 +50,10 @@ public class Firebase {
      */
     private final CollectionReference adminsRef;
     /**
+     * this is the reference to the images collection in the database
+     */
+    private final CollectionReference imagesRef;
+    /**
      * this holds the info from firebase of the current user
      */
     private FirebaseUser currentUser;
@@ -64,6 +71,7 @@ public class Firebase {
         this.fcmTokensRef = db.collection("fcmTokens");
         this.alertsRef = db.collection("alerts");
         this.adminsRef = db.collection("admins");
+        this.imagesRef = db.collection("images");
         this.currentUser = null;
     }
 
@@ -145,6 +153,14 @@ public class Firebase {
      */
     public CollectionReference getAdminsRef() {
         return adminsRef;
+    }
+
+    /**
+     * this gets a reference to the images collection in the database
+     * @return a collection reference to the images collection
+     */
+    public CollectionReference getImagesRef() {
+        return imagesRef;
     }
 
     /**

@@ -1,47 +1,34 @@
 package com.example.eventgate.admin;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager2.widget.ViewPager2;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListView;
 
-import com.example.eventgate.attendee.Attendee;
-import com.example.eventgate.MainActivity;
-import com.example.eventgate.event.Event;
 import com.example.eventgate.R;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.android.material.tabs.TabLayout;
 
-import java.util.ArrayList;
-
+// citations
+// https://www.youtube.com/watch?v=LXl7D57fgOQ Elements of the following layout design,
+//      (activity_admin) is from Codes Easy, Youtube, "How to Implement TabLayout in your Android App", 2023-01-23
 /**
  * This is the activity for the administrator main menu.
  * It allows the administrator to view and delete any events or users
  */
 public class AdminActivity extends AppCompatActivity {
     /**
-     * This is an array list that holds events
+     * holds the tabLayout
      */
-    ArrayList<Event> eventDataList;
+    TabLayout tabLayout;
     /**
-     * This is the listview that displays the events in the eventDataList
+     * holds the viewpager used to swipe between tabs
      */
-    ListView eventList;
+    ViewPager2 viewPager2;
     /**
-     * This is an adapter for displaying a list of events
+     * the adapter for the viewpager
      */
-    ArrayAdapter<Event> eventAdapter;
-    /**
-     * this is an array list that holds attendees
-     */
-    ArrayList<Attendee> attendeeDataList;
-    /**
-     * this is an adapter for displaying a list of attendees
-     */
-    ArrayAdapter<Attendee> attendeeAdapter;
+    AdminViewPagerAdapter viewPager2Adapter;
 
     /**
      * Called when the activity is starting.
@@ -54,82 +41,46 @@ public class AdminActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin);
 
+        // get layout references
+        tabLayout = findViewById(R.id.admin_tab_layout);
+        viewPager2 = findViewById(R.id.admin_viewpager);
+        // create and set adapter
+        viewPager2Adapter = new AdminViewPagerAdapter(this);
+        viewPager2.setAdapter(viewPager2Adapter);
+        // set up the tabLayout
+        setUpTabLayout();
+
         // sends admin back to the main menu
         Button adminActivityBackButton = findViewById(R.id.admin_back_button);
         adminActivityBackButton.setOnClickListener(v -> finish());
-
-        // create the event and attendee lists and set adapters
-        createEventList();
-        createAttendeeList();
-
-        // get references to firestore events and attendees collections
-        CollectionReference eventsRef = MainActivity.db.getEventsRef();
-        CollectionReference attendeesRef = MainActivity.db.getAttendeesRef();
-
-        // adds/updates info from the database
-        createDBListeners(eventsRef, attendeesRef);
-
-        // starts a new activity to view event info including attendees of event
-        eventList.setOnItemClickListener((parent, view, position, id) -> {
-            Event event = eventDataList.get(position);
-            Intent intent = new Intent(AdminActivity.this, AdminEventViewerActivity.class);
-            intent.putExtra("eventId", event.getEventId());
-            intent.putExtra("name", event.getEventName());
-            startActivity(intent);
-        });
     }
 
     /**
-     * creates the event list and sets the adapter
+     * this handles the logic for selecting tabs in the tabLayout
      */
-    private void createEventList() {
-        eventDataList = new ArrayList<>();
+    private void setUpTabLayout() {
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager2.setCurrentItem(tab.getPosition());
+            }
 
-        eventList = findViewById(R.id.event_list);
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
 
-        eventAdapter = new AdminEventListAdapter(this, eventDataList);
-        eventList.setAdapter(eventAdapter);
-    }
+            }
 
-    /**
-     * creates the attendee list and sets the adapter
-     */
-    private void createAttendeeList() {
-        attendeeDataList = new ArrayList<>();
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
 
-        ListView attendeeList = findViewById(R.id.user_list);
-
-        attendeeAdapter = new AdminAttendeeListAdapter(this, attendeeDataList, "");
-        attendeeList.setAdapter(attendeeAdapter);
-    }
-
-    /**
-     * creates snapshot listeners to add or update info from the database
-     * @param eventsRef a reference to the events collection in the database
-     * @param attendeesRef a reference to the attendees collection in the database
-     */
-    private void createDBListeners(CollectionReference eventsRef, CollectionReference attendeesRef) {
-        // snapshot listener that adds/updates all the events from the database
-        eventsRef.addSnapshotListener((queryDocumentSnapshots, error) -> {
-            eventDataList.clear();
-            for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
-            {
-                Event event = new Event((String) doc.getData().get("name"));
-                event.setEventId(doc.getId());
-                eventDataList.add(event);
-                eventAdapter.notifyDataSetChanged();
             }
         });
 
-        // snapshot listener that adds/updates all the attendees/users from the database
-        attendeesRef.addSnapshotListener((queryDocumentSnapshots, error) -> {
-            attendeeDataList.clear();
-            for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
-            {
-                Attendee attendee = new Attendee((String) doc.getData().get("name"),
-                        (String) doc.getData().get("deviceId"), (String) doc.getData().get("attendeeId"));
-                attendeeDataList.add(attendee);
-                attendeeAdapter.notifyDataSetChanged();
+        viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                tabLayout.getTabAt(position).select();
             }
         });
     }

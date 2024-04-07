@@ -69,11 +69,13 @@ public class AdminAttendeeListAdapter extends ArrayAdapter<Attendee> {
         Attendee attendee = attendees.get(position);
         AttendeeDB attendeeDB = new AttendeeDB();
 
+        // get references to views
         TextView attendeeName = convertView.findViewById(R.id.list_item_name);
         Button adminDeleteButton = convertView.findViewById(R.id.delete_button);
 
         attendeeName.setText(attendee.getName());
 
+        // set up click listener for delete button
         setDeleteClickListener(adminDeleteButton, position, attendeeDB, attendee);
 
         return convertView;
@@ -97,9 +99,12 @@ public class AdminAttendeeListAdapter extends ArrayAdapter<Attendee> {
             ConfirmDeleteDialog confirmDeleteDialog = ConfirmDeleteDialog.newInstance(title, message);
             confirmDeleteDialog.setOnDeleteClickListener(() -> {
                 attendees.remove(position);
+                // if delete button is clicked in AdminActivity then remove attendee as a whole, if clicked
+                //      from AdminEventViewerActivity then only remove attendee from specified event
                 if (context instanceof AdminActivity) {
                     // removes attendee from all events if the delete button is being clicked from AdminActivity
-                    attendeeDB.removeAttendee(attendee);
+                    attendeeDB.removeAttendeeFromAllEvents(attendee);
+                    attendeeDB.removeAttendee(attendee);  // remove attendee profile from database
                 } else {
                     // removes attendee from specified event if button is being clicked from AdminEventViewerActivity
                     attendeeDB.removeAttendeeFromEvent(attendee, eventId);
