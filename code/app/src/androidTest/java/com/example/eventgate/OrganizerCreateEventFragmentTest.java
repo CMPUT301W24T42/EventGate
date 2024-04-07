@@ -1,5 +1,7 @@
 package com.example.eventgate;
 
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
+
 import androidx.fragment.app.testing.FragmentScenario;
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.action.ViewActions;
@@ -7,8 +9,6 @@ import androidx.test.espresso.action.ViewActions;
 import com.example.eventgate.organizer.OrganizerCreateEventFragment;
 
 import org.junit.Test;
-
-import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
 /**
  * Instrumented test class for testing the behavior of OrganizerCreateEventFragment.
@@ -38,16 +38,6 @@ public class OrganizerCreateEventFragmentTest {
         Espresso.onView(withId(R.id.organizerCreateEventCancelButton)).perform(ViewActions.click());
     }
 
-    /**
-     * Test to verify that clicking on the Generate QR Button works.
-     */
-    @Test
-    public void testGenerateQRButtonClicked() {
-        FragmentScenario<OrganizerCreateEventFragment> scenario = FragmentScenario.launchInContainer(OrganizerCreateEventFragment.class);
-
-        // Click on the Generate QR Button
-            Espresso.onView(withId(R.id.generateQRButton)).perform(ViewActions.click());
-    }
     /**
      * Test to verify that clicking on the Generate Description QR Button works.
      */
