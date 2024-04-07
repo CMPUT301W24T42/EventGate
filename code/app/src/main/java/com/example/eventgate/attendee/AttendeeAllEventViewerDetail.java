@@ -118,9 +118,19 @@ public class AttendeeAllEventViewerDetail extends AppCompatActivity {
                 // Attendance limit of -1 indicates unlimited attendance
                 if (attendanceLimit == -1 || registrationCount < attendanceLimit) {
                     EventDB eventDB = new EventDB();
-                    eventDB.registerAttendee(AttendeeAllEventViewerDetail.this, userId, eventID);
-                    eventDB.registerAttendee2(userId, eventID);
-                    isAttendeeRegistered(userId);
+                    CompletableFuture<Void> registerAttendeeFuture = eventDB.registerAttendee(AttendeeAllEventViewerDetail.this, userId, eventID);
+                    CompletableFuture<Void> registerAttendee2Future = eventDB.registerAttendee2(userId, eventID);
+
+                    CompletableFuture.allOf(registerAttendeeFuture, registerAttendee2Future)
+                            .thenRun(() -> {
+                                // Call isAttendeeRegistered here to ensure it runs after registration is confirmed.
+                                isAttendeeRegistered(userId);
+                            })
+                            .exceptionally(e -> {
+                                // Handle any exceptions here
+                                Log.e("AttendeeAllEventViewerDetail", "Error registering attendee", e);
+                                return null;
+                            });
                 } else {
                     Toast.makeText(AttendeeAllEventViewerDetail.this, "This Event is full!", Toast.LENGTH_SHORT).show();
                 }
@@ -200,6 +210,10 @@ public class AttendeeAllEventViewerDetail extends AppCompatActivity {
 
     }
 
+    /**
+     * checks if attendee is signed up for the event
+     * @param userId fid
+     */
     private void isAttendeeRegistered(String userId) {
 
 

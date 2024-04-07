@@ -166,12 +166,14 @@ public class EventDB {
         db.collection("attendees").whereEqualTo("deviceId", deviceId).get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
             if (queryDocumentSnapshots.isEmpty()) {  // If there is no matching deviceId, simply return
+                Log.d("test1", "matching id not found");
                 return;
             }
             DocumentSnapshot attendee = queryDocumentSnapshots.getDocuments().get(0);
             ArrayList<String> attendeeEvents = (ArrayList<String>) attendee.get("events");
 
             if (attendeeEvents.size() == 0) {  // If it's empty, simply return
+                Log.d("test1", "is empty");
                 return;
             }
             attendeeEvents.removeIf(String::isEmpty);
@@ -436,6 +438,10 @@ public class EventDB {
         return allAttendees;
     }
 
+    /**
+     * retrieves all events
+     * @return  all events
+     */
     public CompletableFuture<ArrayList<Event>> getAllEvents() {
         CompletableFuture<ArrayList<Event>> futureEvents = new CompletableFuture<>();
         ArrayList<Event> events = new ArrayList<>();
@@ -461,6 +467,16 @@ public class EventDB {
     }
 
 
+    /**
+     * saves user info in db
+     * @param deviceId fid
+     * @param name user full name
+     * @param phoneNumber user's phone number
+     * @param email user's email
+     * @param homepage user's website
+     * @param hasUpdatedInfo whether user has set info
+     * @return
+     */
     public CompletableFuture<Void> updateUserInfo(String deviceId, String name, String phoneNumber, String email, String homepage, Boolean hasUpdatedInfo) {
         CompletableFuture<Void> future = new CompletableFuture<>();
         DocumentReference userAttributeDocRef = db.collection("attendees").document(deviceId);
@@ -483,6 +499,31 @@ public class EventDB {
         return future;
     }
 
+    public CompletableFuture<String> retrieveUserNameFromID(String userId) {
+        CompletableFuture<String> future = new CompletableFuture<>();
+        DocumentReference userAttributeDocRef = db.collection("attendees").document(userId);
+
+        userAttributeDocRef.get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        String name = documentSnapshot.getString("name");
+                        future.complete(name);
+                    } else {
+                        future.completeExceptionally(new RuntimeException("User document does not exist for userId: " + userId));
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    future.completeExceptionally(e);
+                });
+
+        return future;
+    }
+
+    /**
+     * retrieves all info of user
+     * @param deviceId fid
+     * @return
+     */
     public CompletableFuture<Map<String, Object>> getUserInfo(String deviceId) {
         CompletableFuture<Map<String, Object>> future = new CompletableFuture<>();
         DocumentReference userDocRef = db.collection("attendees").document(deviceId);
@@ -503,6 +544,11 @@ public class EventDB {
         return future;
     }
 
+    /**
+     * retrieves whether user has set info yet
+     * @param deviceId fid
+     * @return
+     */
     public CompletableFuture<Boolean> getUserInfoUpdateStatus(String deviceId) {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
         DocumentReference userDocRef = db.collection("attendees").document(deviceId);
