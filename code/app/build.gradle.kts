@@ -47,18 +47,16 @@ dependencies {
     implementation("com.google.firebase:firebase-messaging")
     implementation("com.journeyapps:zxing-android-embedded:4.3.0")
     testImplementation("junit:junit:4.13.2")
-    testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
-    androidTestImplementation("androidx.test.ext:junit:1.1.3")
+    testImplementation("org.mockito:mockito-core:3.11.2")
+    testImplementation("io.mockk:mockk:1.13.10")
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-
-
-    androidTestImplementation("androidx.test.espresso:espresso-intents:3.4.0")
-
-    androidTestImplementation("androidx.fragment:fragment-testing:1.4.0")
-    implementation("com.journeyapps:zxing-android-embedded:4.1.0")
-    implementation("com.google.zxing:core:3.3.3")
+    androidTestImplementation("androidx.test.espresso:espresso-intents:3.5.1")
+    androidTestImplementation("androidx.fragment:fragment-testing:1.6.2")
+    implementation("com.journeyapps:zxing-android-embedded:4.3.0")
+    implementation("com.google.zxing:core:3.4.1")
     implementation("com.google.firebase:firebase-storage:20.3.0")
     implementation("com.squareup.picasso:picasso:2.71828")
-    androidTestImplementation("androidx.test:runner:1.4.0")
-    androidTestImplementation("androidx.test:rules:1.4.0")
+    androidTestImplementation("androidx.test:runner:1.5.2")
+    androidTestImplementation("androidx.test:rules:1.5.0")
 }

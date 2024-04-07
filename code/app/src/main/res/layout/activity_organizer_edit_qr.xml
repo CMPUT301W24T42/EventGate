@@ -11,15 +11,15 @@
     <LinearLayout
         android:id="@+id/eventContainer"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginStart="30dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="15dp"
         android:layout_marginEnd="30dp"
-        android:layout_marginBottom="22dp"
+        android:layout_marginBottom="20dp"
         android:background="@drawable/list_rounded_corners"
         android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/OrganizerEditQRShareDetailsButton"
+        app:layout_constraintBottom_toTopOf="@+id/OrganizerEditQRShareCheckInButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -38,7 +38,7 @@
         <TextView
             android:id="@+id/CheckInQRCode"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="50dp"
             android:gravity="center"
             android:text="@string/check_in_qr_code"
             android:textAlignment="center"
@@ -47,8 +47,8 @@
 
         <ImageView
             android:id="@+id/organizerEditCheckInQRCode"
-            android:layout_width="125dp"
-            android:layout_height="125dp"
+            android:layout_width="175dp"
+            android:layout_height="175dp"
             android:layout_gravity="center_horizontal"
             android:clickable="false"
             android:contentDescription="@string/qrcode"
@@ -68,11 +68,11 @@
                 android:ems="12"
                 android:text="@string/generate_check_in_qr_edit"
                 android:textColor="@color/black"
-                android:textSize="11sp"
+                android:textSize="12sp"
                 app:cornerRadius="0dp" />
 
             <Space
-                android:layout_width="9dp"
+                android:layout_width="12dp"
                 android:layout_height="wrap_content" />
 
             <com.google.android.material.button.MaterialButton
@@ -83,7 +83,7 @@
                 android:ems="12"
                 android:text="@string/reuse_existing_qr"
                 android:textColor="@color/black"
-                android:textSize="11sp"
+                android:textSize="12sp"
                 app:cornerRadius="0dp" />
 
         </LinearLayout>
@@ -91,7 +91,7 @@
         <TextView
             android:id="@+id/DescriptionQRCode"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="50dp"
             android:gravity="center"
             android:text="@string/event_details_qr_code"
             android:textAlignment="center"
@@ -100,8 +100,8 @@
 
         <ImageView
             android:id="@+id/organizerEditDescriptionQRCode"
-            android:layout_width="125dp"
-            android:layout_height="125dp"
+            android:layout_width="175dp"
+            android:layout_height="175dp"
             android:layout_gravity="center_horizontal"
             android:clickable="false"
             android:contentDescription="@string/qrcode"
@@ -111,12 +111,13 @@
             android:id="@+id/generateDescriptionQRButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="40dp"
             android:layout_gravity="center_horizontal"
             android:backgroundTint="@color/light_gray"
             android:ems="12"
             android:text="@string/generate_detail_qr"
             android:textColor="@color/black"
-            android:textSize="11sp"
+            android:textSize="12sp"
             app:cornerRadius="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -128,49 +129,49 @@
         android:id="@+id/OrganizerEditQRBackButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
         android:backgroundTint="@color/light_gray"
         android:ems="9"
         android:text="@string/back"
         android:textColor="@color/black"
-        android:textSize="11sp"
+        android:textSize="12sp"
         app:cornerRadius="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/OrganizerEditQRShareDetailsButton" />
+        app:layout_constraintTop_toBottomOf="@+id/OrganizerEditQRShareCheckInButton" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/OrganizerEditQRShareCheckInButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="1dp"
-        android:layout_marginBottom="17dp"
+        android:layout_marginBottom="2dp"
         android:backgroundTint="@color/light_gray"
-        android:ems="11"
+        android:ems="12"
         android:text="@string/share_check_in_qr"
         android:textColor="@color/black"
-        android:textSize="11sp"
+        android:textSize="12sp"
         app:cornerRadius="0dp"
         app:layout_constraintBottom_toTopOf="@+id/OrganizerEditQRBackButton"
         app:layout_constraintEnd_toStartOf="@+id/OrganizerEditQRShareDetailsButton"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/eventContainer" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/OrganizerEditQRShareDetailsButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="17dp"
         android:backgroundTint="@color/light_gray"
-        android:ems="11"
+        android:ems="12"
         android:text="@string/share_details_qr"
         android:textColor="@color/black"
-        android:textSize="11sp"
+        android:textSize="12sp"
         app:cornerRadius="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/OrganizerEditQRBackButton"
+        app:layout_constraintBottom_toBottomOf="@+id/OrganizerEditQRShareCheckInButton"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/OrganizerEditQRShareCheckInButton"
-        app:layout_constraintTop_toBottomOf="@+id/eventContainer" />
+        app:layout_constraintTop_toTopOf="@+id/OrganizerEditQRShareCheckInButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
