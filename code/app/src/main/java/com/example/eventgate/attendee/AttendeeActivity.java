@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -147,8 +148,22 @@ public class AttendeeActivity extends AppCompatActivity {
         textView.setText(spannableString);*/
 
 
+        FirebaseInstallations.getInstance().getId()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if (task.isSuccessful()) {
+                            // Get the installation ID
+                            String installationId = task.getResult();
+                            Log.d("FirebaseInstallation", "Installation ID: " + installationId);
+                        } else {
+                            // Handle error
+                            Log.e("FirebaseInstallation", "Failed to get installation ID", task.getException());
+                        }
+                    }
+                });
 
-
+       
 
         //generate user profile pic
         updateProfilePicture();

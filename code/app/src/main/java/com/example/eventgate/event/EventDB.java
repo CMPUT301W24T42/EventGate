@@ -176,12 +176,14 @@ public class EventDB {
         db.collection("attendees").whereEqualTo("deviceId", deviceId).get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
             if (queryDocumentSnapshots.isEmpty()) {  // If there is no matching deviceId, simply return
+                Log.d("test1", "matching id not found");
                 return;
             }
             DocumentSnapshot attendee = queryDocumentSnapshots.getDocuments().get(0);
             ArrayList<String> attendeeEvents = (ArrayList<String>) attendee.get("events");
 
             if (attendeeEvents.size() == 0) {  // If it's empty, simply return
+                Log.d("test1", "is empty");
                 return;
             }
             attendeeEvents.removeIf(String::isEmpty);
