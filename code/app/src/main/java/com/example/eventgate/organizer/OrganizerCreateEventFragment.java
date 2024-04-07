@@ -1,7 +1,10 @@
-package com.example.eventgate.organizer;
+/**
+ * This class represents a fragment for creating a new event by organizers.
+ * It facilitates the creation of new events by organizers, allowing them to specify event details and attendance limits.
+ * This fragment communicates with the parent activity to handle event addition and updates the UI accordingly.
+ */
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.DialogFragment;
+package com.example.eventgate.organizer;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -12,10 +15,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 
-import com.example.eventgate.event.Event;
 import com.example.eventgate.R;
+import com.example.eventgate.event.Event;
 import com.example.eventgate.event.EventDB;
 
 
@@ -23,7 +28,6 @@ import com.example.eventgate.event.EventDB;
  * A fragment for creating a new event.
  * This fragment provides functionality for organizers to create new events by generating QR codes for check-in and event description.
  * It communicates with the parent activity to handle event addition and updates the UI accordingly.
- * Outstanding issues: When a description QR Code is generated, it is not being added to the database.
  */
 public class OrganizerCreateEventFragment extends DialogFragment {
     private Event eventAdded;
