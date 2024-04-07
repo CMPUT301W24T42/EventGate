@@ -82,11 +82,13 @@ public class AdminAttendeeListAdapter extends ArrayAdapter<Attendee> {
         Attendee attendee = attendees.get(position);
         AttendeeDB attendeeDB = new AttendeeDB();
 
+        // get references to views
         TextView attendeeName = convertView.findViewById(R.id.list_item_name);
         Button adminDeleteButton = convertView.findViewById(R.id.delete_button);
 
         attendeeName.setText(attendee.getName());
 
+        // set up click listener for delete button
         setDeleteClickListener(adminDeleteButton, position, attendeeDB, attendee);
 
         return convertView;

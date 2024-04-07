@@ -2,49 +2,8 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="AdminActivityTest">
-        <State />
-      </entry>
-      <entry key="AdminEventViewerActivityTest">
-        <State />
-      </entry>
-      <entry key="CreateAlertFragmentTest">
-        <State>
-          <targetSelectedWithDropDown>
-            <Target>
-              <type value="QUICK_BOOT_TARGET" />
-              <deviceKey>
-                <Key>
-                  <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="$USER_HOME$/.android/avd/Pixel_7_API_34_2.avd" />
-                </Key>
-              </deviceKey>
-            </Target>
-          </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-04-06T21:49:35.680034Z" />
-        </State>
-      </entry>
-      <entry key="MainActivityTest">
-        <State />
-      </entry>
-      <entry key="Tests in 'com.example.eventgate'">
-        <State />
-      </entry>
       <entry key="app">
-        <State>
-          <targetSelectedWithDropDown>
-            <Target>
-              <type value="QUICK_BOOT_TARGET" />
-              <deviceKey>
-                <Key>
-                  <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="$USER_HOME$/.android/avd/Pixel_7_API_34_2.avd" />
-                </Key>
-              </deviceKey>
-            </Target>
-          </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-04-06T02:30:17.216020Z" />
-        </State>
+        <State />
       </entry>
     </value>
   </component>

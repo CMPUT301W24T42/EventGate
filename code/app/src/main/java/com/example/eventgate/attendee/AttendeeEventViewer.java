@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -60,6 +61,7 @@ public class AttendeeEventViewer extends AppCompatActivity {
         setContentView(R.layout.activity_attendee_event_viewer);
 
 
+
         //extract event info
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -72,6 +74,16 @@ public class AttendeeEventViewer extends AppCompatActivity {
         alertsList = findViewById(R.id.alertList);
         alertsAdapter = new AlertListAdapter(this, alertsDataList);
         alertsList.setAdapter(alertsAdapter);
+
+        // show dialog displaying alert's message once the title of the alert is clicked on the listview
+        alertsList.setOnItemClickListener((parent, view, position, id) -> {
+            ViewAnnouncementDialog dialog = new ViewAnnouncementDialog();
+            Bundle args = new Bundle();
+            args.putString("alertTitle", alertsDataList.get(position).getTitle());
+            args.putString("alertMessage", alertsDataList.get(position).getMessage());
+            dialog.setArguments(args);
+            dialog.show(getSupportFragmentManager(), "View Announcement Dialog");
+        });
 
         defaultImageView = findViewById(R.id.default_imageview);
 

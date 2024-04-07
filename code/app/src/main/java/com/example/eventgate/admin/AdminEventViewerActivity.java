@@ -48,6 +48,9 @@ public class AdminEventViewerActivity extends AppCompatActivity {
      * this is an adapter for displaying a list of attendees
      */
     ArrayAdapter<Attendee> attendeeAdapter;
+    /**
+     * this is the listview that displays the attendees attending the event
+     */
     ListView attendeeList;
     /**
      * this is the viewpager to display event posters
@@ -73,6 +76,9 @@ public class AdminEventViewerActivity extends AppCompatActivity {
      * tag for logging
      */
     final String TAG = "AdminEventViewerActivity";
+    /**
+     * imageview that shows default image if there are no posters
+     */
     ImageView defaultImageView;
 
     /**
@@ -199,6 +205,7 @@ public class AdminEventViewerActivity extends AppCompatActivity {
                 ArrayList<String> attendeeIds = (ArrayList<String>) value.get("attendees");
                 // there are attendees for the event
                 if (attendeeIds != null) {
+                    // for each attendee, get their info and create a new Attendee object then add the object to the attendeeDataList
                     for (String attendeeId : attendeeIds) {
                         attendeesRef
                                 .document(attendeeId).get().addOnSuccessListener(documentSnapshot -> {
@@ -221,29 +228,28 @@ public class AdminEventViewerActivity extends AppCompatActivity {
      * gets image urls from firestore and displays images in viewpager
      */
     private void displayEventPosters() {
-        if (postersRef != null) {  // if event has posters stored in database
-            postersRef
-                    .get()
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful() && !task.getResult().isEmpty()) {
-                            defaultImageView.setVisibility(View.GONE);
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                String imageUrl = document.getString("url");
-                                posterImageUrls.add(imageUrl);
-                                posterPagerAdapter.notifyDataSetChanged();
-                            }
-                            if (!posterImageUrls.isEmpty()) {
-                                enableButton();
-                            }
-                        } else {
+        // get to the posters subcollection of the specified event and get all the posters
+        postersRef
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                        defaultImageView.setVisibility(View.GONE);
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            String imageUrl = document.getString("url");
+                            posterImageUrls.add(imageUrl);
+                            posterPagerAdapter.notifyDataSetChanged();
+                        }
+                        if (!posterImageUrls.isEmpty()) {
+                            enableButton();  // enables the delete button if there are posters to delete
+                        }
+                    } else {  // there are no posters, so show default image
                             viewPager.setVisibility(View.GONE);
                             defaultImageView.setImageResource(R.drawable.default_viewpager);
-                            Log.d(TAG, "get failed with ", task.getException());
-                        }
-                    });
-        }
-
+                        Log.d(TAG, "get failed with ", task.getException());
+                    }
+                });
     }
+
 
     /**
      * callback method called by the system when the activity enters the "resumed" state
@@ -252,7 +258,7 @@ public class AdminEventViewerActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if (posterImageUrls.isEmpty()) {
-            disableButton();
+            disableButton();  // disables button if there are no posters in the viewpager
         }
     }
 
@@ -275,6 +281,7 @@ public class AdminEventViewerActivity extends AppCompatActivity {
         posterPagerAdapter.removePoster(currentPoster);
         viewPager.setAdapter(posterPagerAdapter);
 
+        // if there are no posters then disable the delete button so admin cannot delete something that doesn't exist
         if (posterImageUrls.isEmpty()) {
             disableButton();
         }
@@ -286,12 +293,20 @@ public class AdminEventViewerActivity extends AppCompatActivity {
         deletePosterFromCloudStorage(imageUrl);
     }
 
+    /**
+     * Makes the button clickable in the case that there are posters that could be deleted.
+     *      This also changes the color of the button, implying that it is clickable
+     */
     private void enableButton() {
             deleteButton.setClickable(true);
             deleteButton.setBackgroundColor(getResources().getColor(R.color.red));
             deleteButton.setTextColor(getResources().getColor(R.color.black));
     }
 
+    /**
+     * Makes the button unclickable if there are no posters to delete.
+     *      This also changes the color of the button, implying that it is not clickable
+     */
     private void disableButton() {
         deleteButton.setClickable(false);
         deleteButton.setBackgroundColor(getResources().getColor(R.color.light_gray));

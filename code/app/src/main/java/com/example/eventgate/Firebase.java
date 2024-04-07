@@ -8,7 +8,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 
 /**
  * This class represents Firebase
- * It allows the app to access the Firestore database and use Firebase authentication
+ * It allows the app to access features of Firebase
  */
 
 public class Firebase {
@@ -24,6 +24,9 @@ public class Firebase {
      * this holds an instance of the Firebase Cloud Messaging
      */
     private final FirebaseMessaging fcm;
+    /**
+     * this holds and instance of MyFirebaseMessagingService
+     */
     private MyFirebaseMessagingService messagingService;
     /**
      * this is the reference to the events collection in the database

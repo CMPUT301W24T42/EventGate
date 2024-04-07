@@ -127,6 +127,9 @@ public class MainActivity extends AppCompatActivity {
             });
         });
 
+        attendeeButton = findViewById(R.id.attendee_button);
+        organizerButton = findViewById(R.id.organizer_button);
+        adminButton = findViewById(R.id.admin_button);
 
         // Start each activity with an intent.
         attendeeButton.setOnClickListener(v -> startActivity(new Intent(MainActivity.this,
@@ -137,6 +140,29 @@ public class MainActivity extends AppCompatActivity {
 
         adminButton.setOnClickListener(v -> startActivity(new Intent(MainActivity.this,
                 AdminActivity.class)));
+    }
+
+    /**
+     * called when the activity is visible to the user, immediately after onCreate
+     */
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        mAuth = db.getmAuth();
+
+        db.setMessagingService(new MyFirebaseMessagingService());
+
+        // Check if user is signed in (non-null) and update UI accordingly.
+        if (mAuth.getCurrentUser() == null) {
+            signInUser();
+        }
+        else {
+            FirebaseUser currentUser = mAuth.getCurrentUser();
+            db.setUser(currentUser);
+            updateUI(currentUser, adminButton);
+        }
+
     }
 
     /**
