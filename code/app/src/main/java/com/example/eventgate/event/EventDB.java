@@ -417,7 +417,6 @@ public class EventDB {
         // this gets the list of attendees attending the event and then removes the event from each
         //     of their event lists
         collection.document(eventId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            AttendeeDB attendeeDB = new AttendeeDB();  // allows us to access attendee info so event can be removed
             ArrayList<String> attendees = new ArrayList<>();
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -425,7 +424,7 @@ public class EventDB {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         attendees = (ArrayList<String>) document.get("attendees");
-                        attendeeDB.removeEvent(attendees, event.getEventId());
+                        removeEvent(attendees, event.getEventId());
                         // after removing the event from the attendees' lists, this removes the event
                         //     from the event collection as well
                         collection.document(eventId)
@@ -635,4 +634,18 @@ public class EventDB {
 
         return future;
     }
+
+    /**
+     * removes the event from attendees list of events in the case that the event is deleted
+     * @param attendees a list of attendees who are attending the event that is being removed
+     * @param eventId the id of the event to be removed
+     */
+    private void removeEvent(ArrayList<String> attendees, String eventId) {
+        for (String attendee : attendees) {
+            collection
+                    .document(attendee)
+                    .update("events", FieldValue.arrayRemove(eventId));
+        }
+    }
+
 }

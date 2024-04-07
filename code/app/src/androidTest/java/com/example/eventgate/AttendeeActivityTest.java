@@ -2,15 +2,18 @@ package com.example.eventgate;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static org.junit.Assert.assertTrue;
 
+import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
-
 import com.example.eventgate.attendee.AttendeeActivity;
-
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -40,15 +43,16 @@ public class AttendeeActivityTest {
 
     @Test
     public void testRegisteredEventsDialog() {
-        onView(withId(R.id.attendee_registered_button)).perform(click());
+        onView(withId(R.id.registeredEventsButton)).perform(click());
         onView(withText("My Registered Events")).check(matches(isDisplayed()));
     }
 
     @Test
-    public void testMainActivityIsOpenedOnBackPress() {
+    public void testBackButton() {
         onView(withId(R.id.attendee_back_button)).perform(click());
 
-        onView(withId(R.id.attendee_button)).check(matches(isDisplayed()));
+        // check activity finishes on back button click
+        activityRule.getScenario().onActivity(activity -> assertTrue(activity.isFinishing()));
     }
 
 }

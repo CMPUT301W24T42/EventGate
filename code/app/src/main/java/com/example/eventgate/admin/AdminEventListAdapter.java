@@ -13,7 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.eventgate.ConfirmDeleteDialog;
 import com.example.eventgate.event.Event;
 import com.example.eventgate.R;
 import com.example.eventgate.event.EventDB;

@@ -24,22 +24,22 @@ import java.util.ArrayList;
  */
 public class UsersFragment extends Fragment {
     /**
-     * this is an array list that holds attendees
+     * this is an array list that holds users
      */
-    ArrayList<Attendee> attendeeDataList;
+    ArrayList<Attendee> userDataList;
     /**
-     * this is an adapter for displaying a list of attendees
+     * this is an adapter for displaying a list of users
      */
-    ArrayAdapter<Attendee> attendeeAdapter;
+    ArrayAdapter<Attendee> userAdapter;
     /**
-     * This is the listview that displays the attendees in the attendeeDataList
+     * This is the listview that displays the users in the userDataList
      */
-    ListView attendeeList;
+    ListView userList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View fragmentView = inflater.inflate(R.layout.fragment_attendees, container, false);
+        View fragmentView = inflater.inflate(R.layout.fragment_users, container, false);
         // create the attendee list and set adapter
         createAttendeeList(fragmentView);
         // get reference to attendees collection
@@ -47,24 +47,24 @@ public class UsersFragment extends Fragment {
         // snapshot listener that adds/updates all the attendees/users from the database
         AttendeeDB attendeeDB = new AttendeeDB();
         attendeesRef.addSnapshotListener((queryDocumentSnapshots, error) -> {
-            attendeeDataList.clear();
+            userDataList.clear();
             for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
             {
                 Attendee attendee = new Attendee((String) doc.getData().get("name"),
                         (String) doc.getData().get("deviceId"), doc.getId());
                 attendeeDB.getAttendeeInfo((String) doc.getData().get("deviceId"), attendee);
-                attendeeDataList.add(attendee);
-                attendeeAdapter.notifyDataSetChanged();
+                userDataList.add(attendee);
+                userAdapter.notifyDataSetChanged();
             }
         });
 
         // starts a new activity to view event info including attendees of event
-        attendeeList.setOnItemClickListener((parent, view, position, id) -> {
+        userList.setOnItemClickListener((parent, view, position, id) -> {
             // pop dialog to show all user info
             UserInfoDialog fragment = new UserInfoDialog();
             // create a bundle so we can access
             Bundle args = new Bundle();
-            args.putSerializable("attendee", attendeeDataList.get(position));
+            args.putSerializable("attendee", userDataList.get(position));
             fragment.setArguments(args);
             fragment.show(getActivity().getSupportFragmentManager(), "IMAGE POPUP");  // show dialog
         });
@@ -76,11 +76,11 @@ public class UsersFragment extends Fragment {
      * creates the attendee list and sets the adapter
      */
     private void createAttendeeList(View view) {
-        attendeeDataList = new ArrayList<>();
+        userDataList = new ArrayList<>();
 
-        attendeeList = view.findViewById(R.id.user_list);
+        userList = view.findViewById(R.id.user_list);
 
-        attendeeAdapter = new AdminAttendeeListAdapter(getActivity(), attendeeDataList, "");
-        attendeeList.setAdapter(attendeeAdapter);
+        userAdapter = new AdminAttendeeListAdapter(getActivity(), userDataList, "");
+        userList.setAdapter(userAdapter);
     }
 }

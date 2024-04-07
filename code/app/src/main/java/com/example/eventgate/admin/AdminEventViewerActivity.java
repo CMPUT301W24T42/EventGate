@@ -16,7 +16,6 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
-import com.example.eventgate.ConfirmDeleteDialog;
 import com.example.eventgate.MainActivity;
 import com.example.eventgate.R;
 import com.example.eventgate.attendee.Attendee;
@@ -125,7 +124,7 @@ public class AdminEventViewerActivity extends AppCompatActivity {
         postersRef = MainActivity.db.getEventsRef().document(eventId).collection("posters");
 
         // sends admin back to the main menu
-        Button backButton = findViewById(R.id.event_back_button);
+        Button backButton = findViewById(R.id.admin_event_viewer_back_button);
         backButton.setOnClickListener(v -> finish());
 
         // deletes an event poster
@@ -149,6 +148,8 @@ public class AdminEventViewerActivity extends AppCompatActivity {
 
         defaultImageView = findViewById(R.id.poster_image_view);
 
+
+
         // create the attendee list and set adapter
         createAttendeeList();
 
@@ -159,11 +160,11 @@ public class AdminEventViewerActivity extends AppCompatActivity {
         // add/update attendees list
         updateAttendeesList(eventRef, attendeesRef);
 
-        // starts a new activity to view user info
+        // starts a new activity to view event info including attendees of event
         attendeeList.setOnItemClickListener((parent, view, position, id) -> {
-            // pop dialog to show user's info
+            // pop dialog to show all user info
             UserInfoDialog fragment = new UserInfoDialog();
-            // create a bundle so we can access the attendee's info from the dialog
+            // create a bundle so we can access
             Bundle args = new Bundle();
             args.putSerializable("attendee", attendeeDataList.get(position));
             fragment.setArguments(args);
@@ -248,6 +249,7 @@ public class AdminEventViewerActivity extends AppCompatActivity {
                     }
                 });
     }
+
 
     /**
      * callback method called by the system when the activity enters the "resumed" state

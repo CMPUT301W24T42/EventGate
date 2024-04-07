@@ -1,4 +1,4 @@
-package com.example.eventgate;
+package com.example.eventgate.admin;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -11,6 +11,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+
+import com.example.eventgate.R;
 
 /**
  * this is a dialog that confirms whether the user actually wants to delete an item

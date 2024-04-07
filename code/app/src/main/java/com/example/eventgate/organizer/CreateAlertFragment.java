@@ -39,7 +39,7 @@ public class CreateAlertFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        View view = LayoutInflater.from(getActivity()).inflate(R.layout.create_alert_popup, null);
+        View view = getLayoutInflater().inflate(R.layout.create_alert_popup, null);
 
         EditText titleEditText = view.findViewById(R.id.title_edit_text);
         EditText messageEditText = view.findViewById(R.id.message_edit_text);

@@ -28,6 +28,8 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.installations.FirebaseInstallations;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 
 
 /**
@@ -75,6 +77,24 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        attendeeButton = findViewById(R.id.attendee_button);
+        organizerButton = findViewById(R.id.organizer_button);
+        adminButton = findViewById(R.id.admin_button);
+
+        mAuth = db.getmAuth();
+
+        db.setMessagingService(new MyFirebaseMessagingService());
+
+        // Check if user is signed in (non-null) and update UI accordingly.
+        if (mAuth.getCurrentUser() == null) {
+            signInUser();
+        }
+        else {
+            FirebaseUser currentUser = mAuth.getCurrentUser();
+            db.setUser(currentUser);
+            updateUI(currentUser, adminButton);
+        }
+
         // create notification channels
         createEventNotifChannel();
         createMilestoneNotifChannel();
@@ -95,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
                 AttendeeDB attendeeDB = new AttendeeDB();
                 Log.d("deviceId", deviceId);
                 if (task.isSuccessful() && task.getResult().isEmpty()) {
-                    attendeeDB.createNewAttendee(db.getAttendeesRef(), deviceId, preferences);
+                    createNewAttendee(db.getAttendeesRef(), deviceId, preferences);
                 } else {  // get existing profile for attendee
                     String name;
                     String id;
@@ -122,28 +142,6 @@ public class MainActivity extends AppCompatActivity {
                 AdminActivity.class)));
     }
 
-    /**
-     * called when the activity is visible to the user, immediately after onCreate
-     */
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        mAuth = db.getmAuth();
-
-        db.setMessagingService(new MyFirebaseMessagingService());
-
-        // Check if user is signed in (non-null) and update UI accordingly.
-        if (mAuth.getCurrentUser() == null) {
-            signInUser();
-        }
-        else {
-            FirebaseUser currentUser = mAuth.getCurrentUser();
-            db.setUser(currentUser);
-            updateUI(currentUser, adminButton);
-        }
-
-    }
 
     /**
      * Signs in the user using Firebase anonymous authentication
@@ -181,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
                 if (!dontAskAgain) {
                     // create new fragment that educates the user about the benefits of having notifications
                     //      turned on
-                    new NotificationPermissionFragment().show(getSupportFragmentManager(), "REQUEST NOTIFICATION PERMISSION");
+                    new NotificationPermissionDialog().show(getSupportFragmentManager(), "REQUEST NOTIFICATION PERMISSION");
                 }
             }
         }
@@ -239,6 +237,37 @@ public class MainActivity extends AppCompatActivity {
                 adminButton.setVisibility(View.VISIBLE);
             }
         });
+    }
+
+    /**
+     * this creates a new attendee profile and stores the info in the attendees collection in the database
+     * @param attendeesRef a reference to the attendees collection
+     * @param deviceId the firebase installation id of the current user
+     */
+    private void createNewAttendee(CollectionReference attendeesRef, String deviceId, SharedPreferences preferences) {
+        String attendeeId = attendeesRef.document().getId();
+        HashMap<String, Object> data = new HashMap<>();
+        FirebaseAuth mAuth = MainActivity.db.getmAuth();
+        data.put("deviceId", deviceId);
+        // set an attendee's name to their id by default until the user enters it later in user settings
+        data.put("name", attendeeId);
+        data.put("uUid", mAuth.getCurrentUser().getUid());
+        data.put("events", new ArrayList<Integer>());
+        data.put("hasUpdatedInfo", false);
+        data.put("homepage", "");
+        data.put("email", "");
+        data.put("phoneNumber", "");
+        data.put("registeredEvents", new ArrayList<>());
+        attendeesRef.document(attendeeId).set(data)
+                .addOnSuccessListener(unused -> {
+                    // store info in shared preferences
+                    preferences.edit()
+                            .putString("attendeeName", attendeeId)
+                            .putString("attendeeId", attendeeId)
+                            .apply();
+                    Log.d("Firebase Firestore", "Attendee has been added successfully!");
+                })
+                .addOnFailureListener(e -> Log.d("Firebase Firestore", "Attendee could not be added!" + e));
     }
 
 }

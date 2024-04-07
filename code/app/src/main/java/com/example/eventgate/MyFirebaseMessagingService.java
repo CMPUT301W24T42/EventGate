@@ -56,7 +56,7 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
      *
      * @param token the token to be stored in the database
      */
-    public void sendTokenToFirebase(String token) {
+    private void sendTokenToFirebase(String token) {
         HashMap<String, String> data = new HashMap<>();
         data.put("registrationToken", token);
         if (MainActivity.db.getUser() != null) {

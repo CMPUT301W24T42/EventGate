@@ -263,6 +263,7 @@ public class AttendeeActivity extends AppCompatActivity {
         //view all events dialogue
         Button viewAllEventsButton = findViewById(R.id.allEventsButton);
 
+        //view all events dialog
         viewAllEventsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -272,21 +273,12 @@ public class AttendeeActivity extends AppCompatActivity {
         });
 
 
-        viewAllEventsButton = findViewById(R.id.allEventsButton);
 
-        viewAllEventsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Open a dialog
-                viewAllEventsDialog2();
-            }
-        });
+
 
 
 
     }
-
-
 
 
     //prepares all events popup listview on button click

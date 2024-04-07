@@ -24,7 +24,7 @@ import androidx.fragment.app.DialogFragment;
 /**
  * a fragment for requesting notification permission
  */
-public class NotificationPermissionFragment extends DialogFragment {
+public class NotificationPermissionDialog extends DialogFragment {
     /**
      * this is the launcher that requests permission to receive notifications
      */

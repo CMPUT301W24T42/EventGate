@@ -2,6 +2,7 @@ package com.example.eventgate.admin;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,10 +14,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.eventgate.ConfirmDeleteDialog;
+import com.example.eventgate.MainActivity;
 import com.example.eventgate.attendee.Attendee;
 import com.example.eventgate.attendee.AttendeeDB;
 import com.example.eventgate.R;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 
 import java.util.ArrayList;
 
@@ -37,6 +42,14 @@ public class AdminAttendeeListAdapter extends ArrayAdapter<Attendee> {
      * this holds an event's id
      */
     private String eventId;
+    /**
+     * a reference to the attendees collection in the database
+     */
+    private final CollectionReference collection = MainActivity.db.getAttendeesRef();
+    /**
+     * a tag for logging
+     */
+    private final String TAG = "Firestore";
 
     /**
      * Constructs a new AdminAttendeeListAdapter.
@@ -103,15 +116,83 @@ public class AdminAttendeeListAdapter extends ArrayAdapter<Attendee> {
                 //      from AdminEventViewerActivity then only remove attendee from specified event
                 if (context instanceof AdminActivity) {
                     // removes attendee from all events if the delete button is being clicked from AdminActivity
-                    attendeeDB.removeAttendeeFromAllEvents(attendee);
-                    attendeeDB.removeAttendee(attendee);  // remove attendee profile from database
+                    removeAttendeeFromAllEvents(attendee);
+                    removeAttendee(attendee);  // remove attendee profile from database
                 } else {
                     // removes attendee from specified event if button is being clicked from AdminEventViewerActivity
-                    attendeeDB.removeAttendeeFromEvent(attendee, eventId);
+                    removeAttendeeFromEvent(attendee, eventId);
                 }
                 notifyDataSetChanged();
             });
             confirmDeleteDialog.show(((AppCompatActivity) context).getSupportFragmentManager(), "CONFIRM DELETE ATTENDEE");
+        });
+    }
+
+    private void removeAttendee(Attendee attendee) {
+        String attendeeId = attendee.getAttendeeId();
+        // delete the attendees info/profile from firestore
+        collection.document(attendeeId).delete()
+                .addOnSuccessListener(aVoid -> Log.d(TAG, "Attendee successfully deleted!"))
+                .addOnFailureListener(e -> Log.w(TAG, "Error deleting attendee", e));
+
+    }
+
+    /**
+     * this removes an attendee from the specified event (used by admin)
+     * @param attendee the attendee that will be removed
+     * @param eventId the event that the attendee will be removed from
+     */
+    private void removeAttendeeFromEvent(Attendee attendee, String eventId) {
+        String attendeeId = attendee.getAttendeeId();
+        // get references to the attendee's document and the event's document in the database
+        DocumentReference attendeeRef = collection.document(attendeeId);
+        DocumentReference eventRef = MainActivity.db.getEventsRef().document(eventId);
+
+        eventRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    // remove attendee from event and event from attendee
+                    eventRef.update("attendees", FieldValue.arrayRemove(attendeeId));
+                    attendeeRef.update("events", FieldValue.arrayRemove(eventId));
+                } else {
+                    Log.d(TAG, "No such document");
+                }
+            } else {
+                Log.d(TAG, "get failed with ", task.getException());
+            }
+        });
+    }
+
+    /**
+     * removes an attendee from all the events they are attending in the case that the attendee/user
+     *      is removed by an admin
+     * @param attendee the attendee to be removed
+     */
+    private void removeAttendeeFromAllEvents(Attendee attendee) {
+        String attendeeId = attendee.getAttendeeId();
+        // get references to the attendee's document and the events collection in the database
+        DocumentReference attendeeRef = collection.document(attendeeId);
+        CollectionReference eventsRef = MainActivity.db.getEventsRef();
+
+        attendeeRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    // get the list of events that the attendee is attending
+                    ArrayList<String> eventsList = (ArrayList<String>) document.get("events");
+                    // go through events and remove the attendee from the event's list of attendees
+                    //      and remove the event from the attendee's list of events
+                    for (String eventId : eventsList) {
+                        eventsRef.document(eventId).update("attendees", FieldValue.arrayRemove(attendeeId));
+                        attendeeRef.update("events", FieldValue.arrayRemove(eventId));
+                    }
+                } else {
+                    Log.d(TAG, "No such document");
+                }
+            } else {
+                Log.d(TAG, "get failed with ", task.getException());
+            }
         });
     }
 }
