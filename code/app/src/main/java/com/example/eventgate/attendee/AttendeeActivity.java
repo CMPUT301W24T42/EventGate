@@ -625,6 +625,9 @@ public class AttendeeActivity extends AppCompatActivity {
 
             // must have name
             if (!name.isEmpty()) {
+                if (isGeolocationEnabled) {
+                    ActivityCompat.requestPermissions(AttendeeActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1001);
+                }
                 FirebaseInstallations.getInstance().getId().addOnSuccessListener(installId -> {
                     new EventDB().updateUserInfo(installId, name, phone, email, homepage, true, isGeolocationEnabled)
                             .thenRun(() -> Log.d("AttendeeActivity", "User info updated successfully at " + installId))
