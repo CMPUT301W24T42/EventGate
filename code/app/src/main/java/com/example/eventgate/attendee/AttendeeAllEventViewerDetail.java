@@ -72,6 +72,16 @@ public class AttendeeAllEventViewerDetail extends AppCompatActivity {
         alertsAdapter = new AlertListAdapter(this, alertsDataList);
         alertsList.setAdapter(alertsAdapter);
 
+        // show dialog displaying alert's message once the title of the alert is clicked on the listview
+        alertsList.setOnItemClickListener((parent, view, position, id) -> {
+            ViewAnnouncementDialog dialog = new ViewAnnouncementDialog();
+            Bundle args = new Bundle();
+            args.putString("alertTitle", alertsDataList.get(position).getTitle());
+            args.putString("alertMessage", alertsDataList.get(position).getMessage());
+            dialog.setArguments(args);
+            dialog.show(getSupportFragmentManager(), "View Announcement Dialog");
+        });
+
         //this checks whether to grey out signup button
         isAttendeeRegistered(userId);
 
