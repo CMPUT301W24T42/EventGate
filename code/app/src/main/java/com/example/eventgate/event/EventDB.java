@@ -371,21 +371,26 @@ public class EventDB {
      */
     public CompletableFuture<Void> registerAttendee2(String deviceId, String eventId) {
         CompletableFuture<Void> future = new CompletableFuture<>();
-        DocumentReference attendeeDocRef = db.collection("attendees").document(deviceId);
+        db.collection("attendees").whereEqualTo("deviceId", deviceId).get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (queryDocumentSnapshots.isEmpty()) {  // If there is no matching deviceId, simply return
+                        return;
+                    }
+                    String attendeeId = queryDocumentSnapshots.getDocuments().get(0).getId();
+                    DocumentReference attendeeDocRef = db.collection("attendees").document(attendeeId);
+                    Map<String, Object> updates = new HashMap<>();
+                    updates.put("registeredEvents", FieldValue.arrayUnion(eventId));
 
-        Map<String, Object> updates = new HashMap<>();
-        updates.put("registeredEvents", FieldValue.arrayUnion(eventId));
-
-        attendeeDocRef.set(updates, SetOptions.merge())
-                .addOnSuccessListener(aVoid -> {
-                    System.out.println("Event successfully added to the attendee's registered events.");
-                    future.complete(null);
-                })
-                .addOnFailureListener(e -> {
-                    System.out.println("Error updating the attendee document: " + e.getMessage());
-                    future.completeExceptionally(e);
+                    attendeeDocRef.set(updates, SetOptions.merge())
+                            .addOnSuccessListener(aVoid -> {
+                                System.out.println("Event successfully added to the attendee's registered events.");
+                                future.complete(null);
+                            })
+                            .addOnFailureListener(e -> {
+                                System.out.println("Error updating the attendee document: " + e.getMessage());
+                                future.completeExceptionally(e);
+                            });
                 });
-
         return future;
     }
   
@@ -546,24 +551,31 @@ public class EventDB {
      */
     public CompletableFuture<Void> updateUserInfo(String deviceId, String name, String phoneNumber, String email, String homepage, Boolean hasUpdatedInfo, Boolean trackingEnabled) {
         CompletableFuture<Void> future = new CompletableFuture<>();
-        DocumentReference userAttributeDocRef = db.collection("attendees").document(deviceId);
+        db.collection("attendees").whereEqualTo("deviceId", deviceId).get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (queryDocumentSnapshots.isEmpty()) {  // If there is no matching deviceId, simply return
+                        return;
+                    }
+                    String attendeeId = queryDocumentSnapshots.getDocuments().get(0).getId();
+                    DocumentReference userAttributeDocRef = db.collection("attendees").document(attendeeId);
 
 
+                    Map<String, Object> attributes = new HashMap<>();
+                    attributes.put("name", name);
+                    attributes.put("phoneNumber", phoneNumber);
+                    attributes.put("email", email);
+                    attributes.put("homepage", homepage);
+                    attributes.put("hasUpdatedInfo", hasUpdatedInfo);
+                    attributes.put("trackingEnabled", trackingEnabled);
 
-        Map<String, Object> attributes = new HashMap<>();
-        attributes.put("name", name);
-        attributes.put("phoneNumber", phoneNumber);
-        attributes.put("email", email);
-        attributes.put("homepage", homepage);
-        attributes.put("hasUpdatedInfo", hasUpdatedInfo);
-        attributes.put("trackingEnabled", trackingEnabled);
 
-        userAttributeDocRef.set(attributes, SetOptions.merge())
-                .addOnSuccessListener(aVoid -> {
-                    future.complete(null);
-                })
-                .addOnFailureListener(e -> {
-                    future.completeExceptionally(e);
+                    userAttributeDocRef.set(attributes, SetOptions.merge())
+                            .addOnSuccessListener(aVoid -> {
+                                future.complete(null);
+                            })
+                            .addOnFailureListener(e -> {
+                                future.completeExceptionally(e);
+                            });
                 });
 
         return future;
@@ -596,20 +608,27 @@ public class EventDB {
      */
     public CompletableFuture<Map<String, Object>> getUserInfo(String deviceId) {
         CompletableFuture<Map<String, Object>> future = new CompletableFuture<>();
-        DocumentReference userDocRef = db.collection("attendees").document(deviceId);
+        db.collection("attendees").whereEqualTo("deviceId", deviceId).get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (queryDocumentSnapshots.isEmpty()) {  // If there is no matching deviceId, simply return
+                        return;
+                    }
+                    String attendeeId = queryDocumentSnapshots.getDocuments().get(0).getId();
+                    DocumentReference userDocRef = db.collection("attendees").document(attendeeId);
 
-        userDocRef.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                DocumentSnapshot document = task.getResult();
-                if (document.exists()) {
-                    future.complete(document.getData());
-                } else {
-                    future.completeExceptionally(new Exception("No such document."));
-                }
-            } else {
-                future.completeExceptionally(task.getException());
-            }
-        });
+                    userDocRef.get().addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                future.complete(document.getData());
+                            } else {
+                                future.completeExceptionally(new Exception("No such document."));
+                            }
+                        } else {
+                            future.completeExceptionally(task.getException());
+                        }
+                    });
+                });
 
         return future;
     }
@@ -621,21 +640,28 @@ public class EventDB {
      */
     public CompletableFuture<Boolean> getUserInfoUpdateStatus(String deviceId) {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
-        DocumentReference userDocRef = db.collection("attendees").document(deviceId);
+        db.collection("attendees").whereEqualTo("deviceId", deviceId).get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (queryDocumentSnapshots.isEmpty()) {  // If there is no matching deviceId, simply return
+                        return;
+                    }
+                    String attendeeId = queryDocumentSnapshots.getDocuments().get(0).getId();
+                    DocumentReference userDocRef = db.collection("attendees").document(attendeeId);
 
-        userDocRef.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                DocumentSnapshot document = task.getResult();
-                if (document.exists()) {
-                    Boolean isActive = document.getBoolean("hasUpdatedInfo");
-                    future.complete(isActive);
-                } else {
-                    future.completeExceptionally(new Exception("No such document."));
-                }
-            } else {
-                future.completeExceptionally(task.getException());
-            }
-        });
+                    userDocRef.get().addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                Boolean isActive = document.getBoolean("hasUpdatedInfo");
+                                future.complete(isActive);
+                            } else {
+                                future.completeExceptionally(new Exception("No such document."));
+                            }
+                        } else {
+                            future.completeExceptionally(task.getException());
+                        }
+                    });
+                });
 
         return future;
     }
