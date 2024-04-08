@@ -76,15 +76,7 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ce5b47a8-0b77-4a72-b21a-c6a887860605" name="Changes" comment="Removed old files.">
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/map_32.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/assetWizardSettings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/assetWizardSettings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/deploymentTargetDropDown.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deploymentTargetDropDown.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/eventgate/attendee/QRCodeScanActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/eventgate/attendee/QRCodeScanActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable/qr_code_64.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawable/qr_code_64.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_organizer_edit_event.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_organizer_edit_event.xml" afterDir="false" />
-    </list>
+    <list default="true" id="ce5b47a8-0b77-4a72-b21a-c6a887860605" name="Changes" comment="Added map and qr images to buttons." />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -93,7 +85,7 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[R5CW21MNCBY]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[C:\Users\Chris\.android\avd\Pixel_8_Pro_API_34.avd]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -547,7 +539,15 @@
       <option name="project" value="LOCAL" />
       <updated>1712599063880</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Added map and qr images to buttons.">
+      <option name="closed" value="true" />
+      <created>1712602816637</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1712602816637</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -571,6 +571,7 @@
     <MESSAGE value="Working on scanning a details qr code. It now works but the back button in the event details no longer works." />
     <MESSAGE value="Removed old files." />
     <MESSAGE value="Made Organizer UI consistent with Attendee UI." />
-    <option name="LAST_COMMIT_MESSAGE" value="Made Organizer UI consistent with Attendee UI." />
+    <MESSAGE value="Added map and qr images to buttons." />
+    <option name="LAST_COMMIT_MESSAGE" value="Added map and qr images to buttons." />
   </component>
 </project>

@@ -61,4 +61,5 @@
     <string name="event_name_details">Event name</string>
     <string name="eventPoster">eventPoster</string>
     <string name="qr">QR</string>
+    <string name="attendance_limit_optional">Attendance Limit (Optional)</string>
 </resources>
