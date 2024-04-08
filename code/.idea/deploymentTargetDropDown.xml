@@ -2,7 +2,13 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="Tests in 'com.example.eventgate'">
+      <entry key="MainActivityTest">
+        <State />
+      </entry>
+      <entry key="OrganizerEditEventActivityTest">
+        <State />
+      </entry>
+      <entry key="OrganizerMainMenuActivityTest">
         <State />
       </entry>
       <entry key="app">

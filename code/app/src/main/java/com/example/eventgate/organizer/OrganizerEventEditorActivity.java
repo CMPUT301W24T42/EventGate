@@ -50,6 +50,9 @@ public class OrganizerEventEditorActivity extends AppCompatActivity implements C
     ArrayList<String> attendeeDataList;
     ListView attendeeList;
     ArrayAdapter<String> attendeeAdapter;
+    ArrayList<String> registeredAttendeeDataList;
+    ListView registeredAttendeeList;
+    ArrayAdapter<String> registeredAttendeeAdapter;
     private static final int PICK_IMAGE_REQUEST = 1;
 
     /**
@@ -70,15 +73,18 @@ public class OrganizerEventEditorActivity extends AppCompatActivity implements C
         eventTitle.setText(eventName);
         eventId = intent.getStringExtra("eventId");
         eventDescription = intent.getStringExtra("eventDescription");
-        TextView eventDetailsText =  findViewById(R.id.EventDetails);
         TextView attendanceCount = findViewById(R.id.attendance_text_view);
-        eventDetailsText.setText(eventDescription);
         alerts = (ArrayList<OrganizerAlert>) intent.getSerializableExtra("alerts");
 
         attendeeDataList = new ArrayList<>();
         attendeeList = findViewById(R.id.attendeeListView);
         attendeeAdapter = new AttendeeListAdapter(this, attendeeDataList);
         attendeeList.setAdapter(attendeeAdapter);
+
+        registeredAttendeeDataList = new ArrayList<>();
+        registeredAttendeeList = findViewById(R.id.registeredListView);
+        registeredAttendeeAdapter = new AttendeeListAdapter(this, registeredAttendeeDataList);
+        registeredAttendeeList.setAdapter(registeredAttendeeAdapter);
 
         if (eventId != null) {
             eventRef = new EventDB().getCollection().document(eventId);
@@ -131,6 +137,23 @@ public class OrganizerEventEditorActivity extends AppCompatActivity implements C
                             // update number of attendees attending the event
                             int attendeeCount = attendeeIds.size();
                             attendanceCount.setText(Integer.toString(attendeeCount));
+                        }
+                        registeredAttendeeDataList.clear();
+                        ArrayList<String> registeredAttendeeIds = (ArrayList<String>) value.get("registeredUsers");
+                        if (registeredAttendeeIds != null) {
+                            for (String attendeeId : registeredAttendeeIds) {
+                                FirebaseFirestore.getInstance().collection("attendees")
+                                        .document(attendeeId).get().addOnSuccessListener(documentSnapshot -> {
+                                            if (documentSnapshot.exists()) {
+                                                // Retrieve name and check in count
+                                                String attendeeName = documentSnapshot.getString("name");
+                                                registeredAttendeeDataList.add(attendeeName);
+                                                registeredAttendeeAdapter.notifyDataSetChanged();
+                                            } else {
+                                                Log.d("Firestore", "Document does not exist");
+                                            }
+                                        });
+                            }
                         }
                     }
                 }
