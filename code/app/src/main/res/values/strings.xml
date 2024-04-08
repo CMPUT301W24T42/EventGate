@@ -58,4 +58,7 @@
     <string name="share_check_in_qr">Share Check-In QR</string>
     <string name="share_details_qr">Share Details QR</string>
     <string name="create_an_event">Create an Event</string>
+    <string name="event_name_details">Event name</string>
+    <string name="eventPoster">eventPoster</string>
+    <string name="qr">QR</string>
 </resources>

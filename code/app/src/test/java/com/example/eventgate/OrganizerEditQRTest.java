@@ -66,7 +66,8 @@ public class OrganizerEditQRTest {
 
             // Convert the matrix into a Bitmap
             BarcodeEncoder encoder = new BarcodeEncoder();
-            Bitmap descriptionQRBitmap = encoder.createBitmap(matrix);
+            Bitmap descriptionQRBitmap;
+            descriptionQRBitmap = encoder.createBitmap(matrix);
 
             // Verify that the generated QR code bitmap is not null
             assertNotNull(descriptionQRBitmap);

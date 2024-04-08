@@ -150,7 +150,10 @@ public class AttendeeAllEventViewerDetail extends AppCompatActivity {
         back_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                // Start the main menu activity
+                Intent intent = new Intent(AttendeeAllEventViewerDetail.this, AttendeeActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // Clear the back stack
+                startActivity(intent);
             }
         });
 

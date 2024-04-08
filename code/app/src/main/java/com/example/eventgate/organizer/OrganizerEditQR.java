@@ -198,11 +198,13 @@ public class OrganizerEditQR extends AppCompatActivity {
 
         generateDescriptionQRButton.setOnClickListener(v -> {
             if (!descriptionQRGenerated) {
+                String uniqueIdentifier = eventId + "_details";
+
                 // Create Description QR Code
                 MultiFormatWriter writer = new MultiFormatWriter();
 
                 try {
-                    BitMatrix matrix = writer.encode(eventName, BarcodeFormat.QR_CODE, 400, 400);
+                    BitMatrix matrix = writer.encode(uniqueIdentifier, BarcodeFormat.QR_CODE, 400, 400);
                     BarcodeEncoder encoder = new BarcodeEncoder();
                     descriptionQRBitmap = encoder.createBitmap(matrix);
 

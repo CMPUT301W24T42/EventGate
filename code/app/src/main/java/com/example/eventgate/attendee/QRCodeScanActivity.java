@@ -6,7 +6,6 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -16,12 +15,13 @@ import androidx.core.app.ActivityCompat;
 import com.example.eventgate.event.EventDB;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.installations.FirebaseInstallations;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
+import java.util.ArrayList;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -103,29 +103,61 @@ public class QRCodeScanActivity extends AppCompatActivity {
                 Toast.makeText(this, "Scan Cancelled", Toast.LENGTH_LONG).show();
             } else {
                 String qrResult = result.getContents().trim();
-                FirebaseInstallations.getInstance().getId().addOnSuccessListener(id -> {
-                    EventDB eventDb = new EventDB();
-                    CompletableFuture<Integer> checkInResult = eventDb.checkInAttendee(id, qrResult, this);
-                    checkInResult.thenAccept(r -> {
-                        Intent intent = new Intent();
-                        switch (r) {
-                            case 0:
-                                setResult(RESULT_OK);
-                                break;
-                            case 1:
-                                setResult(RESULT_NOT_FOUND, intent);
-                                break;
-                            case 2:
-                                setResult(RESULT_REDUNDANT, intent);
-                                break;
+
+                if (qrResult.endsWith("_details")) {
+                    // QR code is for event details
+                    // Extract the event ID from qrResult (remove "_details" suffix)
+                    String eventId = qrResult.substring(0, qrResult.length() - "_details".length());
+
+                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+                    db.collection("events").document(eventId).get()
+                            .addOnSuccessListener(documentSnapshot -> {
+                                if (documentSnapshot.exists()) {
+                                    // Retrieve the event name from Firestore
+                                    String eventName = documentSnapshot.getString("name");
+
+                                    // Retrieve the array of alerts if it exists
+                                    ArrayList<Map> alerts = new ArrayList<>();
+                                    if (documentSnapshot.contains("alerts") && documentSnapshot.get("alerts") != null) {
+                                        alerts = (ArrayList<Map>) documentSnapshot.get("alerts");
+                                    }
+
+                                    Intent intent = new Intent(this, AttendeeAllEventViewerDetail.class);
+                                    intent.putExtra("EventID", eventId);
+                                    intent.putExtra("EventName", eventName);
+                                    intent.putExtra("alerts", alerts);
+                                    startActivity(intent);
+                                }
+                            });
+
+                } else {
+                    // QR code is for event check-in
+                    FirebaseInstallations.getInstance().getId().addOnSuccessListener(id -> {
+                        EventDB eventDb = new EventDB();
+                        CompletableFuture<Integer> checkInResult = null;
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+                            checkInResult = eventDb.checkInAttendee(id, qrResult, this);
                         }
-                        finish();
+                        checkInResult.thenAccept(r -> {
+                            Intent intent = new Intent();
+                            switch (r) {
+                                case 0:
+                                    setResult(RESULT_OK);
+                                    break;
+                                case 1:
+                                    setResult(RESULT_NOT_FOUND, intent);
+                                    break;
+                                case 2:
+                                    setResult(RESULT_REDUNDANT, intent);
+                                    break;
+                            }
+                            finish();
+                        });
                     });
-                });
+                }
             }
         } else {
             super.onActivityResult(resultCode, resultCode, data);
         }
     }
-
 }
