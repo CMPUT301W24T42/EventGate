@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -67,6 +68,7 @@ public class ConfirmDeleteDialog extends DialogFragment {
         deleteButton.setOnClickListener(v -> {
             if (mListener != null) {
                 mListener.onDelete();
+                Toast.makeText(getContext(),"Deleted Successfully", Toast.LENGTH_SHORT).show();
             }
             dismiss();
         });

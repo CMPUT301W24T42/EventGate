@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -61,6 +62,7 @@ public class ImagePopUpDialog extends DialogFragment {
         deleteButton.setOnClickListener(v -> {
             // Notify the listener that delete button is clicked
             mListener.onImageDelete(getArguments().getInt("position"));
+            Toast.makeText(getContext(),"Deleted Successfully", Toast.LENGTH_SHORT).show();
             dismiss();
         });
 

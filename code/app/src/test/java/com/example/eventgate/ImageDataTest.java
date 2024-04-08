@@ -7,7 +7,9 @@ import com.example.eventgate.admin.ImageData;
 import org.junit.Test;
 
 public class ImageDataTest {
-
+    /**
+     * tests the constructor of ImageData
+     */
     @Test
     public void testImageTypeConstructor() {
        ImageData imageData = new ImageData("poster", "randomEventId");
