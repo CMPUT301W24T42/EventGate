@@ -2,6 +2,9 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
+      <entry key="AdminActivityTest">
+        <State />
+      </entry>
       <entry key="OrganizerMainMenuActivityTest">
         <State />
       </entry>
@@ -12,13 +15,13 @@
               <type value="RUNNING_DEVICE_TARGET" />
               <deviceKey>
                 <Key>
-                  <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="C:\Users\Chris\.android\avd\Pixel_8_Pro_API_34.avd" />
+                  <type value="SERIAL_NUMBER" />
+                  <value value="R5CW21MNCBY" />
                 </Key>
               </deviceKey>
             </Target>
           </runningDeviceTargetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-04-08T19:34:36.189561100Z" />
+          <timeTargetWasSelectedWithDropDown value="2024-04-08T19:48:48.671282200Z" />
         </State>
       </entry>
     </value>

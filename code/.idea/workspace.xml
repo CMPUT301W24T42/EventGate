@@ -166,10 +166,9 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ce5b47a8-0b77-4a72-b21a-c6a887860605" name="Changes" comment="Made QR Button image smaller.">
+    <list default="true" id="ce5b47a8-0b77-4a72-b21a-c6a887860605" name="Changes" comment="UI changes.">
       <change beforePath="$PROJECT_DIR$/.idea/deploymentTargetDropDown.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deploymentTargetDropDown.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/organizer_create_event_popup.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/organizer_create_event_popup.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -179,7 +178,7 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[C:\Users\Chris\.android\avd\Pixel_8_Pro_API_34.avd]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[R5CW21MNCBY]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -280,7 +279,7 @@
       <recent name="com.example.eventgate.attendee" />
     </key>
   </component>
-  <component name="RunManager" selected="Android App.app">
+  <component name="RunManager" selected="Android Instrumented Tests.AdminActivityTest">
     <configuration name="app" type="AndroidRunConfigurationType" factoryName="Android App">
       <module name="EventGate.app.main" />
       <option name="DEPLOY" value="true" />
@@ -348,11 +347,11 @@
         <option name="Android.Gradle.BeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="MainActivityTest" type="AndroidTestRunConfigurationType" factoryName="Android Instrumented Tests" temporary="true" nameIsGenerated="true">
+    <configuration name="AdminActivityTest" type="AndroidTestRunConfigurationType" factoryName="Android Instrumented Tests" temporary="true" nameIsGenerated="true">
       <module name="EventGate.app.androidTest" />
       <option name="TESTING_TYPE" value="2" />
       <option name="METHOD_NAME" value="" />
-      <option name="CLASS_NAME" value="com.example.eventgate.MainActivityTest" />
+      <option name="CLASS_NAME" value="com.example.eventgate.AdminActivityTest" />
       <option name="PACKAGE_NAME" value="" />
       <option name="TEST_NAME_REGEX" value="" />
       <option name="INSTRUMENTATION_RUNNER_CLASS" value="" />
@@ -584,7 +583,7 @@
     </configuration>
     <list>
       <item itemvalue="Android App.app" />
-      <item itemvalue="Android Instrumented Tests.MainActivityTest" />
+      <item itemvalue="Android Instrumented Tests.AdminActivityTest" />
       <item itemvalue="Android Instrumented Tests.OrganizerEditEventActivityTest" />
       <item itemvalue="Android Instrumented Tests.OrganizerMainMenuActivityTest" />
       <item itemvalue="Gradle.OrganizerEditQRTest" />
@@ -592,11 +591,11 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Android Instrumented Tests.AdminActivityTest" />
         <item itemvalue="Gradle.OrganizerEditQRTest" />
         <item itemvalue="Gradle.OrganizerEditQRTest.generateDescriptionQRCodeTest" />
         <item itemvalue="Android Instrumented Tests.OrganizerMainMenuActivityTest" />
         <item itemvalue="Android Instrumented Tests.OrganizerEditEventActivityTest" />
-        <item itemvalue="Android Instrumented Tests.MainActivityTest" />
       </list>
     </recent_temporary>
   </component>
@@ -657,7 +656,15 @@
       <option name="project" value="LOCAL" />
       <updated>1712603808331</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="UI changes.">
+      <option name="closed" value="true" />
+      <created>1712605066520</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1712605066520</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -684,6 +691,7 @@
     <MESSAGE value="Added map and qr images to buttons." />
     <MESSAGE value="Added Optional attendance limit text." />
     <MESSAGE value="Made QR Button image smaller." />
-    <option name="LAST_COMMIT_MESSAGE" value="Made QR Button image smaller." />
+    <MESSAGE value="UI changes." />
+    <option name="LAST_COMMIT_MESSAGE" value="UI changes." />
   </component>
 </project>
