@@ -123,7 +123,7 @@ public class AttendeeActivity extends AppCompatActivity {
 
     private static final int PICK_IMAGE = 1;
     private static byte[] hashBytes;
-    private Bitmap profileBitmap;
+    public Bitmap profileBitmap;
 
     /**
      * Called when the activity is starting.
@@ -577,6 +577,7 @@ public class AttendeeActivity extends AppCompatActivity {
         FirebaseInstallations.getInstance().getId().addOnSuccessListener(installId -> {
             new EventDB().getUserInfo(installId).thenAccept(userInfo -> {
                 if (userInfo != null) {
+                    System.out.println("retrieved info from:" + installId);
                     editTextName.setText(userInfo.getOrDefault("name", "").toString());
                     editTextHomepage.setText(userInfo.getOrDefault("homepage", "").toString());
                     editTextEmail.setText(userInfo.getOrDefault("email", "").toString());
@@ -599,7 +600,7 @@ public class AttendeeActivity extends AppCompatActivity {
             if (!name.isEmpty()) {
                 FirebaseInstallations.getInstance().getId().addOnSuccessListener(installId -> {
                     new EventDB().updateUserInfo(installId, name, phone, email, homepage, true)
-                            .thenRun(() -> Log.d("AttendeeActivity", "User info updated successfully"))
+                            .thenRun(() -> Log.d("AttendeeActivity", "User info updated successfully at " + installId))
                             .exceptionally(e -> {
                                 Log.e("AttendeeActivity", "Failed to update user info", e);
                                 return null;
@@ -758,7 +759,7 @@ public class AttendeeActivity extends AppCompatActivity {
      * Generates deterministic profile picture for attendee
      */
     //better version
-    private void createBitmap2() {
+    public void createBitmap2() {
         if (hashBytes == null || hashBytes.length < 3) {
             return;
         }

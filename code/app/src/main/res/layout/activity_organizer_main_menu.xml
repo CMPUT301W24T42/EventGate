@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/light_blue"
+    android:background="@color/white"
     tools:context=".organizer.OrganizerMainMenuActivity"
     android:id="@+id/organizer_menu_layout">
 
@@ -39,7 +39,9 @@
             android:id="@+id/EventListView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:choiceMode="singleChoice" />
+            android:choiceMode="singleChoice"
+            android:background="#dfe4ea"
+            />
     </LinearLayout>
 
     <com.google.android.material.button.MaterialButton
