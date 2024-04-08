@@ -44,6 +44,11 @@ public class Event {
     private Integer eventAttendanceLimit;
 
     /**
+     * Holds the attendance limit of the event
+     */
+    private Boolean geolocationEnabled;
+
+    /**
      * Constructs an Event
      * @param eventName the name of the event
      */
@@ -78,6 +83,22 @@ public class Event {
      */
     public void setEventName(String eventName) {
         this.eventName = eventName;
+    }
+
+    /**
+     * this sets the geolocationEnabled of the event
+     * @param geolocationEnabled whether to enable geolocation tracking
+     */
+    public void setGeolocation(Boolean geolocationEnabled) {
+        this.geolocationEnabled = geolocationEnabled;
+    }
+
+    /**
+     * this gets whether tracking is enabled
+     * @return whether tracking is enabled
+     */
+    public Boolean getGeolocation() {
+        return geolocationEnabled;
     }
 
     public String getEventDescription() { return eventDescription; }

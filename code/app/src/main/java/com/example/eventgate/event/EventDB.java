@@ -96,6 +96,7 @@ public class EventDB {
         data.put("registrationCount", 0);
         data.put("locations", new ArrayList<HashMap<String, Object>>());
         data.put("alerts", new ArrayList<HashMap<String, Object>>());
+        data.put("trackingEnabled", event.getGeolocation());
         System.out.println(event.getEventDetails());
         System.out.println(event.getEventId());
 
@@ -154,7 +155,7 @@ public class EventDB {
                         futureResult.complete(0);
 
                         // If user has tracking enabled, save their location to the database
-                        if ((boolean) attendee.get("trackingEnabled")) {
+                        if ((boolean) attendee.get("trackingEnabled") && (boolean) documentSnapshot.get("trackingEnabled")) {
                             LocationRequest locationRequest = new LocationRequest.Builder(
                                     Priority.PRIORITY_HIGH_ACCURACY,
                                     0
