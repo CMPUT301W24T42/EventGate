@@ -10,15 +10,14 @@
     <LinearLayout
         android:id="@+id/eventContainer"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="384dp"
         android:layout_centerHorizontal="true"
         android:layout_marginStart="30dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="30dp"
-        android:layout_marginBottom="39dp"
         android:background="@drawable/list_rounded_corners"
         android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/buttonContainer"
+        app:layout_constraintBottom_toTopOf="@+id/registeredContainer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -30,16 +29,6 @@
             android:background="@drawable/title_rounded_corners"
             android:gravity="center"
             android:text="MyEvent"
-            android:textAlignment="center"
-            android:textColor="@color/black"
-            android:textSize="22sp" />
-
-        <TextView
-            android:id="@+id/EventDetails"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:gravity="center"
-            android:text="Event Details"
             android:textAlignment="center"
             android:textColor="@color/black"
             android:textSize="22sp" />
@@ -94,6 +83,43 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/registeredContainer"
+        android:layout_width="0dp"
+        android:layout_height="256dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="39dp"
+        android:background="@drawable/list_rounded_corners"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/buttonContainer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/eventContainer">
+
+        <TextView
+            android:id="@+id/registeredAttendeesTitle"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="@drawable/title_rounded_corners"
+            android:gravity="center"
+            android:text="Registered Attendees"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="22sp" />
+
+        <ListView
+            android:id="@+id/registeredListView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/EventListViewTitle"
+            android:choiceMode="singleChoice" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/buttonContainer"
         android:layout_width="411dp"
         android:layout_height="wrap_content"
@@ -127,7 +153,7 @@
         android:id="@+id/OrganizerEditBackButton"
         android:layout_width="128dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="25dp"
+        android:layout_marginBottom="16dp"
         android:backgroundTint="@color/light_gray"
         android:ems="7"
         android:text="@string/back"
@@ -144,7 +170,7 @@
         android:id="@+id/OrganizerMapButton"
         android:layout_width="96dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="25dp"
+        android:layout_marginBottom="16dp"
         android:backgroundTint="@color/light_gray"
         android:ems="7"
         android:text="Map"
@@ -161,6 +187,7 @@
         android:id="@+id/OrganizerEditQRButton"
         android:layout_width="128dp"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
         android:backgroundTint="@color/light_gray"
         android:ems="7"
         android:text="@string/organizer_view_qr_codes"

@@ -17,11 +17,15 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.Collection;
+
 
 /**
  * This is used to add, remove, and retrieve attendee data from the database
  */
 public class AttendeeDB {
+    CollectionReference collection;
+
     /**
      * Constructs a new AttendeeDB
      */

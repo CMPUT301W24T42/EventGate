@@ -120,7 +120,7 @@ public class AttendeeEventViewer extends AppCompatActivity {
                 if (eventDetails != null) {
                     eventDetailsTv.setText(eventDetails);
                 } else {
-                    eventDetailsTv.setText("Details not found for event ID: " + eventID);
+                    eventDetailsTv.setText("");
                 }
             });
         }).exceptionally(e -> {

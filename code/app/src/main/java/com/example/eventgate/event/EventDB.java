@@ -89,6 +89,7 @@ public class EventDB {
         data.put("description", event.getEventDescription());
         data.put("organizer", deviceId); // Set organizer field to firebase installation id
         data.put("attendees", new ArrayList<String>()); // Set attendees field to blank
+        data.put("registeredUsers", new ArrayList<String>()); // Set registeredAttendees field to blank
         data.put("eventDetails", event.getEventDetails());
         data.put("milestones", new ArrayList<Integer>());
         data.put("attendanceLimit", event.getEventAttendanceLimit());
@@ -274,6 +275,7 @@ public class EventDB {
                     ArrayList<String> attendeeEvents = (ArrayList<String>) attendee.get("registeredEvents");
 
                     if (attendeeEvents.size() == 0) {  // If it's empty, simply return
+                        System.out.println("get reg is 0");
                         return;
                     }
                     attendeeEvents.removeIf(String::isEmpty);
@@ -545,6 +547,8 @@ public class EventDB {
     public CompletableFuture<Void> updateUserInfo(String deviceId, String name, String phoneNumber, String email, String homepage, Boolean hasUpdatedInfo) {
         CompletableFuture<Void> future = new CompletableFuture<>();
         DocumentReference userAttributeDocRef = db.collection("attendees").document(deviceId);
+
+
 
         Map<String, Object> attributes = new HashMap<>();
         attributes.put("name", name);
