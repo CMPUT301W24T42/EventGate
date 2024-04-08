@@ -30,7 +30,6 @@ public class AttendeeDB {
      * Constructs a new AttendeeDB
      */
     public AttendeeDB() {
-        collection = MainActivity.db.getAttendeesRef();
     }
 
  

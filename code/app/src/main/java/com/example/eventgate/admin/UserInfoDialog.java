@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -83,6 +84,7 @@ public class UserInfoDialog extends DialogFragment {
                 deleteButton.setClickable(false);
                 deleteButton.setBackgroundColor(getResources().getColor(R.color.light_gray));
                 deleteButton.setTextColor(getResources().getColor(R.color.dark_gray));
+                Toast.makeText(getContext(),"Deleted Successfully", Toast.LENGTH_SHORT).show();
                 // delete the profile picture from firebase
                 deleteProfilePicFromFirestore(attendee.getAttendeeId(), profilePicture);
                 deleteProfilePicFromCloudStorage(attendee.getDeviceId());

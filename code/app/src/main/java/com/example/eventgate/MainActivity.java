@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
      * this is an instance of Attendee which holds the current user's info
      */
     public static Attendee attendee;
+    private FirebaseUser firebaseUser;
 
     /**
      * Called when the activity is starting.
@@ -101,6 +102,50 @@ public class MainActivity extends AppCompatActivity {
         // ask the user to permission to receive notifications from the app
         askNotificationPermission();
 
+//        // store the installation id in shared preferences
+//        FirebaseInstallations.getInstance().getId().addOnSuccessListener(deviceId -> {
+//            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+//            if (!preferences.contains("FirebaseInstallationId")) {
+//                SharedPreferences.Editor editor = preferences.edit();
+//                editor.putString("FirebaseInstallationId", deviceId);
+//                editor.apply();
+//            }
+//            // if there's no attendee info, create a new attendee
+//            CollectionReference attendeesRef = db.getAttendeesRef();
+//            attendeesRef.whereEqualTo("deviceId", deviceId).get().addOnCompleteListener(task -> {
+//                AttendeeDB attendeeDB = new AttendeeDB();
+//                Log.d("deviceId", deviceId);
+//                if (task.isSuccessful() && task.getResult().isEmpty()) {
+//                    createNewAttendee(db.getAttendeesRef(), deviceId, preferences);
+//                } else {  // get existing profile for attendee
+//                    String name;
+//                    String id;
+//                    name = preferences.getString("attendeeName", "");
+//                    id = preferences.getString("attendeeId", "");
+//                    attendee = new Attendee(name, deviceId, id);
+//                    attendeeDB.getAttendeeInfo(deviceId, attendee);
+//                }
+//            });
+//        });
+
+        attendeeButton = findViewById(R.id.attendee_button);
+        organizerButton = findViewById(R.id.organizer_button);
+        adminButton = findViewById(R.id.admin_button);
+
+        // Start each activity with an intent.
+        attendeeButton.setOnClickListener(v -> startActivity(new Intent(MainActivity.this,
+                AttendeeActivity.class)));
+
+        organizerButton.setOnClickListener(v -> startActivity(new Intent(MainActivity.this,
+                OrganizerMainMenuActivity.class)));
+
+        adminButton.setOnClickListener(v -> startActivity(new Intent(MainActivity.this,
+                AdminActivity.class)));
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
         // store the installation id in shared preferences
         FirebaseInstallations.getInstance().getId().addOnSuccessListener(deviceId -> {
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -126,22 +171,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         });
-
-        attendeeButton = findViewById(R.id.attendee_button);
-        organizerButton = findViewById(R.id.organizer_button);
-        adminButton = findViewById(R.id.admin_button);
-
-        // Start each activity with an intent.
-        attendeeButton.setOnClickListener(v -> startActivity(new Intent(MainActivity.this,
-                AttendeeActivity.class)));
-
-        organizerButton.setOnClickListener(v -> startActivity(new Intent(MainActivity.this,
-                OrganizerMainMenuActivity.class)));
-
-        adminButton.setOnClickListener(v -> startActivity(new Intent(MainActivity.this,
-                AdminActivity.class)));
     }
-
 
     /**
      * Signs in the user using Firebase anonymous authentication
@@ -153,6 +183,7 @@ public class MainActivity extends AppCompatActivity {
                         // Sign in success, update the UI
                         Log.d(TAG, "signInAnonymously:success");
                         FirebaseUser user = mAuth.getCurrentUser();
+                        firebaseUser = user;
                         updateUI(user, adminButton);
                         db.setUser(user);
                     } else {
@@ -247,11 +278,10 @@ public class MainActivity extends AppCompatActivity {
     private void createNewAttendee(CollectionReference attendeesRef, String deviceId, SharedPreferences preferences) {
         String attendeeId = attendeesRef.document().getId();
         HashMap<String, Object> data = new HashMap<>();
-        FirebaseAuth mAuth = MainActivity.db.getmAuth();
         data.put("deviceId", deviceId);
         // set an attendee's name to their id by default until the user enters it later in user settings
         data.put("name", attendeeId);
-        data.put("uUid", mAuth.getCurrentUser().getUid());
+        data.put("uUid", firebaseUser.getUid());
         data.put("events", new ArrayList<Integer>());
         data.put("hasUpdatedInfo", false);
         data.put("homepage", "");

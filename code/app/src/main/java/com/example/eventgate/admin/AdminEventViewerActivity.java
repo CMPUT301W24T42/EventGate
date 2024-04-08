@@ -212,7 +212,7 @@ public class AdminEventViewerActivity extends AppCompatActivity {
                                     Attendee attendee = new Attendee(documentSnapshot.getString("name"),
                                             documentSnapshot.getString("deviceId"),
                                             documentSnapshot.getId());
-                                    attendeeDB.getAttendeeInfo((String) documentSnapshot.getData().get("deviceId"), attendee);
+                                    attendeeDB.getAttendeeInfo((String) documentSnapshot.get("deviceId"), attendee);
                                     attendeeDataList.add(attendee);
                                     attendeeAdapter.notifyDataSetChanged();
                                 });
