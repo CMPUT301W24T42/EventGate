@@ -25,11 +25,6 @@
           <theme>@style/Theme.EventGate</theme>
         </config>
       </layout>
-      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_attendee_scan_detail_qr.xml">
-        <config>
-          <theme>@style/Theme.EventGate</theme>
-        </config>
-      </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml">
         <config>
           <theme>@style/Theme.EventGate</theme>
@@ -82,10 +77,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ce5b47a8-0b77-4a72-b21a-c6a887860605" name="Changes" comment="Removed old files.">
-      <change beforePath="$PROJECT_DIR$/.idea/deploymentTargetDropDown.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deploymentTargetDropDown.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/eventgate/attendee/AttendeeAllEventViewerDetail.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/eventgate/attendee/AttendeeAllEventViewerDetail.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/eventgate/attendee/QRCodeScanActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/eventgate/attendee/QRCodeScanActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_organizer_edit_event.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_organizer_edit_event.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/test/java/com/example/eventgate/OrganizerEditQRTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/test/java/com/example/eventgate/OrganizerEditQRTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -145,8 +140,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Class" />
         <option value="layoutResourceFile" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -158,9 +153,9 @@
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 2
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 2
+}</component>
   <component name="ProjectId" id="2dFLFiKMRvR4fQ8Jftyj1O0va55" />
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
@@ -499,8 +494,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Gradle.OrganizerEditQRTest.generateDescriptionQRCodeTest" />
         <item itemvalue="Gradle.OrganizerEditQRTest" />
+        <item itemvalue="Gradle.OrganizerEditQRTest.generateDescriptionQRCodeTest" />
         <item itemvalue="Android Instrumented Tests.OrganizerMainMenuActivityTest" />
         <item itemvalue="Android Instrumented Tests.OrganizerEditEventActivityTest" />
         <item itemvalue="Android Instrumented Tests.MainActivityTest" />

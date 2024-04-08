@@ -10,11 +10,12 @@
     <LinearLayout
         android:id="@+id/eventContainer"
         android:layout_width="0dp"
-        android:layout_height="384dp"
+        android:layout_height="0dp"
         android:layout_centerHorizontal="true"
         android:layout_marginStart="30dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="30dp"
+        android:layout_marginBottom="26dp"
         android:background="@drawable/list_rounded_corners"
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/registeredContainer"
@@ -85,18 +86,17 @@
     <LinearLayout
         android:id="@+id/registeredContainer"
         android:layout_width="0dp"
-        android:layout_height="256dp"
+        android:layout_height="0dp"
         android:layout_centerHorizontal="true"
         android:layout_marginStart="30dp"
-        android:layout_marginTop="24dp"
         android:layout_marginEnd="30dp"
-        android:layout_marginBottom="39dp"
+        android:layout_marginBottom="7dp"
         android:background="@drawable/list_rounded_corners"
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/buttonContainer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/eventContainer">
+        app:layout_constraintTop_toBottomOf="@+id/eventContainer">
 
         <TextView
             android:id="@+id/registeredAttendeesTitle"
@@ -121,15 +121,14 @@
 
     <LinearLayout
         android:id="@+id/buttonContainer"
-        android:layout_width="411dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/OrganizerEditBackButton"
+        app:layout_constraintBottom_toTopOf="@+id/OrganizerEditQRButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/eventContainer">
+        app:layout_constraintTop_toBottomOf="@+id/registeredContainer">
 
         <Button
             android:id="@+id/button_create_alert"
@@ -151,51 +150,51 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/OrganizerEditBackButton"
-        android:layout_width="128dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="14dp"
         android:backgroundTint="@color/light_gray"
         android:ems="7"
         android:text="@string/back"
         android:textColor="@color/black"
         android:textSize="18sp"
         app:cornerRadius="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/OrganizerMapButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/OrganizerMapButton"
-        app:layout_constraintTop_toBottomOf="@+id/buttonContainer" />
+        app:layout_constraintTop_toTopOf="@+id/OrganizerMapButton" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/OrganizerMapButton"
-        android:layout_width="96dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="15dp"
         android:backgroundTint="@color/light_gray"
         android:ems="7"
         android:text="Map"
         android:textColor="@color/black"
         android:textSize="18sp"
         app:cornerRadius="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/OrganizerEditBackButton"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintBottom_toBottomOf="@+id/OrganizerEditQRButton"
+        app:layout_constraintEnd_toStartOf="@+id/OrganizerEditBackButton"
         app:layout_constraintStart_toEndOf="@+id/OrganizerEditQRButton"
-        app:layout_constraintTop_toBottomOf="@+id/buttonContainer" />
+        app:layout_constraintTop_toTopOf="@+id/OrganizerEditQRButton" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/OrganizerEditQRButton"
-        android:layout_width="128dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
         android:layout_marginBottom="16dp"
         android:backgroundTint="@color/light_gray"
         android:ems="7"
-        android:text="@string/organizer_view_qr_codes"
+        android:text="@string/qr"
         android:textColor="@color/black"
         android:textSize="18sp"
         app:cornerRadius="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/OrganizerMapButton"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/buttonContainer" />
 
