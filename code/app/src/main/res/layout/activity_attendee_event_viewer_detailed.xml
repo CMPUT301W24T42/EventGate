@@ -48,13 +48,6 @@
             android:background="#dfe4ea"
             />
 
-        <ListView
-            android:id="@+id/alertList"
-            android:layout_width="match_parent"
-            android:layout_height="250dp"
-            android:background="#dfe4ea"
-            android:choiceMode="singleChoice" />
-
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/viewPager"
             android:layout_width="match_parent"
