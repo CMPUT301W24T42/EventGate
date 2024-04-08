@@ -15,12 +15,27 @@
           <theme>@style/Theme.EventGate</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_attendee_event_viewer.xml">
+        <config>
+          <theme>@style/Theme.EventGate</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_attendee_event_viewer_detailed.xml">
+        <config>
+          <theme>@style/Theme.EventGate</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml">
         <config>
           <theme>@style/Theme.EventGate</theme>
         </config>
       </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_organizer_edit_event.xml">
+        <config>
+          <theme>@style/Theme.EventGate</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_organizer_edit_qr.xml">
         <config>
           <theme>@style/Theme.EventGate</theme>
         </config>
@@ -61,14 +76,11 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ce5b47a8-0b77-4a72-b21a-c6a887860605" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/deploymentTargetDropDown.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deploymentTargetDropDown.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/eventgate/attendee/AttendeeDB.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/eventgate/attendee/AttendeeDB.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/eventgate/event/EventDB.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/eventgate/event/EventDB.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/eventgate/organizer/OrganizerEventEditorActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/eventgate/organizer/OrganizerEventEditorActivity.java" afterDir="false" />
+    <list default="true" id="ce5b47a8-0b77-4a72-b21a-c6a887860605" name="Changes" comment="Removed old files.">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_organizer_edit_event.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_organizer_edit_event.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/test/java/com/example/eventgate/OrganizerEditQRTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/test/java/com/example/eventgate/OrganizerEditQRTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -78,7 +90,7 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[/root/.android/avd/Pixel_7_API_34.avd]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[C:\Users\Chris\.android\avd\Pixel_8_Pro_API_34.avd]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -88,6 +100,9 @@
     <system id="GRADLE">
       <state>
         <task path="$PROJECT_DIR$/app">
+          <activation />
+        </task>
+        <task path="$PROJECT_DIR$">
           <activation />
         </task>
         <projects_view>
@@ -125,40 +140,49 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Class" />
         <option value="layoutResourceFile" />
+        <option value="Class" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$/.." value="qr-code-scan" />
+        <entry key="$PROJECT_DIR$/.." value="main" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 2
+}</component>
   <component name="ProjectId" id="2dFLFiKMRvR4fQ8Jftyj1O0va55" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.cidr.known.project.marker": "true",
-    "cf.first.check.clang-format": "false",
-    "cidr.known.project.marker": "true",
-    "git-widget-placeholder": "organizer-registered-attendees",
-    "last_opened_file_path": "/home/cschneider/Assignments/CMPUT301/ListyCityDemo",
-    "settings.editor.selected.configurable": "preferences.lookFeel"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
+    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;LinkDetailsQRCode&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/cschneider/Assignments/CMPUT301/ListyCityDemo&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/app/src/main/res/layout" />
       <recent name="$PROJECT_DIR$/app/src/main/res/drawable" />
+    </key>
+    <key name="android.template.1533063569">
+      <recent name="com.example.eventgate" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="com.example.eventgate.organizer" />
@@ -441,7 +465,7 @@
       <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
       <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
       <DebugAllEnabled>false</DebugAllEnabled>
-      <ForceTestExec>true</ForceTestExec>
+      <RunAsTest>true</RunAsTest>
       <method v="2" />
     </configuration>
     <configuration name="OrganizerEditQRTest.generateDescriptionQRCodeTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
@@ -465,13 +489,13 @@
       <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
       <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
       <DebugAllEnabled>false</DebugAllEnabled>
-      <ForceTestExec>true</ForceTestExec>
+      <RunAsTest>true</RunAsTest>
       <method v="2" />
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Gradle.OrganizerEditQRTest.generateDescriptionQRCodeTest" />
         <item itemvalue="Gradle.OrganizerEditQRTest" />
+        <item itemvalue="Gradle.OrganizerEditQRTest.generateDescriptionQRCodeTest" />
         <item itemvalue="Android Instrumented Tests.OrganizerMainMenuActivityTest" />
         <item itemvalue="Android Instrumented Tests.OrganizerEditEventActivityTest" />
         <item itemvalue="Android Instrumented Tests.MainActivityTest" />
@@ -487,6 +511,23 @@
       <option name="presentableId" value="Default" />
       <updated>1709598777545</updated>
     </task>
+    <task id="LOCAL-00001" summary="Working on scanning a details qr code. It now works but the back button in the event details no longer works.">
+      <option name="closed" value="true" />
+      <created>1712593573794</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1712593573794</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Removed old files.">
+      <option name="closed" value="true" />
+      <created>1712593668507</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1712593668507</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -505,5 +546,10 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Working on scanning a details qr code. It now works but the back button in the event details no longer works." />
+    <MESSAGE value="Removed old files." />
+    <option name="LAST_COMMIT_MESSAGE" value="Removed old files." />
   </component>
 </project>
