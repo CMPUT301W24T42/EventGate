@@ -40,7 +40,7 @@ import com.google.firebase.storage.StorageReference;
 public class OrganizerEventEditorActivity extends AppCompatActivity implements CreateAlertFragment.OnAlertCreatedListener {
 
     private TextView eventTitle;
-    private Button backButton, uploadPosterButton, editQRButton;
+    private Button backButton, uploadPosterButton, editQRButton, mapButton;
     private Button createAlert;
     private String eventName;
     private String eventId;
@@ -152,6 +152,16 @@ public class OrganizerEventEditorActivity extends AppCompatActivity implements C
                 Intent intent = new Intent(OrganizerEventEditorActivity.this, OrganizerEditQR.class);
                 intent.putExtra("eventId", eventId);
                 intent.putExtra("eventName", eventName);
+                startActivity(intent);
+            }
+        });
+
+        mapButton = findViewById(R.id.OrganizerMapButton);
+        mapButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(OrganizerEventEditorActivity.this, OrganizerMapActivity.class);
+                intent.putExtra("eventId", eventId);
                 startActivity(intent);
             }
         });

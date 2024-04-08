@@ -14,6 +14,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.example.eventgate.event.EventDB;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.installations.FirebaseInstallations;
@@ -31,6 +33,7 @@ public class QRCodeScanActivity extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_CAMERA = 1;
     private static final int RESULT_NOT_FOUND = 2;
     private static final int RESULT_REDUNDANT = 3;
+    private GoogleApiClient googleApiClient;
 
     /**
      * Called when the activity is starting.
@@ -48,6 +51,10 @@ public class QRCodeScanActivity extends AppCompatActivity {
         } else {
             initQRCodeScan();
         }
+
+        googleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(LocationServices.API)
+                .build();
     }
 
     /**
@@ -98,7 +105,7 @@ public class QRCodeScanActivity extends AppCompatActivity {
                 String qrResult = result.getContents().trim();
                 FirebaseInstallations.getInstance().getId().addOnSuccessListener(id -> {
                     EventDB eventDb = new EventDB();
-                    CompletableFuture<Integer> checkInResult = eventDb.checkInAttendee(id, qrResult);
+                    CompletableFuture<Integer> checkInResult = eventDb.checkInAttendee(id, qrResult, this);
                     checkInResult.thenAccept(r -> {
                         Intent intent = new Intent();
                         switch (r) {

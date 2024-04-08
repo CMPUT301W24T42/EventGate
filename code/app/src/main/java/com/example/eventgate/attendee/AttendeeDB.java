@@ -26,7 +26,10 @@ public class AttendeeDB {
      * Constructs a new AttendeeDB
      */
     public AttendeeDB() {
+        collection = MainActivity.db.getAttendeesRef();
     }
+
+ 
 
     public void getAttendeeInfo(String deviceId, Attendee attendee) {
         CollectionReference attendeesRef = MainActivity.db.getAttendeesRef();
