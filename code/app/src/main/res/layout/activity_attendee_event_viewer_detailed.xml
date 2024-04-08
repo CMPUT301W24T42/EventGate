@@ -7,7 +7,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/light_blue">
+    android:background="@color/white">
 
 
 
@@ -44,15 +44,15 @@
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:gravity="top|center_horizontal"
-            android:textSize="15sp"
+            android:textSize="22sp"
+            android:background="#dfe4ea"
             />
 
         <ListView
             android:id="@+id/alertList"
             android:layout_width="match_parent"
             android:layout_height="250dp"
-            android:backgroundTint="@color/white"
-            android:background="@color/white"
+            android:background="#dfe4ea"
             android:choiceMode="singleChoice" />
 
         <androidx.viewpager.widget.ViewPager

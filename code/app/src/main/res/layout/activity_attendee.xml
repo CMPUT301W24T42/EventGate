@@ -17,7 +17,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/event_layout">
+        app:layout_constraintBottom_toTopOf="@id/event_layout"
+        android:background="#dfe4ea">
 
         <ImageButton
             android:id="@+id/profile_image"
@@ -175,7 +176,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginEnd="8dp"
-            android:backgroundTint="@color/light_gray"
+            android:backgroundTint="@color/green"
             android:text="All Events"
             android:textColor="@color/black"
             android:textSize="15sp"
@@ -188,7 +189,7 @@
             android:layout_weight="1"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
-            android:backgroundTint="@color/light_gray"
+            android:backgroundTint="@color/green"
             android:text="Registered Events"
             android:textColor="@color/black"
             android:textSize="13sp"
@@ -204,7 +205,7 @@
             android:text="@string/back"
             android:textColor="@color/black"
             android:textSize="15sp"
-            app:cornerRadius="0dp"/>
+            app:cornerRadius="18dp"/>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
