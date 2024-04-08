@@ -25,6 +25,7 @@ import com.google.zxing.integration.android.IntentResult;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -111,9 +112,29 @@ public class QRCodeScanActivity extends AppCompatActivity {
                     // QR code is for event details
                     // Extract the event ID from qrResult (remove "_details" suffix)
                     String eventId = qrResult.substring(0, qrResult.length() - "_details".length());
-                    Intent intent = new Intent(this, AttendeeScanDetailQR.class);
-                    intent.putExtra("EventID", eventId);
-                    startActivity(intent);
+
+                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+                    db.collection("events").document(eventId).get()
+                            .addOnSuccessListener(documentSnapshot -> {
+                                if (documentSnapshot.exists()) {
+                                    // Retrieve the event name from Firestore
+                                    String eventName = documentSnapshot.getString("name");
+
+                                    // Retrieve the array of alerts if it exists
+                                    ArrayList<Map> alerts = new ArrayList<>();
+                                    if (documentSnapshot.contains("alerts") && documentSnapshot.get("alerts") != null) {
+                                        alerts = (ArrayList<Map>) documentSnapshot.get("alerts");
+                                    }
+
+                                    Intent intent = new Intent(this, AttendeeAllEventViewerDetail.class);
+                                    intent.putExtra("EventID", eventId);
+                                    intent.putExtra("EventName", eventName);
+                                    intent.putExtra("alerts", alerts);
+                                    startActivity(intent);
+                                }
+                            });
+
+
 
                 } else {
                     // QR code is for event check-in

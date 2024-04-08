@@ -47,7 +47,7 @@ public class AttendeeScanDetailQR extends AppCompatActivity {
 
         Intent previousIntent = getIntent();
         if (previousIntent != null) {
-            eventId = previousIntent.getStringExtra("eventId");
+            eventId = previousIntent.getStringExtra("eventID");
         }
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -59,9 +59,11 @@ public class AttendeeScanDetailQR extends AppCompatActivity {
                         eventName = documentSnapshot.getString("name");
                         eventDetails = documentSnapshot.getString("eventDetails");
                     }
+                })
+                .addOnFailureListener(e -> {
                 });
 
-//        eventNameTitle.setText(eventName);
+        eventNameTitle.setText(eventName);
 //        eventDetailsTextView.setText(eventDetails);
 
         backButton.setOnClickListener(v -> {
