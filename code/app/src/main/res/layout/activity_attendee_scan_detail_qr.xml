@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".attendee.AttendeeScanDetailQR">
+
+    <LinearLayout
+        android:id="@+id/event_viewer_container"
+        android:layout_width="350dp"
+        android:layout_height="600dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="25dp"
+        android:background="@drawable/attendee_list_rounded_corners"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/scanDetailQREventNameTitle"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="@drawable/attendee_title_rounded_corners"
+            android:gravity="center"
+            android:text="@string/event_name_details"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="22sp" />
+
+        <TextView
+            android:id="@+id/scanDetailsQREventDetailsTextview"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:gravity="top|center_horizontal"
+            android:textSize="22sp"
+            android:background="#dfe4ea" />
+
+        <ImageView
+            android:id="@+id/attendeePoster"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:clickable="false"
+            android:contentDescription="@string/eventPoster"
+            android:scaleType="fitCenter" />
+
+    </LinearLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/attendee_qr_detail_back_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="25dp"
+        android:backgroundTint="@color/light_gray"
+        android:ems="5"
+        android:text="@string/back"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:cornerRadius="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+    </com.google.android.material.button.MaterialButton>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
