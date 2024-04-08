@@ -7,10 +7,7 @@ import android.os.Bundle;
 import android.widget.Button;
 
 import com.example.eventgate.R;
-import com.example.eventgate.attendee.Attendee;
 import com.google.android.material.tabs.TabLayout;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 // citations
 // https://www.youtube.com/watch?v=LXl7D57fgOQ Elements of the following layout design,
