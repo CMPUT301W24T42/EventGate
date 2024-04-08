@@ -582,6 +582,8 @@ public class AttendeeActivity extends AppCompatActivity {
                     editTextHomepage.setText(userInfo.getOrDefault("homepage", "").toString());
                     editTextEmail.setText(userInfo.getOrDefault("email", "").toString());
                     editTextPhone.setText(userInfo.getOrDefault("phoneNumber", "").toString());
+                    boolean locationEnabled = Boolean.parseBoolean(userInfo.getOrDefault("trackingEnabled", false).toString());
+                    checkboxGeolocation.setChecked(locationEnabled);
                 }
             }).exceptionally(e -> {
                 Log.e("AttendeeActivity", "Failed to fetch user info", e);
@@ -599,7 +601,7 @@ public class AttendeeActivity extends AppCompatActivity {
             // must have name
             if (!name.isEmpty()) {
                 FirebaseInstallations.getInstance().getId().addOnSuccessListener(installId -> {
-                    new EventDB().updateUserInfo(installId, name, phone, email, homepage, true)
+                    new EventDB().updateUserInfo(installId, name, phone, email, homepage, true, isGeolocationEnabled)
                             .thenRun(() -> Log.d("AttendeeActivity", "User info updated successfully at " + installId))
                             .exceptionally(e -> {
                                 Log.e("AttendeeActivity", "Failed to update user info", e);

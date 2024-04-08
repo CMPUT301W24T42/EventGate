@@ -544,7 +544,7 @@ public class EventDB {
      * @param hasUpdatedInfo whether user has set info
      * @return
      */
-    public CompletableFuture<Void> updateUserInfo(String deviceId, String name, String phoneNumber, String email, String homepage, Boolean hasUpdatedInfo) {
+    public CompletableFuture<Void> updateUserInfo(String deviceId, String name, String phoneNumber, String email, String homepage, Boolean hasUpdatedInfo, Boolean trackingEnabled) {
         CompletableFuture<Void> future = new CompletableFuture<>();
         DocumentReference userAttributeDocRef = db.collection("attendees").document(deviceId);
 
@@ -556,6 +556,7 @@ public class EventDB {
         attributes.put("email", email);
         attributes.put("homepage", homepage);
         attributes.put("hasUpdatedInfo", hasUpdatedInfo);
+        attributes.put("trackingEnabled", trackingEnabled);
 
         userAttributeDocRef.set(attributes, SetOptions.merge())
                 .addOnSuccessListener(aVoid -> {
