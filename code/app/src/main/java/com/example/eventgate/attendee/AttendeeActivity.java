@@ -128,18 +128,6 @@ public class AttendeeActivity extends AppCompatActivity {
         SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
         deterministicProfileRemoved = prefs.getBoolean("DeterministicProfileRemoved", false);
 
-
-        //some handling for attendees on start
-
-        //text sizing for events listview title
-       /* TextView textView = findViewById(R.id.EventListViewTitle);
-        String text = "Attendee Menu-> Your Events";
-        SpannableString spannableString = new SpannableString(text);
-        spannableString.setSpan(new AbsoluteSizeSpan(13, true), 0, 13, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        spannableString.setSpan(new AbsoluteSizeSpan(20, true), 15, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        textView.setText(spannableString);*/
-
-
         FirebaseInstallations.getInstance().getId()
                 .addOnCompleteListener(new OnCompleteListener<String>() {
                     @Override
@@ -168,15 +156,6 @@ public class AttendeeActivity extends AppCompatActivity {
 
 
         retrieveUserInfo();
-
-
-        //check if first time opening attendee section, save attendee to db if so
-       /* SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
-        boolean isFirstTimeOpening = prefs.getBoolean("isFirstTime", true);*/
-        //this is all placeholder for now, im not exactly sure how we're going to handle saved user info w/ firebase auth yet
-        /*if (isFirstTimeOpening) {
-            user_settings_dialog();
-        }*/
 
 
         //buttons for user settings and profile pic settings
@@ -267,69 +246,6 @@ public class AttendeeActivity extends AppCompatActivity {
 
     }
 
-
-    //prepares all events popup listview on button click
-    //uses eventlistadapter, probably wont use this one
-
-    /*private void viewAllEventsDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        LayoutInflater inflater = getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.dialog_attendeeviewallevents, null);
-
-
-        allEventsDataList = new ArrayList<>();
-        ListView allEventsList = dialogView.findViewById(R.id.allEventsListview);
-        EventListAdapter allEventsAdapter = new EventListAdapter(this, allEventsDataList);
-        allEventsList.setAdapter(allEventsAdapter);
-
-
-        FirebaseInstallations.getInstance().getId().addOnSuccessListener(id -> {
-            CompletableFuture<ArrayList<Event>> attendeeEvents = new EventDB().getAttendeeEvents(id);
-            attendeeEvents.thenAccept(r -> {
-                allEventsDataList.clear();
-                allEventsDataList.addAll(r);
-                allEventsAdapter.notifyDataSetChanged();
-            });
-        });
-
-        builder.setView(dialogView);
-
-        AlertDialog dialog = builder.create();
-        dialog.show();
-
-    }*/
-
-
-    //prepares all events popup listview on button click
-    //uses eventlistadapter, probably wont use this one
-
-    /*private void viewAllEventsDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        LayoutInflater inflater = getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.dialog_attendeeviewallevents, null);
-
-
-        allEventsDataList = new ArrayList<>();
-        ListView allEventsList = dialogView.findViewById(R.id.allEventsListview);
-        EventListAdapter allEventsAdapter = new EventListAdapter(this, allEventsDataList);
-        allEventsList.setAdapter(allEventsAdapter);
-
-
-        FirebaseInstallations.getInstance().getId().addOnSuccessListener(id -> {
-            CompletableFuture<ArrayList<Event>> attendeeEvents = new EventDB().getAttendeeEvents(id);
-            attendeeEvents.thenAccept(r -> {
-                allEventsDataList.clear();
-                allEventsDataList.addAll(r);
-                allEventsAdapter.notifyDataSetChanged();
-            });
-        });
-
-        builder.setView(dialogView);
-
-        AlertDialog dialog = builder.create();
-        dialog.show();
-
-    }*/
 
     @Override
     protected void onResume() {
@@ -491,25 +407,6 @@ public class AttendeeActivity extends AppCompatActivity {
         String pathToSearch = "attendees/" + userId + "/profilePicturePath"; // Adjusted path
         Log.d("FetchImage", "Searching for image path at: " + pathToSearch);
 
-//        FirebaseFirestore db = FirebaseFirestore.getInstance();
-//        db.collection("attendees").document(userId).get().addOnSuccessListener(documentSnapshot -> {
-//            String imagePath = documentSnapshot.getString("profilePicturePath"); // Updated key
-//            if (imagePath != null && !imagePath.isEmpty()) {
-//                Log.d("FetchImage", "Image path found: " + imagePath);
-//
-//                // starts sequence of downloading and showing profile pic
-//                downloadImageAndSetImageButton(imagePath, imageButton);
-//
-//
-//                Log.d("FetchImage", "Image stored in Firestore at path: " + pathToSearch);
-//            } else {
-//                Log.d("FetchImage", "No image path found for user: " + userId);
-//            }
-//        }).addOnFailureListener(e -> {
-//            Log.e("FetchImage", "Error fetching image path: " + e.getMessage());
-//            Toast.makeText(getApplicationContext(), "Error fetching image path: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-//        });
-
         db.getAttendeesRef().whereEqualTo("deviceId", userId).get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -533,23 +430,6 @@ public class AttendeeActivity extends AppCompatActivity {
      * @param imageButton profile pic imagebutton display
      */
     private void downloadImageAndSetImageButton(String imagePath, ImageButton imageButton) {
-//        StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(imagePath);
-//
-//        // temporary file for the downloaded image
-//        File localFile;
-//        try {
-//            localFile = File.createTempFile("profileImage", "jpg");
-//        } catch (IOException e) {
-//            Log.e("Storage", "Error creating temporary file", e);
-//            return;
-//        }
-//
-//        storageRef.getFile(localFile).addOnSuccessListener(taskSnapshot -> {
-//            Bitmap bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
-//            imageButton.setImageBitmap(bitmap);
-//        }).addOnFailureListener(exception -> {
-//            Log.e("Storage", "Error downloading image", exception);
-//        });
         if (imagePath != null) {
             Picasso.get().load(imagePath).fit().centerCrop().into(imageButton);
         }
@@ -669,19 +549,6 @@ public class AttendeeActivity extends AppCompatActivity {
                 // Clear the profile picture path in Firestore db
                 FirebaseInstallations.getInstance().getId().addOnSuccessListener(installId -> {
                     String userId = installId;
-//                    FirebaseFirestore db = FirebaseFirestore.getInstance();
-//                    db.collection("attendees").document(userId)
-//                            .update("profilePicturePath", null)
-//                            .addOnSuccessListener(aVoid -> {
-//                                Log.d("RemoveProfilePic", "Profile picture removed successfully!");
-//                                Toast.makeText(getApplicationContext(), "Profile picture removed successfully!", Toast.LENGTH_SHORT).show();
-//                            })
-//                            .addOnFailureListener(e -> {
-//                                Log.e("RemoveProfilePic", "Error removing profile picture", e);
-//
-//                            });
-//                }).addOnFailureListener(e -> {
-//                    Log.e("FirebaseInstallations", "Error retrieving Firebase Install ID", e);
                     db.getAttendeesRef().whereEqualTo("deviceId", userId).get()
                             .addOnCompleteListener(task -> {
                                 if (task.isSuccessful()) {
@@ -908,28 +775,6 @@ public class AttendeeActivity extends AppCompatActivity {
         });
     }
 
-    /*private void updateUserInfoInView() {
-        FirebaseInstallations.getInstance().getId().addOnSuccessListener(installId -> {
-            new EventDB().getUserInfo(installId).thenAccept(userInfo -> {
-                if (userInfo != null) {
-
-                    TextView userNameTextView = findViewById(R.id.user_name);
-                    TextView userPhoneTextView = findViewById(R.id.user_phone);
-                    TextView userEmailTextView = findViewById(R.id.user_email);
-                    TextView userHomepageTextView = findViewById(R.id.user_homepage);
-                    runOnUiThread(() -> {
-                        userNameTextView.setText((String) userInfo.getOrDefault("name", "No Name"));
-                        userPhoneTextView.setText((String) userInfo.getOrDefault("phoneNumber", "No Phone Number"));
-                        userEmailTextView.setText((String) userInfo.getOrDefault("email", "No Email"));
-                        userHomepageTextView.setText((String) userInfo.getOrDefault("homepage", "No Homepage"));
-                    });
-                }
-            }).exceptionally(e -> {
-                Log.e("out", "Error updating user info view", e);
-                return null;
-            });
-        });
-    }*/
 
 
     /**
