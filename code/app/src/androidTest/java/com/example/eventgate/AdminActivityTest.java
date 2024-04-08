@@ -69,7 +69,7 @@ public class AdminActivityTest {
     public void testAttendeesListView() throws InterruptedException {
         // swipe left to the users tab
         onView(allOf(withId(R.id.admin_viewpager), isDisplayed())).perform(swipeLeft());
-        Thread.sleep(1000);  // give time for data to load in
+        Thread.sleep(2000);  // give time for data to load in
         // click on the first item in the users list view
         onData(anything())
                 .inAdapterView(withId(R.id.user_list))

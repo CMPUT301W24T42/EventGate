@@ -35,6 +35,7 @@
             <AndroidTestResultsTableState>
               <option name="preferredColumnWidths">
                 <map>
+                  <entry key="7_test_device" value="120" />
                   <entry key="Duration" value="90" />
                   <entry key="Pixel_7_API_34" value="120" />
                   <entry key="Pixel_8_Pro_API_34" value="120" />
@@ -49,6 +50,7 @@
             <AndroidTestResultsTableState>
               <option name="preferredColumnWidths">
                 <map>
+                  <entry key="7_test_device" value="120" />
                   <entry key="Duration" value="90" />
                   <entry key="Pixel_7_API_34" value="120" />
                   <entry key="Pixel_8_Pro_API_34" value="120" />
@@ -76,6 +78,7 @@
             <AndroidTestResultsTableState>
               <option name="preferredColumnWidths">
                 <map>
+                  <entry key="7_test_device" value="120" />
                   <entry key="Duration" value="90" />
                   <entry key="Pixel_7_API_34" value="120" />
                   <entry key="Pixel_8_Pro_API_34" value="120" />
@@ -117,6 +120,7 @@
             <AndroidTestResultsTableState>
               <option name="preferredColumnWidths">
                 <map>
+                  <entry key="7_test_device" value="120" />
                   <entry key="Duration" value="90" />
                   <entry key="Pixel_7_API_34" value="120" />
                   <entry key="Pixel_8_Pro_API_34" value="120" />
