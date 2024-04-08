@@ -33,6 +33,8 @@ import java.util.Map;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+// citations
+//      Map bell icon made by Pixel perfect - Flaticon from https://www.flaticon.com/free-icons/map
 /**
  * Activity for the organizer's event page.
  * Allows the organizer to view and edit a given event.
