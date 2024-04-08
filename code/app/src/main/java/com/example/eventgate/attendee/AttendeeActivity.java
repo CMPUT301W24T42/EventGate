@@ -122,7 +122,7 @@ public class AttendeeActivity extends AppCompatActivity {
 
 
     private static final int PICK_IMAGE = 1;
-    private static byte[] hashBytes;
+    public byte[] hashBytes;
     public Bitmap profileBitmap;
 
     /**
