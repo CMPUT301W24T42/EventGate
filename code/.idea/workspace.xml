@@ -281,7 +281,7 @@
       <recent name="com.example.eventgate.attendee" />
     </key>
   </component>
-  <component name="RunManager" selected="Gradle.ImageDataTest">
+  <component name="RunManager" selected="Gradle.Tests in 'com.example.eventgate'">
     <configuration name="app" type="AndroidRunConfigurationType" factoryName="Android App">
       <module name="EventGate.app.main" />
       <option name="DEPLOY" value="true" />
@@ -348,30 +348,6 @@
       <method v="2">
         <option name="Android.Gradle.BeforeRunTask" enabled="true" />
       </method>
-    </configuration>
-    <configuration name="AttendeeDeterministicProfilePicTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value=":app:testDebugUnitTest" />
-            <option value="--tests" />
-            <option value="&quot;com.example.eventgate.AttendeeDeterministicProfilePicTest&quot;" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>true</RunAsTest>
-      <method v="2" />
     </configuration>
     <configuration name="AttendeeTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
@@ -469,9 +445,33 @@
       <RunAsTest>true</RunAsTest>
       <method v="2" />
     </configuration>
+    <configuration name="Tests in 'com.example.eventgate'" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":app:testDebugUnitTest" />
+            <option value="--tests" />
+            <option value="&quot;com.example.eventgate.*&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>true</RunAsTest>
+      <method v="2" />
+    </configuration>
     <list>
       <item itemvalue="Android App.app" />
-      <item itemvalue="Gradle.AttendeeDeterministicProfilePicTest" />
+      <item itemvalue="Gradle.Tests in 'com.example.eventgate'" />
       <item itemvalue="Gradle.AttendeeTest" />
       <item itemvalue="Gradle.EventTest" />
       <item itemvalue="Gradle.ExampleUnitTest" />
@@ -479,11 +479,11 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.Tests in 'com.example.eventgate'" />
         <item itemvalue="Gradle.ImageDataTest" />
         <item itemvalue="Gradle.ExampleUnitTest" />
         <item itemvalue="Gradle.EventTest" />
         <item itemvalue="Gradle.AttendeeTest" />
-        <item itemvalue="Gradle.AttendeeDeterministicProfilePicTest" />
       </list>
     </recent_temporary>
   </component>
