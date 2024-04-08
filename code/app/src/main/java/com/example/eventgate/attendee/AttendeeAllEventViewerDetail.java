@@ -19,7 +19,6 @@ import com.example.eventgate.MainActivity;
 import com.example.eventgate.R;
 import com.example.eventgate.event.Event;
 import com.example.eventgate.event.EventDB;
-import com.example.eventgate.organizer.OrganizerAlert;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
@@ -44,9 +43,6 @@ public class AttendeeAllEventViewerDetail extends AppCompatActivity {
     private String eventName;
     private Integer attendanceLimit;
     private Integer registrationCount;
-    private ArrayList<OrganizerAlert> alertsDataList;
-    private ListView alertsList;
-    private ArrayAdapter<OrganizerAlert> alertsAdapter;
     Button back_button, viewAttendeesButton;
     private String userId;
 
@@ -65,22 +61,7 @@ public class AttendeeAllEventViewerDetail extends AppCompatActivity {
         if (extras != null) {
             eventID = extras.getString("EventID");
             eventName = extras.getString("EventName");
-            alertsDataList = (ArrayList<OrganizerAlert>) extras.getSerializable("alerts");
         }
-
-        alertsList = findViewById(R.id.alertList);
-        alertsAdapter = new AlertListAdapter(this, alertsDataList);
-        alertsList.setAdapter(alertsAdapter);
-
-        // show dialog displaying alert's message once the title of the alert is clicked on the listview
-        alertsList.setOnItemClickListener((parent, view, position, id) -> {
-            ViewAnnouncementDialog dialog = new ViewAnnouncementDialog();
-            Bundle args = new Bundle();
-            args.putString("alertTitle", alertsDataList.get(position).getTitle());
-            args.putString("alertMessage", alertsDataList.get(position).getMessage());
-            dialog.setArguments(args);
-            dialog.show(getSupportFragmentManager(), "View Announcement Dialog");
-        });
 
         //this checks whether to grey out signup button
         isAttendeeRegistered(userId);
@@ -202,24 +183,6 @@ public class AttendeeAllEventViewerDetail extends AppCompatActivity {
             }
         });
 
-        CollectionReference collection = MainActivity.db.getAlertsRef();
-
-        // snapshot listener that adds/updates all the alerts from the database
-        collection
-                .whereEqualTo("eventId", eventID)
-                .addSnapshotListener((value, error) -> {
-                    for (QueryDocumentSnapshot doc : value) {
-                        if (doc.get("title") != null && Objects.equals(doc.get("channelId"), "event_channel")) {
-                            String title = doc.getString("title");
-                            String body = doc.getString("body");
-                            String channelId = doc.getString("channelId");
-                            String organizerId = doc.getString("organizerId");
-                            OrganizerAlert alert = new OrganizerAlert(title, body, channelId, organizerId, eventID);
-                            alertsDataList.add(alert);
-                            alertsAdapter.notifyDataSetChanged();
-                        }
-                    }
-                });
 
     }
 

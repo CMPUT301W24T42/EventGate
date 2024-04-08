@@ -52,8 +52,17 @@
             android:layout_height="48dp"
             android:inputType="textMultiLine"
             android:autofillHints=""
-            android:hint="@string/attendance_limit"
-            android:layout_gravity="center"/>
+            android:hint="@string/attendance_limit_optional"
+            android:layout_gravity="center"
+            android:layout_marginBottom="10dp"/>
+
+        <CheckBox
+            android:id="@+id/checkbox_geolocation_organizer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="15dp"
+            android:text="Enable Geolocation Tracking" />
 
         <LinearLayout
             android:id="@+id/ContinueCancelButtons"
@@ -68,11 +77,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:backgroundTint="@color/light_gray"
+                android:backgroundTint="@color/green"
                 android:ems="7"
                 android:textColor="@color/black"
                 android:textSize="18sp"
-                app:cornerRadius="0dp"
+                app:cornerRadius="18dp"
                 android:text="@string/organizerCreateEventContinue"
                 android:layout_marginEnd="4dp"/>
 
@@ -85,7 +94,7 @@
                 android:ems="7"
                 android:textColor="@color/black"
                 android:textSize="18sp"
-                app:cornerRadius="0dp"
+                app:cornerRadius="18dp"
                 android:text="@string/organizerCreateEventCancel"
                 android:layout_marginStart="4dp"/>
         </LinearLayout>

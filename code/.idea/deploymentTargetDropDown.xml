@@ -5,13 +5,10 @@
       <entry key="AdminActivityTest">
         <State />
       </entry>
-      <entry key="AttendeeViewParticipantsTest">
+      <entry key="AdminEventViewerActivityTest">
         <State />
       </entry>
-      <entry key="MainActivityTest">
-        <State />
-      </entry>
-      <entry key="Tests in 'com.example.eventgate'">
+      <entry key="OrganizerMainMenuActivityTest">
         <State />
       </entry>
       <entry key="app">
@@ -22,12 +19,12 @@
               <deviceKey>
                 <Key>
                   <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="$USER_HOME$/.android/avd/Pixel_7_API_34_2.avd" />
+                  <value value="C:\Users\Chris\.android\avd\Pixel_8_Pro_API_34.avd" />
                 </Key>
               </deviceKey>
             </Target>
           </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-04-08T21:25:19.851469Z" />
+          <timeTargetWasSelectedWithDropDown value="2024-04-08T20:30:24.291466600Z" />
         </State>
       </entry>
     </value>

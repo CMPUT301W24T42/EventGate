@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -57,6 +58,7 @@ public class OrganizerCreateEventFragment extends DialogFragment {
         EditText organizerCreateEventName = view.findViewById(R.id.organizerCreateEventName);
         EditText eventDetailsEditText = view.findViewById(R.id.eventDetailsEdittext);
         EditText organizerLimitAttendance = view.findViewById(R.id.organizerLimitAttendance);
+        CheckBox geolocation = view.findViewById(R.id.checkbox_geolocation_organizer);
 
         continueButton.setOnClickListener(v -> {
             String eventName = organizerCreateEventName.getText().toString().trim();
@@ -69,6 +71,7 @@ public class OrganizerCreateEventFragment extends DialogFragment {
 
             eventAdded = new Event(eventName);
             eventAdded.setEventDetails(eventDetails);
+            eventAdded.setGeolocation(geolocation.isChecked());
 
             if (!attendanceLimit.isEmpty()) {
                 try {

@@ -10,6 +10,11 @@
           <theme>@style/Theme.EventGate</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_admin_event_viewer.xml">
+        <config>
+          <theme>@style/Theme.EventGate</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_attendee.xml">
         <config>
           <theme>@style/Theme.EventGate</theme>
@@ -21,6 +26,16 @@
         </config>
       </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_attendee_event_viewer_detailed.xml">
+        <config>
+          <theme>@style/Theme.EventGate</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_attendee_view_event_participants.xml">
+        <config>
+          <theme>@style/Theme.EventGate</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_attendee_view_event_participants_listview.xml">
         <config>
           <theme>@style/Theme.EventGate</theme>
         </config>
@@ -40,6 +55,31 @@
           <theme>@style/Theme.EventGate</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_organizer_main_menu.xml">
+        <config>
+          <theme>@style/Theme.EventGate</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_organizer_reuse_qractivity.xml">
+        <config>
+          <theme>@style/Theme.EventGate</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/admin_grid_item.xml">
+        <config>
+          <theme>@style/Theme.EventGate</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/admin_list_item.xml">
+        <config>
+          <theme>@style/Theme.EventGate</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/attendee_alerts_list.xml">
+        <config>
+          <theme>@style/Theme.EventGate</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/attendee_events_list.xml">
         <config>
           <theme>@style/Theme.EventGate</theme>
@@ -50,7 +90,42 @@
           <theme>@style/Theme.EventGate</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/confirm_delete_popup.xml">
+        <config>
+          <theme>@style/Theme.EventGate</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/create_alert_popup.xml">
+        <config>
+          <theme>@style/Theme.EventGate</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/dialog_attendeeviewallevents.xml">
+        <config>
+          <theme>@style/Theme.EventGate</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_attendees.xml">
+        <config>
+          <theme>@style/Theme.EventGate</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_events.xml">
+        <config>
+          <theme>@style/Theme.EventGate</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_images.xml">
+        <config>
+          <theme>@style/Theme.EventGate</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_users.xml">
+        <config>
+          <theme>@style/Theme.EventGate</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/image_popup.xml">
         <config>
           <theme>@style/Theme.EventGate</theme>
         </config>
@@ -60,12 +135,27 @@
           <theme>@style/Theme.EventGate</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/notification_permission_popup.xml">
+        <config>
+          <theme>@style/Theme.EventGate</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/organizer_create_event_popup.xml">
         <config>
           <theme>@style/Theme.EventGate</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/user_info_popup.xml">
+        <config>
+          <theme>@style/Theme.EventGate</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/user_settings_dialog.xml">
+        <config>
+          <theme>@style/Theme.EventGate</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/view_announcement_popup.xml">
         <config>
           <theme>@style/Theme.EventGate</theme>
         </config>
@@ -76,10 +166,10 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ce5b47a8-0b77-4a72-b21a-c6a887860605" name="Changes" comment="Removed old files.">
+    <list default="true" id="ce5b47a8-0b77-4a72-b21a-c6a887860605" name="Changes" comment="UI changes.">
+      <change beforePath="$PROJECT_DIR$/.idea/androidTestResultsUserPreferences.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/androidTestResultsUserPreferences.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/deploymentTargetDropDown.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deploymentTargetDropDown.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/androidTest/java/com/example/eventgate/AttendeeViewParticipantsTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/androidTest/java/com/example/eventgate/AttendeeViewParticipantsTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -89,7 +179,7 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[/Users/jennysu/.android/avd/Pixel_7_API_34_2.avd]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[C:\Users\Chris\.android\avd\Pixel_8_Pro_API_34.avd]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -141,6 +231,7 @@
       <list>
         <option value="layoutResourceFile" />
         <option value="Class" />
+        <option value="resourceFile" />
       </list>
     </option>
   </component>
@@ -170,7 +261,8 @@
     "RunOnceActivity.cidr.known.project.marker": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
-    "git-widget-placeholder": "adminTests",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
     "last_opened_file_path": "/home/cschneider/Assignments/CMPUT301/ListyCityDemo",
     "settings.editor.selected.configurable": "preferences.lookFeel"
   }
@@ -189,7 +281,7 @@
       <recent name="com.example.eventgate.attendee" />
     </key>
   </component>
-  <component name="RunManager" selected="Android Instrumented Tests.AdminActivityTest">
+  <component name="RunManager" selected="Android App.app">
     <configuration name="app" type="AndroidRunConfigurationType" factoryName="Android App">
       <module name="EventGate.app.main" />
       <option name="DEPLOY" value="true" />
@@ -319,11 +411,11 @@
         <option name="Android.Gradle.BeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="AttendeeViewParticipantsTest" type="AndroidTestRunConfigurationType" factoryName="Android Instrumented Tests" temporary="true" nameIsGenerated="true">
+    <configuration name="AdminEventViewerActivityTest" type="AndroidTestRunConfigurationType" factoryName="Android Instrumented Tests" temporary="true" nameIsGenerated="true">
       <module name="EventGate.app.androidTest" />
       <option name="TESTING_TYPE" value="2" />
       <option name="METHOD_NAME" value="" />
-      <option name="CLASS_NAME" value="com.example.eventgate.AttendeeViewParticipantsTest" />
+      <option name="CLASS_NAME" value="com.example.eventgate.AdminEventViewerActivityTest" />
       <option name="PACKAGE_NAME" value="" />
       <option name="TEST_NAME_REGEX" value="" />
       <option name="INSTRUMENTATION_RUNNER_CLASS" value="" />
@@ -381,74 +473,12 @@
         <option name="Android.Gradle.BeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="MainActivityTest" type="AndroidTestRunConfigurationType" factoryName="Android Instrumented Tests" temporary="true" nameIsGenerated="true">
+    <configuration name="OrganizerMainMenuActivityTest" type="AndroidTestRunConfigurationType" factoryName="Android Instrumented Tests" temporary="true" nameIsGenerated="true">
       <module name="EventGate.app.androidTest" />
       <option name="TESTING_TYPE" value="2" />
       <option name="METHOD_NAME" value="" />
-      <option name="CLASS_NAME" value="com.example.eventgate.MainActivityTest" />
+      <option name="CLASS_NAME" value="com.example.eventgate.OrganizerMainMenuActivityTest" />
       <option name="PACKAGE_NAME" value="" />
-      <option name="TEST_NAME_REGEX" value="" />
-      <option name="INSTRUMENTATION_RUNNER_CLASS" value="" />
-      <option name="EXTRA_OPTIONS" value="" />
-      <option name="RETENTION_ENABLED" value="No" />
-      <option name="RETENTION_MAX_SNAPSHOTS" value="2" />
-      <option name="RETENTION_COMPRESS_SNAPSHOTS" value="false" />
-      <option name="CLEAR_LOGCAT" value="false" />
-      <option name="SHOW_LOGCAT_AUTOMATICALLY" value="false" />
-      <option name="INSPECTION_WITHOUT_ACTIVITY_RESTART" value="false" />
-      <option name="TARGET_SELECTION_MODE" value="DEVICE_AND_SNAPSHOT_COMBO_BOX" />
-      <option name="SELECTED_CLOUD_MATRIX_CONFIGURATION_ID" value="-1" />
-      <option name="SELECTED_CLOUD_MATRIX_PROJECT_ID" value="" />
-      <option name="DEBUGGER_TYPE" value="Auto" />
-      <Auto>
-        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
-        <option name="SHOW_STATIC_VARS" value="true" />
-        <option name="WORKING_DIR" value="" />
-        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
-        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
-        <option name="ATTACH_ON_WAIT_FOR_DEBUGGER" value="false" />
-        <option name="DEBUG_SANDBOX_SDK" value="false" />
-      </Auto>
-      <Hybrid>
-        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
-        <option name="SHOW_STATIC_VARS" value="true" />
-        <option name="WORKING_DIR" value="" />
-        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
-        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
-        <option name="ATTACH_ON_WAIT_FOR_DEBUGGER" value="false" />
-        <option name="DEBUG_SANDBOX_SDK" value="false" />
-      </Hybrid>
-      <Java>
-        <option name="ATTACH_ON_WAIT_FOR_DEBUGGER" value="false" />
-        <option name="DEBUG_SANDBOX_SDK" value="false" />
-      </Java>
-      <Native>
-        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
-        <option name="SHOW_STATIC_VARS" value="true" />
-        <option name="WORKING_DIR" value="" />
-        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
-        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
-        <option name="ATTACH_ON_WAIT_FOR_DEBUGGER" value="false" />
-        <option name="DEBUG_SANDBOX_SDK" value="false" />
-      </Native>
-      <Profilers>
-        <option name="ADVANCED_PROFILING_ENABLED" value="false" />
-        <option name="STARTUP_PROFILING_ENABLED" value="false" />
-        <option name="STARTUP_CPU_PROFILING_ENABLED" value="false" />
-        <option name="STARTUP_CPU_PROFILING_CONFIGURATION_NAME" value="Java/Kotlin Method Sample (legacy)" />
-        <option name="STARTUP_NATIVE_MEMORY_PROFILING_ENABLED" value="false" />
-        <option name="NATIVE_MEMORY_SAMPLE_RATE_BYTES" value="2048" />
-      </Profilers>
-      <method v="2">
-        <option name="Android.Gradle.BeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="Tests in 'com.example.eventgate'" type="AndroidTestRunConfigurationType" factoryName="Android Instrumented Tests" temporary="true" nameIsGenerated="true">
-      <module name="EventGate.app.androidTest" />
-      <option name="TESTING_TYPE" value="1" />
-      <option name="METHOD_NAME" value="" />
-      <option name="CLASS_NAME" value="" />
-      <option name="PACKAGE_NAME" value="com.example.eventgate" />
       <option name="TEST_NAME_REGEX" value="" />
       <option name="INSTRUMENTATION_RUNNER_CLASS" value="" />
       <option name="EXTRA_OPTIONS" value="" />
@@ -529,21 +559,45 @@
       <RunAsTest>true</RunAsTest>
       <method v="2" />
     </configuration>
+    <configuration name="OrganizerEditQRTest.generateDescriptionQRCodeTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":app:testDebugUnitTest" />
+            <option value="--tests" />
+            <option value="&quot;com.example.eventgate.OrganizerEditQRTest.generateDescriptionQRCodeTest&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>true</RunAsTest>
+      <method v="2" />
+    </configuration>
     <list>
       <item itemvalue="Android App.app" />
       <item itemvalue="Android Instrumented Tests.AdminActivityTest" />
-      <item itemvalue="Android Instrumented Tests.AttendeeViewParticipantsTest" />
-      <item itemvalue="Android Instrumented Tests.Tests in 'com.example.eventgate'" />
-      <item itemvalue="Android Instrumented Tests.MainActivityTest" />
+      <item itemvalue="Android Instrumented Tests.AdminEventViewerActivityTest" />
+      <item itemvalue="Android Instrumented Tests.OrganizerMainMenuActivityTest" />
       <item itemvalue="Gradle.OrganizerEditQRTest" />
+      <item itemvalue="Gradle.OrganizerEditQRTest.generateDescriptionQRCodeTest" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Android Instrumented Tests.AdminEventViewerActivityTest" />
         <item itemvalue="Android Instrumented Tests.AdminActivityTest" />
-        <item itemvalue="Android Instrumented Tests.MainActivityTest" />
-        <item itemvalue="Android Instrumented Tests.Tests in 'com.example.eventgate'" />
-        <item itemvalue="Android Instrumented Tests.AttendeeViewParticipantsTest" />
         <item itemvalue="Gradle.OrganizerEditQRTest" />
+        <item itemvalue="Gradle.OrganizerEditQRTest.generateDescriptionQRCodeTest" />
+        <item itemvalue="Android Instrumented Tests.OrganizerMainMenuActivityTest" />
       </list>
     </recent_temporary>
   </component>
@@ -572,7 +626,55 @@
       <option name="project" value="LOCAL" />
       <updated>1712593668507</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Made Organizer UI consistent with Attendee UI.">
+      <option name="closed" value="true" />
+      <created>1712599063880</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1712599063880</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Added map and qr images to buttons.">
+      <option name="closed" value="true" />
+      <created>1712602816637</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1712602816637</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Added Optional attendance limit text.">
+      <option name="closed" value="true" />
+      <created>1712602952850</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1712602952850</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Made QR Button image smaller.">
+      <option name="closed" value="true" />
+      <created>1712603808331</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1712603808331</updated>
+    </task>
+    <task id="LOCAL-00007" summary="UI changes.">
+      <option name="closed" value="true" />
+      <created>1712605066520</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1712605066520</updated>
+    </task>
+    <task id="LOCAL-00008" summary="UI changes.">
+      <option name="closed" value="true" />
+      <created>1712607853210</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1712607853210</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -595,6 +697,11 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Working on scanning a details qr code. It now works but the back button in the event details no longer works." />
     <MESSAGE value="Removed old files." />
-    <option name="LAST_COMMIT_MESSAGE" value="Removed old files." />
+    <MESSAGE value="Made Organizer UI consistent with Attendee UI." />
+    <MESSAGE value="Added map and qr images to buttons." />
+    <MESSAGE value="Added Optional attendance limit text." />
+    <MESSAGE value="Made QR Button image smaller." />
+    <MESSAGE value="UI changes." />
+    <option name="LAST_COMMIT_MESSAGE" value="UI changes." />
   </component>
 </project>

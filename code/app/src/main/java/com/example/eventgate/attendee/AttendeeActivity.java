@@ -83,6 +83,7 @@ import android.graphics.Paint;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -529,7 +530,7 @@ public class AttendeeActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         for (QueryDocumentSnapshot snapshot : task.getResult()) {
                             String imagePath = snapshot.getString("profilePicturePath");
-                            if (imagePath != null) {
+                            if (!Objects.equals(imagePath, "")) {
                                 // starts sequence of downloading and showing profile pic
                                 downloadImageAndSetImageButton(imagePath, imageButton);
                                 Log.d("FetchImage", "Image stored in Firestore at path: " + pathToSearch);
@@ -564,7 +565,10 @@ public class AttendeeActivity extends AppCompatActivity {
 //        }).addOnFailureListener(exception -> {
 //            Log.e("Storage", "Error downloading image", exception);
 //        });
-        Picasso.get().load(imagePath).fit().centerCrop().into(imageButton);
+        if (imagePath != null) {
+            Picasso.get().load(imagePath).fit().centerCrop().into(imageButton);
+        }
+
     }
 
     /**
@@ -625,6 +629,9 @@ public class AttendeeActivity extends AppCompatActivity {
 
             // must have name
             if (!name.isEmpty()) {
+                if (isGeolocationEnabled) {
+                    ActivityCompat.requestPermissions(AttendeeActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1001);
+                }
                 FirebaseInstallations.getInstance().getId().addOnSuccessListener(installId -> {
                     new EventDB().updateUserInfo(installId, name, phone, email, homepage, true, isGeolocationEnabled)
                             .thenRun(() -> Log.d("AttendeeActivity", "User info updated successfully at " + installId))

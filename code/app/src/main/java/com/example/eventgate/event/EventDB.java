@@ -94,6 +94,9 @@ public class EventDB {
         data.put("milestones", new ArrayList<Integer>());
         data.put("attendanceLimit", event.getEventAttendanceLimit());
         data.put("registrationCount", 0);
+        data.put("locations", new ArrayList<HashMap<String, Object>>());
+        data.put("alerts", new ArrayList<HashMap<String, Object>>());
+        data.put("trackingEnabled", event.getGeolocation());
         System.out.println(event.getEventDetails());
         System.out.println(event.getEventId());
 
@@ -152,7 +155,7 @@ public class EventDB {
                         futureResult.complete(0);
 
                         // If user has tracking enabled, save their location to the database
-                        if ((boolean) attendee.get("trackingEnabled")) {
+                        if ((boolean) attendee.get("trackingEnabled") && (boolean) documentSnapshot.get("trackingEnabled")) {
                             LocationRequest locationRequest = new LocationRequest.Builder(
                                     Priority.PRIORITY_HIGH_ACCURACY,
                                     0
@@ -296,22 +299,28 @@ public class EventDB {
      * Checks whether a user is signed up for an event
      * @return CompleteableFuture of Arraylist of Events
      * */
-    public CompletableFuture<Boolean> isAttendeeSignedUp(String userId, String eventId) {
+    public CompletableFuture<Boolean> isAttendeeSignedUp(String deviceId, String eventId) {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
 
         db.collection("events").document(eventId).get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        System.out.println("id is:" + userId);
+                        db.collection("attendees").whereEqualTo("deviceId", deviceId).get()
+                                .addOnSuccessListener(queryDocumentSnapshots -> {
+                                    if (queryDocumentSnapshots.isEmpty()) {  // If there is no matching deviceId, simply return
+                                        return;
+                                    }
+                                    String attendeeId = queryDocumentSnapshots.getDocuments().get(0).getId();
 
-                        List<String> registeredUsers = (List<String>) documentSnapshot.get("registeredUsers");
-                        if (registeredUsers != null && registeredUsers.contains(userId)) {
-                            System.out.println("true");
-                            future.complete(true);
-                        } else {
-                            System.out.println("false");
-                            future.complete(false);
-                        }
+                                    List<String> registeredUsers = (List<String>) documentSnapshot.get("registeredUsers");
+                                    if (registeredUsers != null && registeredUsers.contains(attendeeId)) {
+                                        System.out.println("true");
+                                        future.complete(true);
+                                    } else {
+                                        System.out.println("false");
+                                        future.complete(false);
+                                    }
+                        });
                     } else {
                         System.out.println("Event document not found.");
                         future.complete(false);
@@ -331,33 +340,39 @@ public class EventDB {
      * @param eventId event id
      * @return future
      */
-    public CompletableFuture<Void> registerAttendee(Context context, String userId, String eventId) {
+    public CompletableFuture<Void> registerAttendee(Context context, String deviceId, String eventId) {
         CompletableFuture<Void> future = new CompletableFuture<>();
         DocumentReference eventDocRef = db.collection("events").document(eventId);
 
-        db.runTransaction(transaction -> {
-            // Get the current registration count
-            DocumentSnapshot eventSnapshot = transaction.get(eventDocRef);
-            Long currentCount = eventSnapshot.getLong("registrationCount");
+        db.collection("attendees").whereEqualTo("deviceId", deviceId).get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                            if (queryDocumentSnapshots.isEmpty()) {  // If there is no matching deviceId, simply return
+                                return;
+                            }
+                            String attendeeId = queryDocumentSnapshots.getDocuments().get(0).getId();
+                            db.runTransaction(transaction -> {
+                                // Get the current registration count
+                                DocumentSnapshot eventSnapshot = transaction.get(eventDocRef);
+                                Long currentCount = eventSnapshot.getLong("registrationCount");
 
-            // Handle the case where the registrationCount field is null or doesn't exist
-            long newCount = (currentCount != null) ? currentCount + 1 : 1;
+                                // Handle the case where the registrationCount field is null or doesn't exist
+                                long newCount = (currentCount != null) ? currentCount + 1 : 1;
 
-            // Update the registration count
-            transaction.update(eventDocRef, "registrationCount", newCount);
+                                // Update the registration count
+                                transaction.update(eventDocRef, "registrationCount", newCount);
 
-            // Add the user to the registeredUsers array
-            transaction.update(eventDocRef, "registeredUsers", FieldValue.arrayUnion(userId));
-
-            // Complete the transaction
-            return null;
-        }).addOnSuccessListener(result -> {
-            Toast.makeText(context, "You're registered", Toast.LENGTH_SHORT).show();
-            future.complete(null);
-        }).addOnFailureListener(e -> {
-            Toast.makeText(context, "Error while registering, try again: " + e.getMessage(), Toast.LENGTH_LONG).show();
-            future.completeExceptionally(e);
-        });
+                                // Add the user to the registeredUsers array
+                                transaction.update(eventDocRef, "registeredUsers", FieldValue.arrayUnion(attendeeId));
+                                // Complete the transaction
+                                return null;
+                            }).addOnSuccessListener(result -> {
+                                Toast.makeText(context, "You're registered", Toast.LENGTH_SHORT).show();
+                                future.complete(null);
+                            }).addOnFailureListener(e -> {
+                                Toast.makeText(context, "Error while registering, try again: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                                future.completeExceptionally(e);
+                            });
+                });
 
         return future;
     }

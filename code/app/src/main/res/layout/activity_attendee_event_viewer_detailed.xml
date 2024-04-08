@@ -19,9 +19,9 @@
     <LinearLayout
         android:id="@+id/event_viewer_container"
         android:layout_width="350dp"
-        android:layout_height="600dp"
+        android:layout_height="450dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="50dp"
         android:background="@drawable/attendee_list_rounded_corners"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
@@ -48,13 +48,6 @@
             android:background="#dfe4ea"
             />
 
-        <ListView
-            android:id="@+id/alertList"
-            android:layout_width="match_parent"
-            android:layout_height="250dp"
-            android:background="#dfe4ea"
-            android:choiceMode="singleChoice" />
-
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/viewPager"
             android:layout_width="match_parent"
@@ -76,7 +69,7 @@
         android:layout_height="50dp"
         android:orientation="horizontal"
         android:gravity="center"
-        android:layout_marginBottom="25dp"
+        android:layout_marginBottom="40dp"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -88,11 +81,11 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginEnd="8dp"
-            android:backgroundTint="@null"
+            android:backgroundTint="@color/green"
             android:text="View Participants"
             android:textColor="@color/black"
-            android:textSize="10sp"
-            style="@style/GreenButtonStyle"/>
+            android:textSize="12sp"
+            app:cornerRadius="18dp" />
 
         <com.google.android.material.button.MaterialButton
         android:id="@+id/signupButton"
@@ -103,8 +96,9 @@
         android:layout_marginEnd="8dp"
         android:text="Sign Up"
         android:textColor="@color/black"
-        android:textSize="13sp"
-        style="@style/GreenButtonStyle"/>
+        android:textSize="14sp"
+            android:backgroundTint="@color/green"
+            app:cornerRadius="18dp"/>
 
 
         <com.google.android.material.button.MaterialButton
@@ -117,7 +111,7 @@
             android:text="@string/back"
             android:textColor="@color/black"
             android:textSize="15sp"
-            style="@style/GreenButtonStyle"/>
+            app:cornerRadius="18dp"/>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

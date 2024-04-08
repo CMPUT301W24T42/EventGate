@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/light_blue"
+    android:background="@color/white"
     tools:context=".admin.AdminActivity"
     android:id="@+id/admin_activity_layout"
     android:orientation="vertical">
@@ -14,10 +14,10 @@
         android:id="@+id/admin_tab_layout"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:backgroundTint="@color/light_blue"
-        app:tabIndicatorColor="@color/white"
+        android:backgroundTint="@color/white"
+        app:tabIndicatorColor="@color/light_blue"
         app:tabMode="fixed"
-        app:tabSelectedTextColor="@color/white"
+        app:tabSelectedTextColor="@color/light_blue"
         app:tabTextAppearance="@style/AdminTabText"
         app:tabIndicatorFullWidth="true"
         app:tabTextColor="#3F7988">
