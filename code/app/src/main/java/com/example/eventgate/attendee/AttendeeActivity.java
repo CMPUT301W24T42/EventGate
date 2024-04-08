@@ -63,6 +63,7 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.installations.FirebaseInstallations;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
@@ -479,14 +480,20 @@ public class AttendeeActivity extends AppCompatActivity {
         Map<String, Object> profilePicture = new HashMap<>();
         profilePicture.put("profilePicturePath", downloadUrl);
 
-        db.collection("attendees").document(userId)
-                .set(profilePicture, SetOptions.merge())
-                .addOnSuccessListener(aVoid -> {
-                    Log.d("Firestore", "Profile picture path successfully written!");
-                    // show image after uploading
-                    fetchImagePathAndSetImageButton(userId, findViewById(R.id.profile_image));
-                })
-                .addOnFailureListener(e -> Log.w("Firestore", "Error writing document", e));
+        db.collection("attendees").whereEqualTo("deviceId", userId).get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot doc : task.getResult()) {
+                            db.collection("attendees").document(doc.getId()).update(profilePicture)
+                                    .addOnSuccessListener(unused -> {
+                                        Log.d("Firestore", "Profile picture path successfully written!");
+                                        // show image after uploading
+                                        fetchImagePathAndSetImageButton(userId, findViewById(R.id.profile_image));
+                                    })
+                                    .addOnFailureListener(e -> Log.w("Firestore", "Error writing document", e));
+                        }
+                    }
+                });
     }
 
     /**
@@ -498,24 +505,41 @@ public class AttendeeActivity extends AppCompatActivity {
         String pathToSearch = "attendees/" + userId + "/profilePicturePath"; // Adjusted path
         Log.d("FetchImage", "Searching for image path at: " + pathToSearch);
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("attendees").document(userId).get().addOnSuccessListener(documentSnapshot -> {
-            String imagePath = documentSnapshot.getString("profilePicturePath"); // Updated key
-            if (imagePath != null && !imagePath.isEmpty()) {
-                Log.d("FetchImage", "Image path found: " + imagePath);
+//        FirebaseFirestore db = FirebaseFirestore.getInstance();
+//        db.collection("attendees").document(userId).get().addOnSuccessListener(documentSnapshot -> {
+//            String imagePath = documentSnapshot.getString("profilePicturePath"); // Updated key
+//            if (imagePath != null && !imagePath.isEmpty()) {
+//                Log.d("FetchImage", "Image path found: " + imagePath);
+//
+//                // starts sequence of downloading and showing profile pic
+//                downloadImageAndSetImageButton(imagePath, imageButton);
+//
+//
+//                Log.d("FetchImage", "Image stored in Firestore at path: " + pathToSearch);
+//            } else {
+//                Log.d("FetchImage", "No image path found for user: " + userId);
+//            }
+//        }).addOnFailureListener(e -> {
+//            Log.e("FetchImage", "Error fetching image path: " + e.getMessage());
+//            Toast.makeText(getApplicationContext(), "Error fetching image path: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+//        });
 
-                // starts sequence of downloading and showing profile pic
-                downloadImageAndSetImageButton(imagePath, imageButton);
+        db.getAttendeesRef().whereEqualTo("deviceId", userId).get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot snapshot : task.getResult()) {
+                            String imagePath = snapshot.getString("profilePicturePath");
+                            if (imagePath != null) {
+                                // starts sequence of downloading and showing profile pic
+                                downloadImageAndSetImageButton(imagePath, imageButton);
+                                Log.d("FetchImage", "Image stored in Firestore at path: " + pathToSearch);
+                            } else {
+                                Log.d("FetchImage", "No image path found for user: " + userId);
+                            }
+                        }
+                    }
+                });
 
-
-                Log.d("FetchImage", "Image stored in Firestore at path: " + pathToSearch);
-            } else {
-                Log.d("FetchImage", "No image path found for user: " + userId);
-            }
-        }).addOnFailureListener(e -> {
-            Log.e("FetchImage", "Error fetching image path: " + e.getMessage());
-            Toast.makeText(getApplicationContext(), "Error fetching image path: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-        });
     }
 
     /**
@@ -523,23 +547,24 @@ public class AttendeeActivity extends AppCompatActivity {
      * @param imageButton profile pic imagebutton display
      */
     private void downloadImageAndSetImageButton(String imagePath, ImageButton imageButton) {
-        StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(imagePath);
-
-        // temporary file for the downloaded image
-        File localFile;
-        try {
-            localFile = File.createTempFile("profileImage", "jpg");
-        } catch (IOException e) {
-            Log.e("Storage", "Error creating temporary file", e);
-            return;
-        }
-
-        storageRef.getFile(localFile).addOnSuccessListener(taskSnapshot -> {
-            Bitmap bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
-            imageButton.setImageBitmap(bitmap);
-        }).addOnFailureListener(exception -> {
-            Log.e("Storage", "Error downloading image", exception);
-        });
+//        StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(imagePath);
+//
+//        // temporary file for the downloaded image
+//        File localFile;
+//        try {
+//            localFile = File.createTempFile("profileImage", "jpg");
+//        } catch (IOException e) {
+//            Log.e("Storage", "Error creating temporary file", e);
+//            return;
+//        }
+//
+//        storageRef.getFile(localFile).addOnSuccessListener(taskSnapshot -> {
+//            Bitmap bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
+//            imageButton.setImageBitmap(bitmap);
+//        }).addOnFailureListener(exception -> {
+//            Log.e("Storage", "Error downloading image", exception);
+//        });
+        Picasso.get().load(imagePath).fit().centerCrop().into(imageButton);
     }
 
     /**
@@ -650,21 +675,36 @@ public class AttendeeActivity extends AppCompatActivity {
                 // Clear the profile picture path in Firestore db
                 FirebaseInstallations.getInstance().getId().addOnSuccessListener(installId -> {
                     String userId = installId;
-                    FirebaseFirestore db = FirebaseFirestore.getInstance();
-                    db.collection("attendees").document(userId)
-                            .update("profilePicturePath", null)
-                            .addOnSuccessListener(aVoid -> {
-                                Log.d("RemoveProfilePic", "Profile picture removed successfully!");
-                                Toast.makeText(getApplicationContext(), "Profile picture removed successfully!", Toast.LENGTH_SHORT).show();
-                            })
-                            .addOnFailureListener(e -> {
-                                Log.e("RemoveProfilePic", "Error removing profile picture", e);
-
+//                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+//                    db.collection("attendees").document(userId)
+//                            .update("profilePicturePath", null)
+//                            .addOnSuccessListener(aVoid -> {
+//                                Log.d("RemoveProfilePic", "Profile picture removed successfully!");
+//                                Toast.makeText(getApplicationContext(), "Profile picture removed successfully!", Toast.LENGTH_SHORT).show();
+//                            })
+//                            .addOnFailureListener(e -> {
+//                                Log.e("RemoveProfilePic", "Error removing profile picture", e);
+//
+//                            });
+//                }).addOnFailureListener(e -> {
+//                    Log.e("FirebaseInstallations", "Error retrieving Firebase Install ID", e);
+                    db.getAttendeesRef().whereEqualTo("deviceId", userId).get()
+                            .addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) {
+                                    for (QueryDocumentSnapshot doc : task.getResult()) {
+                                        String attendeeId = doc.getId();
+                                        Map<String, Object> updates = new HashMap<>();
+                                        updates.put("profilePicturePath", "");
+                                        db.getAttendeesRef().document(attendeeId).update(updates)
+                                                .addOnSuccessListener(unused -> Log.d("Firestore", "Profile picture removed successfully!"))
+                                                .addOnFailureListener(e -> Log.e("RemoveProfilePic", "Error removing profile picture", e));
+                                    }
+                                }
                             });
-                }).addOnFailureListener(e -> {
-                    Log.e("FirebaseInstallations", "Error retrieving Firebase Install ID", e);
-
                 });
+
+
+
 
                 getSharedPreferences("MyAppPrefs", MODE_PRIVATE).edit()
                         .putBoolean("DeterministicProfileRemoved", true)
