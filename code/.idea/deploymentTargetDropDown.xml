@@ -2,13 +2,7 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="AttendeeActivityTest">
-        <State />
-      </entry>
       <entry key="OrganizerMainMenuActivityTest">
-        <State />
-      </entry>
-      <entry key="Tests in 'com.example.eventgate'">
         <State />
       </entry>
       <entry key="app">
@@ -24,7 +18,7 @@
               </deviceKey>
             </Target>
           </runningDeviceTargetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-04-08T17:39:32.926742200Z" />
+          <timeTargetWasSelectedWithDropDown value="2024-04-08T18:58:06.647578Z" />
         </State>
       </entry>
     </value>
