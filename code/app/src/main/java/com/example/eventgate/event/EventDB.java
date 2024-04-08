@@ -94,6 +94,8 @@ public class EventDB {
         data.put("milestones", new ArrayList<Integer>());
         data.put("attendanceLimit", event.getEventAttendanceLimit());
         data.put("registrationCount", 0);
+        data.put("locatons", new ArrayList<HashMap<String, Object>>());
+        data.put("alerts", new ArrayList<HashMap<String, Object>>());
         System.out.println(event.getEventDetails());
         System.out.println(event.getEventId());
 
