@@ -107,10 +107,6 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-
-
-
-
     <LinearLayout
         android:id="@+id/event_layout"
         android:layout_width="350dp"

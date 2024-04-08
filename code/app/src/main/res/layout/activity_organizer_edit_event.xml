@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/light_blue"
+    android:background="@color/white"
     tools:context=".organizer.OrganizerMainMenuActivity">
 
     <LinearLayout
@@ -16,7 +16,7 @@
         android:layout_marginTop="24dp"
         android:layout_marginEnd="30dp"
         android:layout_marginBottom="26dp"
-        android:background="@drawable/list_rounded_corners"
+        android:background="@drawable/attendee_list_rounded_corners"
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/registeredContainer"
         app:layout_constraintEnd_toEndOf="parent"
@@ -27,7 +27,7 @@
             android:id="@+id/EventListViewTitle"
             android:layout_width="match_parent"
             android:layout_height="45dp"
-            android:background="@drawable/title_rounded_corners"
+            android:background="@drawable/attendee_title_rounded_corners"
             android:gravity="center"
             android:text="MyEvent"
             android:textAlignment="center"
@@ -91,7 +91,7 @@
         android:layout_marginStart="30dp"
         android:layout_marginEnd="30dp"
         android:layout_marginBottom="7dp"
-        android:background="@drawable/list_rounded_corners"
+        android:background="@drawable/attendee_list_rounded_corners"
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/buttonContainer"
         app:layout_constraintEnd_toEndOf="parent"
@@ -102,7 +102,7 @@
             android:id="@+id/registeredAttendeesTitle"
             android:layout_width="match_parent"
             android:layout_height="45dp"
-            android:background="@drawable/title_rounded_corners"
+            android:background="@drawable/attendee_title_rounded_corners"
             android:gravity="center"
             android:text="Registered Attendees"
             android:textAlignment="center"
@@ -136,7 +136,9 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_weight="1"
-            android:text="Create Alert" />
+            android:text="Create Alert"
+            android:backgroundTint="@color/green"
+            android:textColor="@color/black"/>
 
         <Button
             android:id="@+id/button_upload_poster"
@@ -144,7 +146,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_weight="1"
-            android:text="Upload Poster" />
+            android:text="Upload Poster"
+            android:backgroundTint="@color/green"
+            android:textColor="@color/black"/>
 
     </LinearLayout>
 
@@ -158,7 +162,7 @@
         android:text="@string/back"
         android:textColor="@color/black"
         android:textSize="18sp"
-        app:cornerRadius="0dp"
+        app:cornerRadius="18dp"
         app:layout_constraintBottom_toBottomOf="@+id/OrganizerMapButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/OrganizerMapButton"
@@ -169,12 +173,12 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="15dp"
-        android:backgroundTint="@color/light_gray"
+        android:backgroundTint="@color/green"
         android:ems="7"
         android:text="Map"
         android:textColor="@color/black"
         android:textSize="18sp"
-        app:cornerRadius="0dp"
+        app:cornerRadius="18dp"
         app:layout_constraintBottom_toBottomOf="@+id/OrganizerEditQRButton"
         app:layout_constraintEnd_toStartOf="@+id/OrganizerEditBackButton"
         app:layout_constraintStart_toEndOf="@+id/OrganizerEditQRButton"
@@ -187,12 +191,12 @@
         android:layout_marginStart="15dp"
         android:layout_marginEnd="15dp"
         android:layout_marginBottom="16dp"
-        android:backgroundTint="@color/light_gray"
+        android:backgroundTint="@color/green"
         android:ems="7"
         android:text="@string/qr"
         android:textColor="@color/black"
         android:textSize="18sp"
-        app:cornerRadius="0dp"
+        app:cornerRadius="18dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/OrganizerMapButton"
         app:layout_constraintStart_toStartOf="parent"
