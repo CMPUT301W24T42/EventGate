@@ -2,15 +2,6 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="AdminActivityTest">
-        <State />
-      </entry>
-      <entry key="AdminEventViewerActivityTest">
-        <State />
-      </entry>
-      <entry key="OrganizerMainMenuActivityTest">
-        <State />
-      </entry>
       <entry key="app">
         <State>
           <targetSelectedWithDropDown>
@@ -24,7 +15,7 @@
               </deviceKey>
             </Target>
           </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-04-08T20:30:24.291466600Z" />
+          <timeTargetWasSelectedWithDropDown value="2024-04-08T21:08:33.198810200Z" />
         </State>
       </entry>
     </value>
