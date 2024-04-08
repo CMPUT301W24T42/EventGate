@@ -77,7 +77,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ce5b47a8-0b77-4a72-b21a-c6a887860605" name="Changes" comment="Removed old files.">
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/eventgate/event/EventDB.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/eventgate/event/EventDB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/map_32.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/assetWizardSettings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/assetWizardSettings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/deploymentTargetDropDown.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deploymentTargetDropDown.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/eventgate/attendee/QRCodeScanActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/eventgate/attendee/QRCodeScanActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable/qr_code_64.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawable/qr_code_64.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_organizer_edit_event.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_organizer_edit_event.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -87,7 +93,7 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[/root/.android/avd/Pixel_7_API_34.avd]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[R5CW21MNCBY]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -139,6 +145,7 @@
       <list>
         <option value="layoutResourceFile" />
         <option value="Class" />
+        <option value="resourceFile" />
       </list>
     </option>
   </component>
@@ -168,7 +175,7 @@
     "RunOnceActivity.cidr.known.project.marker": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
-    "git-widget-placeholder": "Rebasing main",
+    "git-widget-placeholder": "main",
     "last_opened_file_path": "/home/cschneider/Assignments/CMPUT301/ListyCityDemo",
     "settings.editor.selected.configurable": "preferences.lookFeel"
   }
@@ -462,7 +469,7 @@
       <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
       <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
       <DebugAllEnabled>false</DebugAllEnabled>
-      <ForceTestExec>false</ForceTestExec>
+      <RunAsTest>true</RunAsTest>
       <method v="2" />
     </configuration>
     <configuration name="OrganizerEditQRTest.generateDescriptionQRCodeTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
@@ -486,7 +493,7 @@
       <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
       <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
       <DebugAllEnabled>false</DebugAllEnabled>
-      <ForceTestExec>false</ForceTestExec>
+      <RunAsTest>true</RunAsTest>
       <method v="2" />
     </configuration>
     <list>
@@ -532,7 +539,15 @@
       <option name="project" value="LOCAL" />
       <updated>1712593668507</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Made Organizer UI consistent with Attendee UI.">
+      <option name="closed" value="true" />
+      <created>1712599063880</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1712599063880</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -555,6 +570,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Working on scanning a details qr code. It now works but the back button in the event details no longer works." />
     <MESSAGE value="Removed old files." />
-    <option name="LAST_COMMIT_MESSAGE" value="Removed old files." />
+    <MESSAGE value="Made Organizer UI consistent with Attendee UI." />
+    <option name="LAST_COMMIT_MESSAGE" value="Made Organizer UI consistent with Attendee UI." />
   </component>
 </project>

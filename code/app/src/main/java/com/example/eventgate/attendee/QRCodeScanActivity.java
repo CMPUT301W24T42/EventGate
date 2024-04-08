@@ -21,6 +21,7 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
@@ -117,9 +118,9 @@ public class QRCodeScanActivity extends AppCompatActivity {
                                     String eventName = documentSnapshot.getString("name");
 
                                     // Retrieve the array of alerts if it exists
-                                    ArrayList<Map> alerts = new ArrayList<>();
+                                    ArrayList<HashMap<String, Object>> alerts = new ArrayList<>();
                                     if (documentSnapshot.contains("alerts") && documentSnapshot.get("alerts") != null) {
-                                        alerts = (ArrayList<Map>) documentSnapshot.get("alerts");
+                                        alerts = (ArrayList<HashMap<String, Object>>) documentSnapshot.get("alerts");
                                     }
 
                                     Intent intent = new Intent(this, AttendeeAllEventViewerDetail.class);

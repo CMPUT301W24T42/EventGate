@@ -2,13 +2,7 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="AttendeeActivityTest">
-        <State />
-      </entry>
       <entry key="OrganizerMainMenuActivityTest">
-        <State />
-      </entry>
-      <entry key="Tests in 'com.example.eventgate'">
         <State />
       </entry>
       <entry key="app">
@@ -18,13 +12,13 @@
               <type value="RUNNING_DEVICE_TARGET" />
               <deviceKey>
                 <Key>
-                  <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="C:\Users\Chris\.android\avd\Pixel_8_Pro_API_34.avd" />
+                  <type value="SERIAL_NUMBER" />
+                  <value value="R5CW21MNCBY" />
                 </Key>
               </deviceKey>
             </Target>
           </runningDeviceTargetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-04-08T17:39:32.926742200Z" />
+          <timeTargetWasSelectedWithDropDown value="2024-04-08T18:38:39.936220400Z" />
         </State>
       </entry>
     </value>
