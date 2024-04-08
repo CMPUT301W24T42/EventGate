@@ -10,6 +10,11 @@
           <theme>@style/Theme.EventGate</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_admin_event_viewer.xml">
+        <config>
+          <theme>@style/Theme.EventGate</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_attendee.xml">
         <config>
           <theme>@style/Theme.EventGate</theme>
@@ -21,6 +26,16 @@
         </config>
       </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_attendee_event_viewer_detailed.xml">
+        <config>
+          <theme>@style/Theme.EventGate</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_attendee_view_event_participants.xml">
+        <config>
+          <theme>@style/Theme.EventGate</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_attendee_view_event_participants_listview.xml">
         <config>
           <theme>@style/Theme.EventGate</theme>
         </config>
@@ -40,6 +55,31 @@
           <theme>@style/Theme.EventGate</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_organizer_main_menu.xml">
+        <config>
+          <theme>@style/Theme.EventGate</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_organizer_reuse_qractivity.xml">
+        <config>
+          <theme>@style/Theme.EventGate</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/admin_grid_item.xml">
+        <config>
+          <theme>@style/Theme.EventGate</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/admin_list_item.xml">
+        <config>
+          <theme>@style/Theme.EventGate</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/attendee_alerts_list.xml">
+        <config>
+          <theme>@style/Theme.EventGate</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/attendee_events_list.xml">
         <config>
           <theme>@style/Theme.EventGate</theme>
@@ -50,7 +90,42 @@
           <theme>@style/Theme.EventGate</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/confirm_delete_popup.xml">
+        <config>
+          <theme>@style/Theme.EventGate</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/create_alert_popup.xml">
+        <config>
+          <theme>@style/Theme.EventGate</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/dialog_attendeeviewallevents.xml">
+        <config>
+          <theme>@style/Theme.EventGate</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_attendees.xml">
+        <config>
+          <theme>@style/Theme.EventGate</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_events.xml">
+        <config>
+          <theme>@style/Theme.EventGate</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_images.xml">
+        <config>
+          <theme>@style/Theme.EventGate</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_users.xml">
+        <config>
+          <theme>@style/Theme.EventGate</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/image_popup.xml">
         <config>
           <theme>@style/Theme.EventGate</theme>
         </config>
@@ -60,12 +135,27 @@
           <theme>@style/Theme.EventGate</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/notification_permission_popup.xml">
+        <config>
+          <theme>@style/Theme.EventGate</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/organizer_create_event_popup.xml">
         <config>
           <theme>@style/Theme.EventGate</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/user_info_popup.xml">
+        <config>
+          <theme>@style/Theme.EventGate</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/user_settings_dialog.xml">
+        <config>
+          <theme>@style/Theme.EventGate</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/view_announcement_popup.xml">
         <config>
           <theme>@style/Theme.EventGate</theme>
         </config>
@@ -76,7 +166,11 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ce5b47a8-0b77-4a72-b21a-c6a887860605" name="Changes" comment="Added Optional attendance limit text." />
+    <list default="true" id="ce5b47a8-0b77-4a72-b21a-c6a887860605" name="Changes" comment="Made QR Button image smaller.">
+      <change beforePath="$PROJECT_DIR$/.idea/deploymentTargetDropDown.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deploymentTargetDropDown.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/organizer_create_event_popup.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/organizer_create_event_popup.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -555,7 +649,15 @@
       <option name="project" value="LOCAL" />
       <updated>1712602952850</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Made QR Button image smaller.">
+      <option name="closed" value="true" />
+      <created>1712603808331</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1712603808331</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -581,6 +683,7 @@
     <MESSAGE value="Made Organizer UI consistent with Attendee UI." />
     <MESSAGE value="Added map and qr images to buttons." />
     <MESSAGE value="Added Optional attendance limit text." />
-    <option name="LAST_COMMIT_MESSAGE" value="Added Optional attendance limit text." />
+    <MESSAGE value="Made QR Button image smaller." />
+    <option name="LAST_COMMIT_MESSAGE" value="Made QR Button image smaller." />
   </component>
 </project>
